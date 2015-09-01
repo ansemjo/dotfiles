@@ -1,0 +1,122 @@
+# distro info
+alias distribution='uname -nrmo && lsb_release -dc 2> /dev/null'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+
+	alias ls='ls --color=auto'
+	alias dir='dir --color=auto'
+	alias vdir='vdir --color=auto'
+
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
+
+# some ls aliases
+alias l='ls -1F'	# one file per line
+alias ll='ls -alF'	# all, long, classify; pretty verbose
+alias la='ls -AF'	# almost all; like ls, but with .dot
+alias lll='ls -lhARF'	# dirlist, generates huge output for many subfolders!
+
+# display human-readable filesystem sizes
+alias dfh='df -h'
+
+# Directory navigation aliases
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# safety!
+# makes these commands interactive,
+# i.e. prevents accidental overwrites
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+
+# some sudo shorthands
+alias svi='sudo vi'			# root vim editor
+alias sudoo='sudo su'			# become root
+alias runlevel='sudo /sbin/init'	# change current runlevel
+alias chownr='sudo chown -R'		# recursive chown
+alias chmodr='sudo chmod -R'		# recursive chmod
+grab() {
+  sudo chown -R ${USER} ${1:-.}		# grab ownership
+}
+
+# powerdown aliases
+alias shutdown!='shutdown -fP now'
+alias reboot!='reboot -f'
+
+# some standards for slurm
+if [ -x /usr/bin/slurm ]; then
+  alias ifslurm='slurm -s -t foo -i eth0'
+fi
+
+# some fun with cmatrix
+if [ -x /usr/bin/cmatrix ]; then
+  alias thematrix='cmatrix -ab -u2 -C green'
+fi
+
+# for when you quickly want to
+# output a file with linenumbers
+alias can='cat -sn'
+
+# various grep shorthands
+alias igrep='egrep -i'
+alias hh="history | igrep "
+alias ff="find . | igrep "
+alias psgrep="ps aux | egrep "
+alias lgrep="l | igrep "
+
+
+## some larger functions below
+
+# make myself owner of files and folders
+
+# extraction function
+extract () {
+  if [ -f $1 ] ; then
+    case $1 in
+	*.tar.bz2)   tar xjf $1		;;
+	*.tar.gz)    tar xzf $1		;;
+	*.bz2)       bunzip2 $1		;;
+	*.rar)       rar x $1		;;
+	*.gz)        gunzip $1		;;
+	*.tar)       tar xf $1		;;
+	*.tbz2)      tar xjf $1		;;
+	*.tgz)       tar xzf $1		;;
+	*.zip)       unzip $1		;;
+	*.Z)         uncompress $1	;;
+	*.7z)        7z x $1		;;
+	*)           echo "'$1' cannot be extracted via extract()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+
+#netinfo - shows network information for your system
+netinfo ()
+{
+ echo "--------------- Network Information ---------------"
+ /sbin/ifconfig | awk /'inet addr/ {print $2}'
+ /sbin/ifconfig | awk /'Bcast/ {print $3}'
+ /sbin/ifconfig | awk /'inet addr/ {print $4}'
+ /sbin/ifconfig | awk /'HWaddr/ {print $4,$5}'
+ myip=`lynx -dump -hiddenlinks=ignore -nolist http://checkip.dyndns.org:8245/ | sed '/^$/d; s/^[ ]*//g; s/[ ]*$//g' `
+ echo "${myip}"
+ echo "---------------------------------------------------"
+}
+
+#dirsize - finds directory sizes and lists them for the current directory
+dirsize ()
+{
+ du -shx * .[a-zA-Z0-9_]* 2> /dev/null | \
+ egrep '^ *[0-9.]*[MG]' | sort -n > /tmp/list
+ egrep '^ *[0-9.]*M' /tmp/list
+ egrep '^ *[0-9.]*G' /tmp/list
+ rm -rf /tmp/list
+}
