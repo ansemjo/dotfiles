@@ -37,7 +37,7 @@ alias mv='mv -i'
 alias cp='cp -i'
 
 # some sudo shorthands
-alias svi='sudo vi'			# root vim editor
+alias si='sudo vi'			# root vim editor
 alias sudoo='sudo su'			# become root
 alias runlevel='sudo /sbin/init'	# change current runlevel
 alias chownr='sudo chown -R'		# recursive chown
