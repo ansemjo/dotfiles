@@ -35,6 +35,7 @@ alias .....='cd ../../../..'
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'
+alias rmrf='rm -rf' # read mail really fast :)
 
 # some sudo shorthands
 alias si='sudo vi'			# root vim editor
@@ -74,7 +75,16 @@ alias lgrep="l | igrep "
 
 ## some larger functions below
 
-# make myself owner of files and folders
+# make and enter
+mkcd () {
+  if [ ! -n "$1" ]; then
+    echo "Enter a directory name"
+  elif [ -d $1 ]; then
+    echo "\`$1' already exists"
+  else
+    mkdir $1 && cd $1
+  fi
+}
 
 # extraction function
 extract () {
