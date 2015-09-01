@@ -48,8 +48,8 @@ grab() {
 }
 
 # powerdown aliases
-alias shutdown!='shutdown -fP now'
-alias reboot!='reboot -f'
+alias shutdownn='sudo shutdown -fP now'
+alias reboott='sudo reboot -f'
 
 # some standards for slurm
 if [ -x /usr/bin/slurm ]; then
