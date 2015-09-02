@@ -65,6 +65,9 @@ fi
 # output a file with linenumbers
 alias can='cat -sn'
 
+# 'zero' the screen
+alias 00='clear'
+
 # various grep shorthands
 alias igrep='egrep -i'
 alias hh='history | igrep '
