@@ -1,5 +1,5 @@
 # distro info
-alias distribution='uname -nrmo && lsb_release -dc 2> /dev/null'
+alias distro='uname -nrmo && lsb_release -dc 2> /dev/null'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
