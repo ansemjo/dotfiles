@@ -58,7 +58,7 @@ fi
 
 # some fun with cmatrix
 if [ -x /usr/bin/cmatrix ]; then
-  alias thematrix='cmatrix -ab -u2 -C green'
+  alias matrix='cmatrix -ab -u2 -C green'
 fi
 
 # for when you quickly want to
