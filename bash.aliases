@@ -168,3 +168,15 @@ led ()
     echo "use: 0/off or 1/on as argument"
   fi
 }
+
+# if true loop
+whiletrue ()
+{
+  while true; do $1; sleep 1; clear; done;
+}
+
+# wait for any keypress
+waitkey ()
+{
+  read -rsp $'Press any key to continue...\n' -n1 key
+}
