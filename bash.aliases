@@ -172,7 +172,7 @@ led ()
 # if true loop
 whiletrue ()
 {
-  while true; do $1; sleep 1; clear; done;
+  while true; do "$@"; sleep 1; clear; done;
 }
 
 # wait for any keypress
