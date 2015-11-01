@@ -82,7 +82,13 @@ if [ -x /usr/bin/xrandr ]; then
   alias orio='xrandr -o normal'
 fi
 
+# open nautilus here (if system is gnome)
+if [ -x /usr/bin/nautilus ]; then
+  alias here='nautilus -w --no-desktop `pwd` &> /dev/null &'
+fi
+
 ## some larger functions below
+#################################################################
 
 # make and enter
 mkcd () {

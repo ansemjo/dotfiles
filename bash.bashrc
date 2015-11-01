@@ -65,10 +65,10 @@ if [ "$color_prompt" = yes ]; then
     # using http://bashrcgenerator.com/ to generate the PS1='' lines:
     if [ "`id -u`" -eq 0 ]; then
 	# root in RED
-	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;9m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;1m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\\$\[$(tput sgr0)\] '
+	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;9m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;1m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\$\[$(tput sgr0)\] '
     else
 	# normal user in GREEN
-	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;10m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;2m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\\$\[$(tput sgr0)\] '
+	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;10m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;2m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\$\[$(tput sgr0)\] '
     fi
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
