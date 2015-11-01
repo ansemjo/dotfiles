@@ -53,26 +53,44 @@ fi
 
 if [ "$color_prompt" = yes ]; then
 
-	BGREEN='\[\033[1;32m\]'
-	GREEN='\[\033[0;32m\]'
-	BRED='\[\033[1;31m\]'
-	RED='\[\033[0;31m\]'
-	BBLUE='\[\033[1;34m\]'
-	BLUE='\[\033[0;34m\]'
-	NORMAL='\[\033[00m\]'
-	
-	
-    # using http://bashrcgenerator.com/ to generate the PS1='' lines:
+    _CROSS='\342\234\227'
+    _CHECK='\342\234\223'
+
+    C_GREEN_BOLD='\e[01;32m'
+	C_GREEN='\e[00;32m'
+	C_RED_BOLD='\e[01;31m'
+	C_RED='\e[00;31m'
+	C_BLUE_BOLD='\e[01;34m'
+	C_BLUE='\e[00;34m'
+    C_YELLOW='\e[00;33m'
+    C_NORMAL='\e[0m'
+    C_BOLD='\e[1m'
+    C_NORMAL_BOLD="$C_NORMAL$C_BOLD"
+
     if [ "`id -u`" -eq 0 ]; then
-	# root in RED
-	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;9m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;1m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\$\[$(tput sgr0)\] '
+        C_PROMPT="$C_RED_BOLD"
     else
-	# normal user in GREEN
-	PS1='${debian_chroot:+($debian_chroot)}\[$(tput bold)\]\[\033[38;5;8m\]\[\033[38;5;10m\]\u\[$(tput sgr0)\]\[\033[38;5;15m\] @\[$(tput bold)\]\h\[$(tput sgr0)\] \[\033[38;5;2m\][\w]\[$(tput bold)\]\[\033[38;5;15m\]\$\[$(tput sgr0)\] '
+        C_PROMPT="$C_GREEN_BOLD"
     fi
+
+    if [ -f ~/bash.color ]; then
+        . ~/bash.color
+    fi
+
+  # PROMPT LINE BUILDER
+	# user
+    PS1="$C_PROMPT\u "
+    # @hostname
+    PS1+="$C_NORMAL@$C_BOLD\h "
+    # [full/path]
+    PS1+="$C_PROMPT[\w]"
+    # prompt symbol $/#
+    PS1+="$C_NORMAL_BOLD\$ $C_NORMAL"
+
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
+
 unset color_prompt force_color_prompt
 
 # Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
