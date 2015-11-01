@@ -45,7 +45,7 @@ if [ -n "$force_color_prompt" ]; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+	    color_prompt=yes
     else
         color_prompt=
     fi
@@ -70,8 +70,8 @@ if [ "$color_prompt" = yes ]; then
         C_PROMPT="$C_GREEN_BOLD"
     fi
 
-    if [ -f ~/bash.color ]; then
-        . ~/bash.color
+    if [ -f ~/.bash.color ]; then
+        . ~/.bash.color
     fi
 fi
 
