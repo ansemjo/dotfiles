@@ -53,18 +53,15 @@ fi
 
 if [ "$color_prompt" = yes ]; then
 
-    _CROSS='\342\234\227'
-    _CHECK='\342\234\223'
-
-    C_GREEN_BOLD='\e[01;32m'
-	C_GREEN='\e[00;32m'
-	C_RED_BOLD='\e[01;31m'
-	C_RED='\e[00;31m'
-	C_BLUE_BOLD='\e[01;34m'
-	C_BLUE='\e[00;34m'
-    C_YELLOW='\e[00;33m'
-    C_NORMAL='\e[0m'
-    C_BOLD='\e[1m'
+    C_GREEN_BOLD='\[\e[01;32m\]'
+	C_GREEN='\[\e[00;32m\]'
+	C_RED_BOLD='\[\e[01;31m\]'
+	C_RED='\[\e[00;31m\]'
+	C_BLUE_BOLD='\[\e[01;34m\]'
+	C_BLUE='\[\e[00;34m\]'
+    C_YELLOW='\[\e[00;33m\]'
+    C_NORMAL='\[\e[0m\]'
+    C_BOLD='\[\e[1m\]'
     C_NORMAL_BOLD="$C_NORMAL$C_BOLD"
 
     if [ "`id -u`" -eq 0 ]; then
@@ -76,20 +73,31 @@ if [ "$color_prompt" = yes ]; then
     if [ -f ~/bash.color ]; then
         . ~/bash.color
     fi
+fi
 
-  # PROMPT LINE BUILDER
+    _CROSS='\342\234\227'
+    _CHECK='\342\234\223'
+
+
+prompt_builder () {
+    _EXIT=$?
+
+    # exit status
+    if [[ $_EXIT -eq 0 ]] ; then
+        PS1="$C_GREEN_BOLD($C_NORMAL_BOLD$_EXIT$C_GREEN_BOLD)$_CHECK "
+    else
+        PS1="$C_RED_BOLD($C_NORMAL_BOLD$_EXIT$C_RED_BOLD)$_CROSS "
+    fi
 	# user
-    PS1="$C_PROMPT\u "
+    PS1+="$C_PROMPT\u "
     # @hostname
     PS1+="$C_NORMAL@$C_BOLD\h "
     # [full/path]
     PS1+="$C_PROMPT[\w]"
     # prompt symbol $/#
-    PS1+="$C_NORMAL_BOLD\$ $C_NORMAL"
-
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
+    PS1+="$C_NORMAL_BOLD\\$ $C_NORMAL"
+}
+PROMPT_COMMAND='prompt_builder'
 
 unset color_prompt force_color_prompt
 
@@ -97,9 +105,10 @@ unset color_prompt force_color_prompt
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+    PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
     ;;
 *)
+    PROMPT_COMMAND='prompt_builder'
     ;;
 esac
 
