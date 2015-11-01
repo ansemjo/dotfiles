@@ -65,13 +65,18 @@ if [ "$color_prompt" = yes ]; then
     C_NORMAL_BOLD="$C_NORMAL$C_BOLD"
 
     if [ "`id -u`" -eq 0 ]; then
-        C_PROMPT="$C_RED_BOLD"
+        C_PROMPT="$C_RED"
     else
-        C_PROMPT="$C_GREEN_BOLD"
+        C_PROMPT="$C_GREEN"
     fi
+    
+    PS1_EXIT=yes
+    PS1_USER=yes
+    PS1_HOST=yes
+    PS1_PATH=yes
 
-    if [ -f ~/.bash.color ]; then
-        . ~/.bash.color
+    if [ -f ~/.bash.options ]; then
+        . ~/.bash.options
     fi
 fi
 
@@ -81,21 +86,35 @@ fi
 
 prompt_builder () {
     _EXIT=$?
+    PS1=""
 
-    # exit status
+# exit status
+if [ "$PS1_EXIT" = yes ]; then
     if [[ $_EXIT -eq 0 ]] ; then
-        PS1="$C_GREEN_BOLD($C_NORMAL_BOLD$_EXIT$C_GREEN_BOLD)$_CHECK "
+        PS1+="($C_GREEN_BOLD$_CHECK$C_NORMAL) "
     else
-        PS1="$C_RED_BOLD($C_NORMAL_BOLD$_EXIT$C_RED_BOLD)$_CROSS "
+        PS1+="($C_RED_BOLD$_CROSS $_EXIT$C_NORMAL) "
     fi
-	# user
+fi
+
+# user
+if [ "$PS1_USER" = yes ]; then
     PS1+="$C_PROMPT\u "
-    # @hostname
+fi
+
+# @hostname
+if [ "$PS1_HOST" = yes ]; then
     PS1+="$C_NORMAL@$C_BOLD\h "
-    # [full/path]
+fi
+
+# [full/path]
+if [ "$PS1_PATH" = yes ]; then
     PS1+="$C_PROMPT[\w]"
-    # prompt symbol $/#
+fi
+
+# prompt symbol $/#
     PS1+="$C_NORMAL_BOLD\\$ $C_NORMAL"
+
 }
 PROMPT_COMMAND='prompt_builder'
 
@@ -104,8 +123,9 @@ unset color_prompt force_color_prompt
 # Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-    PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+    #PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'prompt_builder; printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
     ;;
 *)
     PROMPT_COMMAND='prompt_builder'

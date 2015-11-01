@@ -1,0 +1,13 @@
+# config file to customize the bash prompt
+# copy this file to ~/.bash.options
+
+# main color to use for username and directory
+# look in /etc/bash.bashrc for available colors or use escape sequence
+    C_PROMPT="$C_BLUE_BOLD"
+
+# toggle elements of the prompt on or off
+# anything other than 'yes' shuts it off
+    PS1_EXIT=
+    PS1_USER=yes
+    PS1_HOST=yes
+    PS1_PATH=yes
