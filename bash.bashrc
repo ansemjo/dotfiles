@@ -124,8 +124,9 @@ unset color_prompt force_color_prompt
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-    #PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-    PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'prompt_builder; printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
+    PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+    # the following is arch's default, but makes the exit status always return true ..
+    #PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'prompt_builder; printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
     ;;
 *)
     PROMPT_COMMAND='prompt_builder'
