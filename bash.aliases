@@ -39,6 +39,7 @@ alias rmrf='rm -rf' # read mail really fast :)
 
 # some sudo shorthands
 alias si='sudo vi'			# root vim editor
+alias sedit='gksudo gedit' # launch gedit with root privileges
 alias suu='sudo su'			# become root
 alias runlevel='sudo /sbin/init'	# change current runlevel
 alias chownr='sudo chown -R'		# recursive chown
