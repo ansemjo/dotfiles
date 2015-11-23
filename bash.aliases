@@ -29,6 +29,7 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
+alias :q='exit'
 
 # safety!
 # makes these commands interactive,
