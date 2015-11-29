@@ -62,7 +62,8 @@ if [ "$color_prompt" = yes ]; then
     C_YELLOW='\[\e[00;33m\]'
     C_NORMAL='\[\e[0m\]'
     C_BOLD='\[\e[1m\]'
-    C_NORMAL_BOLD="$C_NORMAL$C_BOLD"
+    C_NORMAL_BOLD=$C_NORMAL$C_BOLD
+    C_END='\[\e[m\]'
 
     if [ "`id -u`" -eq 0 ]; then
         C_PROMPT="$C_RED"
@@ -91,29 +92,29 @@ prompt_builder () {
 # exit status
 if [ "$PS1_EXIT" = yes ]; then
     if [[ $_EXIT -eq 0 ]] ; then
-        PS1+="($C_GREEN_BOLD$_CHECK$C_NORMAL) "
+        PS1+="($C_GREEN_BOLD$_CHECK$C_END) "
     else
-        PS1+="($C_RED_BOLD$_CROSS $_EXIT$C_NORMAL) "
+        PS1+="($C_RED_BOLD$_CROSS $_EXIT$C_END) "
     fi
 fi
 
 # user
 if [ "$PS1_USER" = yes ]; then
-    PS1+="$C_PROMPT\u "
+    PS1+="$C_PROMPT\u$C_END "
 fi
 
 # @hostname
 if [ "$PS1_HOST" = yes ]; then
-    PS1+="$C_NORMAL@$C_BOLD\h "
+    PS1+="$C_NORMAL@$C_BOLD\h$C_END "
 fi
 
 # [full/path]
 if [ "$PS1_PATH" = yes ]; then
-    PS1+="$C_PROMPT[\w]"
+    PS1+="$C_PROMPT[\w]$C_END"
 fi
 
 # prompt symbol $/#
-    PS1+="$C_NORMAL_BOLD\\$ $C_NORMAL"
+    PS1+="$C_NORMAL_BOLD\\$ $C_END$C_NORMAL"
 
 }
 PROMPT_COMMAND='prompt_builder'
