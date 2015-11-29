@@ -24,114 +24,100 @@ shopt -s histappend
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# Set some defaults for the prompt line; defaults to 'no' if unset
+    # use color? (yes/no)
+    PS1_COLOURFUL=yes
+    # show exit status of last command? (yes/no)
+    PS1_EXITSTATUS=yes
+    # display user name? (yes/no)
+    PS1_USERNAME=yes
+    # display hostname? (yes/no)
+    PS1_HOSTNAME=yes
+    # display current path? if yes, full or realtive only? (full/relative/no)
+    PS1_PATHDISPLAY=full
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-	    xterm-color) color_prompt=yes;;
-esac
-
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-force_color_prompt=yes
-
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	    color_prompt=yes
-    else
-        color_prompt=
+    if [ -f ~/.bash_options ]; then
+        . ~/.bash_options
     fi
-fi
 
-if [ "$color_prompt" = yes ]; then
-
-    C_GREEN_BOLD='\[\e[01;32m\]'
-	C_GREEN='\[\e[00;32m\]'
-	C_RED_BOLD='\[\e[01;31m\]'
-	C_RED='\[\e[00;31m\]'
-	C_BLUE_BOLD='\[\e[01;34m\]'
-	C_BLUE='\[\e[00;34m\]'
-    C_YELLOW='\[\e[00;33m\]'
-    C_NORMAL='\[\e[0m\]'
-    C_BOLD='\[\e[1m\]'
-    C_NORMAL_BOLD=$C_NORMAL$C_BOLD
-    C_END='\[\e[m\]'
-
-    if [ "`id -u`" -eq 0 ]; then
-        C_PROMPT="$C_RED"
-    else
-        C_PROMPT="$C_GREEN"
-    fi
+# prompt_builder; is called after every command to refresh prompt
+function prompt_builder {
     
-    PS1_EXIT=yes
-    PS1_USER=yes
-    PS1_HOST=yes
-    PS1_PATH=yes
+    # get exit status of previously run command
+    local _EXITSTATUS=$?
 
-    if [ -f ~/.bash.options ]; then
-        . ~/.bash.options
-    fi
-fi
-
-    _CROSS='\342\234\227'
-    _CHECK='\342\234\223'
-
-
-prompt_builder () {
-    _EXIT=$?
     PS1=""
 
-# exit status
-if [ "$PS1_EXIT" = yes ]; then
-    if [[ $_EXIT -eq 0 ]] ; then
+    
+    if [ "$PS1_COLOURFUL" = yes ]; then
+
+        C_GREEN_BOLD='\[\e[01;32m\]'
+        C_GREEN='\[\e[00;32m\]'
+        C_RED_BOLD='\[\e[01;31m\]'
+        C_RED='\[\e[00;31m\]'
+        C_BLUE_BOLD='\[\e[01;34m\]'
+        C_BLUE='\[\e[00;34m\]'
+        C_YELLOW='\[\e[00;33m\]'
+        C_NORMAL='\[\e[0m\]'
+        C_BOLD='\[\e[1m\]'
+        C_NORMAL_BOLD=$C_NORMAL$C_BOLD
+        C_END='\[\e[m\]'
+
+        if [ $PS1_COLOUR ]; then
+            local _C_PROMPT=$PS1_COLOUR
+        else
+            if [ "`id -u`" -eq 0 ]; then
+                local _C_PROMPT=$C_RED
+            else
+                local _C_PROMPT=$C_GREEN
+            fi
+        fi
+    
+    fi
+
+    local _CROSS='\342\234\227'
+    local _CHECK='\342\234\223'
+
+
+# <exit status>
+if [ "$PS1_EXITSTATUS" = yes ]; then
+    if [[ $_EXITSTATUS -eq 0 ]] ; then
         PS1+="($C_GREEN_BOLD$_CHECK$C_END) "
     else
-        PS1+="($C_RED_BOLD$_CROSS $_EXIT$C_END) "
+        PS1+="($C_RED_BOLD$_CROSS $_EXITSTATUS$C_END) "
     fi
 fi
 
-# user
-if [ "$PS1_USER" = yes ]; then
-    PS1+="$C_PROMPT\u$C_END "
+# <user>
+if [ "$PS1_USERNAME" = yes ]; then
+    PS1+="$_C_PROMPT\u$C_END"
 fi
 
-# @hostname
-if [ "$PS1_HOST" = yes ]; then
-    PS1+="$C_NORMAL@$C_BOLD\h$C_END "
+# @<hostname>
+if [ "$PS1_HOSTNAME" = yes ]; then
+    PS1+=" $C_NORMAL@$C_BOLD\h$C_END"
 fi
 
-# [full/path]
-if [ "$PS1_PATH" = yes ]; then
-    PS1+="$C_PROMPT[\w]$C_END"
+# [<path>]
+if [ "$PS1_PATHDISPLAY" = full ]; then
+    PS1+=" $_C_PROMPT[\w]$C_END"
+elif [ "$PS1_PATHDISPLAY" = relative ]; then
+    PS1+=" $_C_PROMPT[\W]$C_END"
 fi
 
 # prompt symbol $/#
     PS1+="$C_NORMAL_BOLD\\$ $C_END$C_NORMAL"
 
 }
+
 PROMPT_COMMAND='prompt_builder'
 
-unset color_prompt force_color_prompt
-
-# Commented out, don't overwrite xterm -T "title" -n "icontitle" by default.
-# If this is an xterm set the title to user@host:dir
+# If this is an xterm set the window title too
 case "$TERM" in
-xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-    PROMPT_COMMAND='prompt_builder; echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-    # the following is arch's default, but makes the exit status always return true ..
-    #PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'prompt_builder; printf "\033]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/\~}"'
-    ;;
-*)
-    PROMPT_COMMAND='prompt_builder'
-    ;;
+    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+        PROMPT_COMMAND+='; echo -ne "\033]0;${USER} @${HOSTNAME} [${PWD}]\007"' ;;
+    *)  
+        ;;
 esac
 
 # enable bash completion in interactive shells
@@ -142,19 +128,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-
-# sudo hint
-#if [ ! -e "$HOME/.sudo_as_admin_successful" ] && [ ! -e "$HOME/.hushlogin" ] ; then
-#    case " $(groups) " in *\ admin\ *|*\ sudo\ *)
-#    if [ -x /usr/bin/sudo ]; then
-#	cat <<-EOF
-#	To run a command as administrator (user "root"), use "sudo <command>".
-#	See "man sudo_root" for details.
-#	
-#	EOF
-#    fi
-#    esac
-#fi
 
 # if the command-not-found package is installed, use it
 if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
