@@ -5,7 +5,7 @@ alias distro='uname -nrmo && lsb_release -dc 2> /dev/null'
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
 
-	alias ls='ls --color=auto'
+	alias ls='ls --color=auto --group-directories-first'
 	alias dir='dir --color=auto'
 	alias vdir='vdir --color=auto'
 
@@ -111,6 +111,16 @@ mkcd () {
   else
     mkdir $1 && cd $1
   fi
+}
+
+# make and enter a temporary directory
+mkcdtmp () {
+    local _tmp=`mktemp -du`
+    if [ ! -d $_tmp ]; then
+        mkdir $_tmp && cd $_tmp
+    else
+        return 1
+    fi
 }
 
 # extraction function
