@@ -236,3 +236,7 @@ colors() {
         echo; echo
     done
 }
+
+
+## include other alias files
+. /etc/bash.aliases.openssl
