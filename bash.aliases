@@ -99,6 +99,11 @@ randomchar () {
     < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-$AMM};echo;
 }
 
+# colorful diff if installed
+if command -v colordiff &>/dev/null; then
+    alias diff='colordiff'
+fi
+
 ## some larger functions below
 #################################################################
 
