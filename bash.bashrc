@@ -75,8 +75,8 @@ function prompt_builder {
     
     fi
 
-    local _CROSS='\342\234\227'
-    local _CHECK='\342\234\223'
+    local _CROSS='\[\342\234\]\227'
+    local _CHECK='\[\342\234\]\223'
 
 
 # <exit status>
