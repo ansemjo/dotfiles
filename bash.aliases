@@ -243,5 +243,25 @@ colors() {
 }
 
 
-## include other alias files
-. /etc/bash.aliases.openssl
+### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
+
+# view
+function openssl-view-certificate () { openssl x509 -text -noout -in "${1}"; }
+function openssl-view-csr () { openssl req -text -noout -verify -in "${1}"; }
+function openssl-view-key () { openssl rsa -check -in "${1}"; }
+function openssl-view-pkcs12 () { openssl pkcs12 -info -in "${1}"; }
+function openssl-client () { openssl s_client -status -connect "${1}":443; }
+
+# check modulus
+function openssl-check-certificate-modulus { openssl x509 -noout -modulus -in "${1}" | shasum -a 256; }
+function openssl-check-key-modulus { openssl rsa -noout -modulus -in "${1}" | shasum -a 256; }
+function openssl-check-csr-modulus { openssl req -noout -modulus -in "${1}" | shasum -a 256; }
+
+# encrypt / decrypt
+function openssl-encrypt () { openssl aes-256-cbc -in "${1}" -out "${2}"; }
+function openssl-decrypt () { openssl aes-256-cbc -d -in "${1}" -out "${2}"; }
+
+# convert
+# Convert PEM private key, PEM certificate and PEM CA certificate (used by nginx, Apache, and other openssl apps) to a PKCS12 file (typically for use with Windows or Tomcat)
+function openssl-convert-pem-to-p12 () { openssl pkcs12 -export -inkey "${1}" -in "${2}" -certfile "${3}" -out "${4}"; }
+function openssl-convert-p12-to-pem () { openssl pkcs12 -nodes -in "${1}" -out "${2}"; }
