@@ -242,6 +242,12 @@ colors() {
     done
 }
 
+# read markdown files
+if [ -x /usr/bin/pandoc ]; then
+markman() {
+    pandoc -s -f markdown -t man "$1" | man -l -
+}; fi
+
 
 ### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
 
