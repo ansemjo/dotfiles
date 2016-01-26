@@ -112,7 +112,7 @@ mkcd () {
   if [ ! -n "$1" ]; then
     echo "Enter a directory name"
   elif [ -d $1 ]; then
-    echo "\`$1' already exists"
+    echo "'$1' already exists"
   else
     mkdir $1 && cd $1
   fi
@@ -120,12 +120,7 @@ mkcd () {
 
 # make and enter a temporary directory
 mkcdtmp () {
-    local _tmp=`mktemp -du`
-    if [ ! -d $_tmp ]; then
-        mkdir $_tmp && cd $_tmp
-    else
-        return 1
-    fi
+    cd $(mktemp -d) && pwd
 }
 
 # extraction function
