@@ -104,6 +104,11 @@ if command -v colordiff &>/dev/null; then
     alias diff='colordiff'
 fi
 
+# watch with exit
+if command -v watch &>/dev/null; then
+    alias watcherr='watch -ebn 10 "$@"'
+fi
+
 ## some larger functions below
 #################################################################
 
