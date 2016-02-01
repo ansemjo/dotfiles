@@ -163,6 +163,12 @@ netinfo ()
  echo "---------------------------------------------------"
 }
 
+# get public ip addr with wtfismyip.com
+publicip() {
+    echo -n "ipv4: "; curl -s https://ipv4.wtfismyip.com/text || echo "error. no ipv4?"
+    echo -n "ipv6: "; curl -s https://ipv6.wtfismyip.com/text || echo "error. no ipv6?"
+}
+
 #dirsize - finds directory sizes and lists them for the current directory
 dirsize ()
 {
