@@ -1,7 +1,7 @@
 #a collection of settings and aliases for bash
 
 ## preview
-![preview image](http://i.imgur.com/CAFiwm6.png "preview hosted on imgur")
+![preview image](https://i.imgur.com/CAFiwm6.png "preview hosted on imgur")
 
 ## installation / usage
 The following applies these settings globally for all users, thus you'll need root permissions along the way. The directory where bash looks for global configuration files may differ; this works fine for Arch and Debian 8 though.
