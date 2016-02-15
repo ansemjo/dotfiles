@@ -267,6 +267,43 @@ markman() {
     pandoc -s -f markdown -t man "$1" | man -l -
 }; fi
 
+# pipe files with tar via ssh
+tarpipe() {
+mode="$1"; shift
+pipe="/tmp/.tarpipe"
+usage="Usage:
+ tarpipe receive[r] \$host     #note: reveiveR loops
+ tarpipe fetch \$host \$files  #note: uses sudo!
+ tarpipe send \$files"
+
+case "$mode" in
+    receive|receiver )
+        test -n "$1" && host="$1" && shift || { echo "$usage"; exit 1; }
+        test "$mode" = "receiver" && echo "RECEIVER .. (loop, CTRL-C to exit ..)" || echo "RECEIVE"
+        while true; do
+            ssh $host "test -e $pipe && rm -f $pipe; mkfifo $pipe; cat $pipe; rm $pipe" 2>/dev/null |\
+              tar xvkf - --xform s:^.*/::
+            test "$mode" = "receiver" || break
+        done ;;
+
+    send )
+        test -n "$1" || { echo "$usage"; exit 1; }
+        echo "SENDER ..."
+        while test ! -e $pipe; do echo "no receiver present ... waiting ..."; sleep 5; done
+        tar cv --xform s:^.*/:: -f $pipe $@;;
+
+    fetch )
+        test -n "$1" && host="$1" && shift || { echo "$usage"; exit 1; }
+        test -n "$1" || { echo "$usage"; exit 1; }
+        echo "FETCHING ..."
+        (ssh $host "test -e $pipe && rm -f $pipe; mkfifo $pipe; cat $pipe; rm $pipe" 2>/dev/null |\
+          tar xkf - )&
+        ssh -t $host "sudo tar cv --xform s:^.*/:: -f $pipe $@" ;;
+
+    * )
+        echo "$usage";;
+esac
+}
 
 ### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
 ### Supplemented with some info from https://www.phildev.net/ssl/managing_ca.html
@@ -292,3 +329,4 @@ function openssl-decrypt () { openssl aes-256-cbc -d -in "${1}" -out "${2}"; }
 # Convert PEM private key, PEM certificate and PEM CA certificate (used by nginx, Apache, and other openssl apps) to a PKCS12 file (typically for use with Windows or Tomcat)
 function openssl-convert-pem-to-p12 () { openssl pkcs12 -export -inkey "${1}" -in "${2}" -certfile "${3}" -out "${4}"; }
 function openssl-convert-p12-to-pem () { openssl pkcs12 -nodes -in "${1}" -out "${2}"; }
+
