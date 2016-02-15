@@ -269,13 +269,15 @@ markman() {
 
 
 ### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
+### Supplemented with some info from https://www.phildev.net/ssl/managing_ca.html
 
 # view
-function openssl-view-certificate () { openssl x509 -text -noout -in "${1}"; }
-function openssl-view-csr () { openssl req -text -noout -verify -in "${1}"; }
-function openssl-view-key () { openssl rsa -check -in "${1}"; }
-function openssl-view-pkcs12 () { openssl pkcs12 -info -in "${1}"; }
-function openssl-client () { openssl s_client -status -connect "${1}":443; }
+alias ssl_cert='openssl x509 -text -noout -in'
+alias ssl_csr='openssl req -text -noout -verify -in'
+alias ssl_crl='openssl crl -noout -text -in'
+alias ssl_key='openssl rsa -check -in'
+alias ssl_pkcs12='openssl pkcs12 -info -in'
+alias ssl_client='openssl s_client -status -connect'
 
 # check modulus
 function openssl-check-certificate-modulus { openssl x509 -noout -modulus -in "${1}" | shasum -a 256; }
