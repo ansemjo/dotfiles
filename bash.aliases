@@ -53,6 +53,9 @@ grab() {
   sudo chown -R ${USER} ${1:-.}		# grab ownership
 }
 
+chmod-files-recursive() { find . -type f -exec chmod "$1" {} \;; }
+chmod-dirs-recursive()  { find . -type d -exec chmod "$1" {} \;; }
+
 # powerdown aliases
 alias shutdown!='sudo shutdown -P now'
 alias reboot!='sudo reboot -f'
