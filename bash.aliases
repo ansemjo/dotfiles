@@ -115,6 +115,9 @@ if command -v watch &>/dev/null; then
     alias watcherr='watch -ebn 10 "$@"'
 fi
 
+# weather forecast
+alias weather='curl wttr.in'
+
 ## some larger functions below
 #################################################################
 
