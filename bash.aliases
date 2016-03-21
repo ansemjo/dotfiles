@@ -40,7 +40,7 @@ alias cp='cp -i'
 alias rmrf='rm -rf' # read mail really fast :)
 
 # create in-place copy.bak quickly
-bak() { cp --archive "$1"{,.bak}; }
+bak() { cp --archive "$(echo "$1" | sed 's|[/]*$||')"{,.bak}; }
 
 # some sudo shorthands
 alias si='sudo vi'			# root vim editor
@@ -84,6 +84,13 @@ alias ff='find . | igrep '
 alias psgrep='ps aux | igrep '
 alias lgrep='l | igrep '
 alias dpkgrep='dpkg --list | igrep '
+
+# update and then show upgrades
+if [ -x /usr/bin/apt ]; then
+    alias upgrades='apt update && echo "------" && apt list --upgradable'
+elif [ -x /usr/bin/pacman ]; then
+    alias upgrades='pacman -Sy && echo "------" && pacman -Qu'
+fi
 
 # screen orientation, mainly intended for use on a laptop
 if [ -x /usr/bin/xrandr ]; then
