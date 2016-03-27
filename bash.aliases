@@ -43,6 +43,7 @@ alias rmrf='rm -rf' # read mail really fast :)
 bak() { cp --archive "$(echo "$1" | sed 's|[/]*$||')"{,.bak}; }
 
 # some sudo shorthands
+alias sudo='sudo '          # check command after sudo for aliases too
 alias si='sudo vi'			# root vim editor
 alias sedit='gksudo gedit' # launch gedit with root privileges
 alias suu='sudo su'			# become root
