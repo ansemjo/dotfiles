@@ -2,6 +2,7 @@
 " properly set to work with the Vim-related packages.
 " Edit to match the system (look in /usr/share/vim/vimfiles/ for avaible ones).
 runtime! archlinux.vim
+runtime! debian.vim
 
 
 
