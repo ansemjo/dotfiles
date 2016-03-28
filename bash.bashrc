@@ -54,6 +54,11 @@ shopt -s lithist
         . ~/.bash_options
     fi
 
+    gitprompt="/usr/share/git/completion/git-prompt.sh"
+    if [ -f "$gitprompt" ]; then
+        . $gitprompt
+    fi
+
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
     
@@ -113,19 +118,19 @@ if [ "$PS1_HOSTNAME" = yes ]; then
 fi
 
 # [<path>]
-if [ "$PS1_PATHDISPLAY" = full ]; then
-    PS1+="$_C_PROMPT[\w"
-elif [ "$PS1_PATHDISPLAY" = relative ]; then
-    PS1+="$_C_PROMPT[\W"
-fi
-
-# git-prompt
-if [ "$PS1_GITDISPLAY" = yes -a -f "/usr/share/git/completion/git-prompt.sh" ]; then
-    . /usr/share/git/completion/git-prompt.sh
-    PS1+='$(__git_ps1 " : %s")'
-fi
-
 if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
+
+    if [ "$PS1_PATHDISPLAY" = full ]; then
+        PS1+="$_C_PROMPT[\w"
+    elif [ "$PS1_PATHDISPLAY" = relative ]; then
+        PS1+="$_C_PROMPT[\W"
+    fi
+
+    # git-prompt
+    if [ "$PS1_GITDISPLAY" = yes ]; then
+        PS1+='$(__git_ps1 " : %s")'
+    fi
+
     PS1+="]$C_END"
 fi
 
