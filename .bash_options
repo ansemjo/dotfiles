@@ -7,13 +7,21 @@
 
 # Set some defaults for the prompt line; defaults to 'no' if unset
     # use color? (yes/no)
-    PS1_COLOURFUL=yes
+    #PS1_COLOURFUL=yes
     # show exit status of last command? (yes/no)
-    PS1_EXITSTATUS=yes
+    #PS1_EXITSTATUS=yes
     # display user name? (yes/no)
-    PS1_USERNAME=yes
+    #PS1_USERNAME=yes
     # display hostname? (yes/no)
-    PS1_HOSTNAME=yes
+    #PS1_HOSTNAME=yes
     # display current path? if yes, full or realtive only? (full/relative/no)
-    PS1_PATHDISPLAY=full
+    #PS1_PATHDISPLAY=full
+    # display git prompt? (yes/no)
+    # (requires /usr/share/git/completion/git-prompt.sh)
+    #PS1_GITDISPLAY=yes
+
+    # defaults for __git_ps1
+    #GIT_PS1_SHOWDIRTYSTATE=yes
+    #GIT_PS1_SHOWSTASHSTATE=yes
+    #GIT_PS1_SHOWUNTRACKEDFILES=yes
 

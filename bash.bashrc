@@ -41,6 +41,14 @@ shopt -s lithist
     PS1_HOSTNAME=yes
     # display current path? if yes, full or realtive only? (full/relative/no)
     PS1_PATHDISPLAY=full
+    # display git prompt? (yes/no)
+    # (requires /usr/share/git/completion/git-prompt.sh)
+    PS1_GITDISPLAY=yes
+
+    # defaults for __git_ps1
+    GIT_PS1_SHOWDIRTYSTATE=yes
+    GIT_PS1_SHOWSTASHSTATE=yes
+    GIT_PS1_SHOWUNTRACKEDFILES=yes
 
     if [ -f ~/.bash_options ]; then
         . ~/.bash_options
@@ -106,9 +114,19 @@ fi
 
 # [<path>]
 if [ "$PS1_PATHDISPLAY" = full ]; then
-    PS1+="$_C_PROMPT[\w]$C_END"
+    PS1+="$_C_PROMPT[\w"
 elif [ "$PS1_PATHDISPLAY" = relative ]; then
-    PS1+="$_C_PROMPT[\W]$C_END"
+    PS1+="$_C_PROMPT[\W"
+fi
+
+# git-prompt
+if [ "$PS1_GITDISPLAY" = yes -a -f "/usr/share/git/completion/git-prompt.sh" ]; then
+    . /usr/share/git/completion/git-prompt.sh
+    PS1+='$(__git_ps1 " : %s")'
+fi
+
+if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
+    PS1+="]$C_END"
 fi
 
 # prompt symbol $/#
