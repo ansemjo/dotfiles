@@ -14,8 +14,14 @@ shopt -s checkwinsize
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
+# timestamps in the bash_bistory file
+HISTTIMEFORMAT="%y-%m-%d %T "
+
 # append to the history file, don't overwrite it
 shopt -s histappend
+
+# save multiline commands in .. literally multiple lines
+shopt -s lithist
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
