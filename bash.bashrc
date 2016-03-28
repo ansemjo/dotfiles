@@ -96,19 +96,19 @@ fi
 
 # <user>
 if [ "$PS1_USERNAME" = yes ]; then
-    PS1+="$_C_PROMPT\u$C_END"
+    PS1+="$_C_PROMPT\u$C_END "
 fi
 
 # @<hostname>
 if [ "$PS1_HOSTNAME" = yes ]; then
-    PS1+=" $C_NORMAL@$C_BOLD\h$C_END"
+    PS1+="$C_NORMAL@$C_BOLD\h$C_END "
 fi
 
 # [<path>]
 if [ "$PS1_PATHDISPLAY" = full ]; then
-    PS1+=" $_C_PROMPT[\w]$C_END"
+    PS1+="$_C_PROMPT[\w]$C_END"
 elif [ "$PS1_PATHDISPLAY" = relative ]; then
-    PS1+=" $_C_PROMPT[\W]$C_END"
+    PS1+="$_C_PROMPT[\W]$C_END"
 fi
 
 # prompt symbol $/#
