@@ -319,6 +319,37 @@ case "$mode" in
 esac
 }
 
+if [ -x /usr/bin/rankmirrors ]; then
+update-mirrorlist() {
+    mirrors="/etc/pacman.d/mirrorlist"
+    # select mirrors source file
+    echo "--> selecting source file .."
+    if [ -n "$1" ]; then
+        # specified on cmdline
+        if [ ! -f "$1" ]; then
+            echo "--> no file '$1' exists"
+            return 2
+        fi
+        source="$1"
+    else
+        # use mirrorlist.pacnew
+        pacnew="${mirrors}.pacnew"
+        if [ ! -f $pacnew ]; then
+            echo "--> no source file specified and no mirrorlist.pacnew available"
+            return 2
+        fi
+        source=$pacnew
+    fi
+    echo "--> using $source"
+    # uncomment all Servers
+    echo "--> uncomment any Servers in source file"
+    sudo sed -i 's/^#Server/Server/' "$source"
+    # run rankmirrors
+    echo "--> running rankmirrors ..."
+    rankmirrors -n 15 "$source" | sudo tee $mirrors
+}
+fi
+
 ### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
 ### Supplemented with some info from https://www.phildev.net/ssl/managing_ca.html
 
