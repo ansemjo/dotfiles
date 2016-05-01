@@ -31,35 +31,28 @@ shopt -s lithist
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # Set some defaults for the prompt line; defaults to 'no' if unset
-    # use color? (yes/no)
-    PS1_COLOURFUL=yes
-    # show exit status of last command? (yes/no)
-    PS1_EXITSTATUS=yes
-    # display user name? (yes/no)
-    PS1_USERNAME=yes
-    # display hostname? (yes/no)
-    PS1_HOSTNAME=yes
-    # display current path? if yes, full or realtive only? (full/relative/no)
-    PS1_PATHDISPLAY=full
-    # display git prompt? (yes/no)
-    # (requires /usr/share/git/completion/git-prompt.sh)
-    PS1_GITDISPLAY=yes
+# use color? (yes/no)
+PS1_COLOURFUL=yes
+# show exit status of last command? (yes/no)
+PS1_EXITSTATUS=yes
+# display user name? (yes/no)
+PS1_USERNAME=yes
+# display hostname? (yes/no)
+PS1_HOSTNAME=yes
+# display current path? if yes, full or realtive only? (full/relative/no)
+PS1_PATHDISPLAY=full
+# display git prompt? (yes/no)
+# (requires /usr/share/git/completion/git-prompt.sh)
+PS1_GITDISPLAY=yes
 
-    # defaults for __git_ps1
-    GIT_PS1_SHOWDIRTYSTATE=yes
-    GIT_PS1_SHOWSTASHSTATE=yes
-    GIT_PS1_SHOWUNTRACKEDFILES=yes
+# defaults for __git_ps1
+GIT_PS1_SHOWDIRTYSTATE=yes
+GIT_PS1_SHOWSTASHSTATE=yes
+GIT_PS1_SHOWUNTRACKEDFILES=yes
 
-    if [ -f ~/.bash_options ]; then
-        . ~/.bash_options
-    fi
-
-    gitprompt="/usr/share/git/completion/git-prompt.sh"
-    if [ -f "$gitprompt" ]; then
-        . $gitprompt
-    else
-        PS1_GITDISPLAY="missing 'git-prompt.sh'!"
-    fi
+if [ -f ~/.bash_options ]; then
+    . ~/.bash_options
+fi
 
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
@@ -178,10 +171,20 @@ if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-no
 fi
 
 
+# source aliases
 if [ -f /etc/bash.aliases ]; then
     . /etc/bash.aliases
 fi
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
+fi
+
+# source git-prompt if needed, override to disable if command not found
+gitprompt="/usr/share/git/completion/git-prompt.sh"
+if [ -f "$gitprompt" ]; then
+    . $gitprompt
+fi
+if ! command -v __git_ps1 >/dev/null; then
+    PS1_GITDISPLAY="cmd not available '__git_ps1'!"
 fi
