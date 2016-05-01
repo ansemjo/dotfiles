@@ -57,6 +57,8 @@ shopt -s lithist
     gitprompt="/usr/share/git/completion/git-prompt.sh"
     if [ -f "$gitprompt" ]; then
         . $gitprompt
+    else
+        PS1_GITDISPLAY="missing 'git-prompt.sh'!"
     fi
 
 # prompt_builder; is called after every command to refresh prompt
