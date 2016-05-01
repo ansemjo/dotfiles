@@ -342,11 +342,17 @@ update-mirrorlist() {
     fi
     echo "--> using $source"
     # uncomment all Servers
-    echo "--> uncomment any Servers in source file"
-    sudo sed -i 's/^#Server/Server/' "$source"
+    echo "--> uncomment Servers in source file"
+    rnktmp=$(mktemp -t rankmirrors-temp-XXXXX)
+    sed -ne 's/^#Server/Server/'\
+        -e '/Germany\|United Kingdom\|Netherlands\|France/,/^$/p'\
+        "$source" | tee $rnktmp
     # run rankmirrors
     echo "--> running rankmirrors ..."
-    rankmirrors -n 15 "$source" | sudo tee $mirrors
+    rankmirrors -n 15 $rnktmp | tee $rnktmp.r
+    echo "--> replace old mirrorlist"
+    sudo mv $rnktmp.r $mirrors
+    rm -f "$rnktmp*"
 }
 fi
 
