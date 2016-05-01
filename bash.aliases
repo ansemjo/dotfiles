@@ -352,6 +352,7 @@ update-mirrorlist() {
     rankmirrors -n 15 $rnktmp | tee $rnktmp.r
     echo "--> replace old mirrorlist"
     sudo mv $rnktmp.r $mirrors
+    sudo chown root:root $mirrors
     rm -f "$rnktmp*"
 }
 fi
