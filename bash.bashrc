@@ -4,7 +4,10 @@
 # this file has to be sourced in /etc/profile.
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+case $- in
+    *i*) ;;
+    *) return;;
+esac
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
