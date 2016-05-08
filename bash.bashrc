@@ -92,16 +92,18 @@ function prompt_builder {
     
     fi
 
-    local _CROSS='\[\342\234\]\227'
-    local _CHECK='\[\342\234\]\223'
+    #local _CROSS='\[\342\234\]\227' # ✗
+    #local _CHECK='\[\342\234\]\223' # ✓
+    local _CROSS='•'
+    local _CHECK='•'
 
 
 # <exit status>
 if [ "$PS1_EXITSTATUS" = yes ]; then
     if [[ $_EXITSTATUS -eq 0 ]] ; then
-        PS1+="($C_GREEN_BOLD$_CHECK$C_END) "
+        PS1+="$C_GREEN_BOLD$_CHECK$C_END "
     else
-        PS1+="($C_RED_BOLD$_CROSS $_EXITSTATUS$C_END) "
+        PS1+="$C_RED_BOLD$_CROSS$C_END "
     fi
 fi
 
@@ -115,13 +117,13 @@ if [ "$PS1_HOSTNAME" = yes ]; then
     PS1+="$C_NORMAL@$C_BOLD\h$C_END "
 fi
 
-# [<path>]
+# <path>
 if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
 
     if [ "$PS1_PATHDISPLAY" = full ]; then
-        PS1+="$_C_PROMPT[\w"
+        PS1+="$_C_PROMPT\w"
     elif [ "$PS1_PATHDISPLAY" = relative ]; then
-        PS1+="$_C_PROMPT[\W"
+        PS1+="$_C_PROMPT\W"
     fi
 
     # git-prompt
@@ -129,7 +131,7 @@ if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
         PS1+='$(__git_ps1 " : %s")'
     fi
 
-    PS1+="]$C_END"
+    PS1+="$C_END "
 fi
 
 # prompt symbol $/#
