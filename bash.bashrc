@@ -186,9 +186,13 @@ case "$TERM" in
         ;;
 esac
 
-# source .bashrc & aliases
-for src in /etc/bash.aliases ~/.bash{rc,_aliases}; do
+# source aliases; if $src is a dir, source all files within
+for src in /etc/bash.aliases ~/.bash_aliases; do
     if [ -f $src ]; then
         source $src
+    elif [ -d $src ]; then
+        for srcsh in $src/*.sh; do
+            source $srcsh;
+        done
     fi
 done
