@@ -61,7 +61,7 @@ fi
 
 # source git-prompt if needed
 gitprompt="/usr/share/git/completion/git-prompt.sh"
-if ! command -v __git_ps1 2>/dev/null && [ -f "$gitprompt" ]; then
+if ! command -v __git_ps1 >/dev/null && [ -f "$gitprompt" ]; then
     . $gitprompt
 fi
 
