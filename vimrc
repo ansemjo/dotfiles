@@ -41,6 +41,10 @@ colorscheme elflord
 
 
 
+" PATHOGEN
+
+silent! call pathogen#infect()
+
 " VIM AIRLINE
 
 let g:airline_theme             = 'powerlineish'
