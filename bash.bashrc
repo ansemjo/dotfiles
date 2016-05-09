@@ -44,19 +44,19 @@ fi
 
 # if the command-not-found package is installed, use it
 if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
-	function command_not_found_handle {
-	        # check because c-n-f could've been removed in the meantime
+    function command_not_found_handle {
+            # check because c-n-f could've been removed in the meantime
                 if [ -x /usr/lib/command-not-found ]; then
-		   /usr/lib/command-not-found -- "$1"
+           /usr/lib/command-not-found -- "$1"
                    return $?
                 elif [ -x /usr/share/command-not-found/command-not-found ]; then
-		   /usr/share/command-not-found/command-not-found -- "$1"
+           /usr/share/command-not-found/command-not-found -- "$1"
                    return $?
-		else
-		   printf "%s: command not found\n" "$1" >&2
-		   return 127
-		fi
-	}
+        else
+           printf "%s: command not found\n" "$1" >&2
+           return 127
+        fi
+    }
 fi
 
 # source git-prompt if needed
@@ -64,6 +64,11 @@ gitprompt="/usr/share/git/completion/git-prompt.sh"
 if ! command -v __git_ps1 2>/dev/null && [ -f "$gitprompt" ]; then
     . $gitprompt
 fi
+
+
+#####################
+#### PS1 BUILDER ####
+#####################
 
 # Set some defaults for the prompt line; defaults to 'no' if unset
 # use color? (yes/no)
@@ -85,86 +90,89 @@ GIT_PS1_SHOWDIRTYSTATE=yes
 GIT_PS1_SHOWSTASHSTATE=yes
 GIT_PS1_SHOWUNTRACKEDFILES=yes
 
+# source user-specific options for PS1
 if [ -f ~/.bash_options ]; then
     . ~/.bash_options
 fi
 
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
-    
+
     # get exit status of previously run command
-    local _EXITSTATUS=$?
+    local exitstatus=$?
 
     PS1=""
-    
+
     if [ "$PS1_COLOURFUL" = yes ]; then
 
-        C_GREEN_BOLD='\[\e[01;32m\]'
-        C_GREEN='\[\e[00;32m\]'
-        C_RED_BOLD='\[\e[01;31m\]'
-        C_RED='\[\e[00;31m\]'
-        C_BLUE_BOLD='\[\e[01;34m\]'
-        C_BLUE='\[\e[00;34m\]'
-        C_YELLOW='\[\e[00;33m\]'
-        C_NORMAL='\[\e[0m\]'
-        C_BOLD='\[\e[1m\]'
-        C_NORMAL_BOLD=$C_NORMAL$C_BOLD
-        C_END='\[\e[m\]'
+        local reset='\[\e[0m\]'
+        local bold='\[\e[1m\]'
+
+        local green='\[\e[32m\]'
+        local red='\[\e[31m\]'
+        local blue='\[\e[34m\]'
+        local yellow='\[\e[33m\]'
 
         if [ $PS1_COLOUR ]; then
-            local _C_PROMPT=$PS1_COLOUR
+            local color=$PS1_COLOUR
         else
             if [ "`id -u`" -eq 0 ]; then
-                local _C_PROMPT=$C_RED
+                local color=$red # root
             else
-                local _C_PROMPT=$C_GREEN
+                local color=$green # others
             fi
         fi
-    
+
     fi
 
     #'\[\342\234\]\227' --> ✗
     #'\[\342\234\]\223' --> ✓
     local exitsymbol='•'
 
-# <exit status>
-if [ "$PS1_EXITSTATUS" = yes ]; then
-    if [[ $_EXITSTATUS -eq 0 ]] ; then
-        PS1+="$C_GREEN_BOLD${exitsymbol}$C_END "
-    else
-        PS1+="$C_RED_BOLD${exitsymbol}$C_END "
-    fi
-fi
+    # <exit status>
+    if [ "$PS1_EXITSTATUS" = yes ]; then
 
-# <user>
-if [ "$PS1_USERNAME" = yes ]; then
-    PS1+="$_C_PROMPT\u$C_END "
-fi
+        if [ $exitstatus -eq 0 ]; then
+            PS1+="$bold$green"
+        else
+            PS1+="$bold$red"
+        fi
 
-# @<hostname>
-if [ "$PS1_HOSTNAME" = yes ]; then
-    PS1+="$C_NORMAL@$C_BOLD\h$C_END "
-fi
+        PS1+="$exitsymbol$reset "
 
-# <path>
-if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
-
-    if [ "$PS1_PATHDISPLAY" = full ]; then
-        PS1+="$_C_PROMPT\w"
-    elif [ "$PS1_PATHDISPLAY" = relative ]; then
-        PS1+="$_C_PROMPT\W"
     fi
 
-    # git-prompt
-    if [ "$PS1_GITDISPLAY" = yes ]; then
-        PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
+    # <username>
+    if [ "$PS1_USERNAME" = yes ]; then
+        PS1+="$color\u$reset "
     fi
 
-    PS1+="$C_END "
-fi
+    # @<hostname>
+    if [ "$PS1_HOSTNAME" = yes ]; then
+        PS1+="@$bold\h$reset "
+    fi
 
-# prompt symbol $/#
-    PS1+="$C_NORMAL_BOLD\\$ $C_END$C_NORMAL"
+    # <path>
+    if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
+
+        PS1+="$color"
+
+        if [ "$PS1_PATHDISPLAY" = full ]; then
+            PS1+="\w"
+        elif [ "$PS1_PATHDISPLAY" = relative ]; then
+            PS1+="\W"
+        fi
+
+        # insert git-prompt
+        if [ "$PS1_GITDISPLAY" = yes ]; then
+            PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
+        fi
+
+        PS1+="$reset "
+    fi
+
+    # prompt symbol $/#
+    PS1+="$bold\\$ $reset"
 
 }
 
@@ -178,12 +186,9 @@ case "$TERM" in
         ;;
 esac
 
-# source aliases
-if [ -f /etc/bash.aliases ]; then
-    . /etc/bash.aliases
-fi
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
+# source .bashrc & aliases
+for src in /etc/bash.aliases ~/.bash{rc,_aliases}; do
+    if [ -f $src ]; then
+        source $src
+    fi
+done
