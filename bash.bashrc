@@ -33,6 +33,38 @@ shopt -s lithist
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+# enable bash completion in interactive shells
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# if the command-not-found package is installed, use it
+if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
+	function command_not_found_handle {
+	        # check because c-n-f could've been removed in the meantime
+                if [ -x /usr/lib/command-not-found ]; then
+		   /usr/lib/command-not-found -- "$1"
+                   return $?
+                elif [ -x /usr/share/command-not-found/command-not-found ]; then
+		   /usr/share/command-not-found/command-not-found -- "$1"
+                   return $?
+		else
+		   printf "%s: command not found\n" "$1" >&2
+		   return 127
+		fi
+	}
+fi
+
+# source git-prompt if needed
+gitprompt="/usr/share/git/completion/git-prompt.sh"
+if ! command -v __git_ps1 2>/dev/null && [ -f "$gitprompt" ]; then
+    . $gitprompt
+fi
+
 # Set some defaults for the prompt line; defaults to 'no' if unset
 # use color? (yes/no)
 PS1_COLOURFUL=yes
@@ -64,7 +96,6 @@ function prompt_builder {
     local _EXITSTATUS=$?
 
     PS1=""
-
     
     if [ "$PS1_COLOURFUL" = yes ]; then
 
@@ -92,18 +123,16 @@ function prompt_builder {
     
     fi
 
-    #local _CROSS='\[\342\234\]\227' # ✗
-    #local _CHECK='\[\342\234\]\223' # ✓
-    local _CROSS='•'
-    local _CHECK='•'
-
+    #'\[\342\234\]\227' --> ✗
+    #'\[\342\234\]\223' --> ✓
+    local exitsymbol='•'
 
 # <exit status>
 if [ "$PS1_EXITSTATUS" = yes ]; then
     if [[ $_EXITSTATUS -eq 0 ]] ; then
-        PS1+="$C_GREEN_BOLD$_CHECK$C_END "
+        PS1+="$C_GREEN_BOLD${exitsymbol}$C_END "
     else
-        PS1+="$C_RED_BOLD$_CROSS$C_END "
+        PS1+="$C_RED_BOLD${exitsymbol}$C_END "
     fi
 fi
 
@@ -128,7 +157,7 @@ if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
 
     # git-prompt
     if [ "$PS1_GITDISPLAY" = yes ]; then
-        PS1+='$(__git_ps1 " : %s")'
+        PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
     fi
 
     PS1+="$C_END "
@@ -145,36 +174,9 @@ PROMPT_COMMAND='prompt_builder'
 case "$TERM" in
     xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
         PROMPT_COMMAND+='; echo -ne "\033]0;${USER} @${HOSTNAME} [${PWD}]\007"' ;;
-    *)  
+    *)
         ;;
 esac
-
-# enable bash completion in interactive shells
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
-
-# if the command-not-found package is installed, use it
-if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
-	function command_not_found_handle {
-	        # check because c-n-f could've been removed in the meantime
-                if [ -x /usr/lib/command-not-found ]; then
-		   /usr/lib/command-not-found -- "$1"
-                   return $?
-                elif [ -x /usr/share/command-not-found/command-not-found ]; then
-		   /usr/share/command-not-found/command-not-found -- "$1"
-                   return $?
-		else
-		   printf "%s: command not found\n" "$1" >&2
-		   return 127
-		fi
-	}
-fi
-
 
 # source aliases
 if [ -f /etc/bash.aliases ]; then
@@ -185,11 +187,3 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# source git-prompt if needed, override to disable if command not found
-gitprompt="/usr/share/git/completion/git-prompt.sh"
-if [ -f "$gitprompt" ]; then
-    . $gitprompt
-fi
-if ! command -v __git_ps1 >/dev/null; then
-    PS1_GITDISPLAY="cmd not available '__git_ps1'!"
-fi
