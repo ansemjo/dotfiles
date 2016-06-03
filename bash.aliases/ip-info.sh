@@ -14,7 +14,7 @@ ipaddr ()
 
  ip addr | grep -e "$_grep" | sed -e "$_iface" -e "$_link" -e "$_inet4" -e "$_inet6"
 
- if command -v curl &>/dev/null && command -v publicip &>/dev/null; then
+ if [ "$1" == "public" ] && command -v curl &>/dev/null && command -v publicip &>/dev/null; then
    echo -e "\n"
    publicip
  fi
@@ -23,6 +23,7 @@ ipaddr ()
 
 # get public ip addr with wtfismyip.com
 publicip() {
-    echo -n "public ipv4: "; curl -s https://ipv4.wtfismyip.com/text || echo "error. no ipv4?"
-    echo -n "public ipv6: "; curl -s https://ipv6.wtfismyip.com/text || echo "error. no ipv6?"
+    for x in 4 6; do
+        echo -n "public ipv$x: "; curl -s https://ipv$x.wtfismyip.com/text || echo "error. no ipv$x?"
+    done
 }
