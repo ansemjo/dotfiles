@@ -14,11 +14,14 @@ esac
 shopt -s checkwinsize
 
 # don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
 HISTCONTROL=ignoreboth
 
-# timestamps in the bash_bistory file
-HISTTIMEFORMAT="%y-%m-%d %T "
+# enlarge history
+HISTSIZE=
+HISTFILESIZE=10000
+
+# timestamp display for history file
+HISTTIMEFORMAT="[%F %T] "
 
 # append to the history file, don't overwrite it
 shopt -s histappend
