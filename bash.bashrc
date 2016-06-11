@@ -120,9 +120,9 @@ function prompt_builder {
             local color=$PS1_COLOUR
         else
             if [ "`id -u`" -eq 0 ]; then
-                local color=$red # root
+                local color=$bold$red # root
             else
-                local color=$green # others
+                local color=$bold$green # others
             fi
         fi
 
