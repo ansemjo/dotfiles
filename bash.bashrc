@@ -92,6 +92,7 @@ PS1_GITDISPLAY=yes
 GIT_PS1_SHOWDIRTYSTATE=yes
 GIT_PS1_SHOWSTASHSTATE=yes
 GIT_PS1_SHOWUNTRACKEDFILES=yes
+GIT_PS1_SHOWUPSTREAM=auto
 
 # source user-specific options for PS1
 if [ -f ~/.bash_options ]; then
