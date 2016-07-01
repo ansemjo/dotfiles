@@ -1,6 +1,18 @@
 # update and then show upgrades
 if [ -x /usr/bin/apt ]; then
-    alias upgrades='apt update && echo "------" && apt list --upgradable'
+    function upgrades {
+        apt update
+        echo "------"
+        apt list --upgradable
+    }
 elif [ -x /usr/bin/pacman ]; then
-    alias upgrades='pacman -Sy && echo "------" && pacman -Qu'
+    function upgrades {
+        tmp=$(mktemp --directory --tmpdir pacman-check-upgrades-XXXXXX)
+        echo "note: using temporary sync db at '${tmp:?}'"
+        ln -s "/var/lib/pacman/local" "$tmp"
+        fakeroot pacman -Sy --dbpath "$tmp"
+        echo "------"
+        pacman -Qu --dbpath "$tmp"
+        rm -rf "$tmp"
+    }
 fi
