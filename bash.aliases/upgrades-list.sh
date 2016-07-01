@@ -9,7 +9,7 @@ elif [ -x /usr/bin/pacman ]; then
     function upgrades {
         tmp=$(mktemp --directory --tmpdir pacman-check-upgrades-XXXXXX)
         echo "using temporary db at '${tmp:?}'"
-        cp -r "/var/lib/pacman/sync" "$tmp"
+        cp -dR --preserve=all "/var/lib/pacman/sync" "$tmp"
         ln -s "/var/lib/pacman/local" "$tmp"
         fakeroot pacman -Sy --dbpath "$tmp"
         echo "------"
