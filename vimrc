@@ -1,12 +1,26 @@
-" This line should not be removed as it ensures that various options are
-" properly set to work with the Vim-related packages.
-" Edit to match the system (look in /usr/share/vim/vimfiles/ for avaible ones).
-runtime! archlinux.vim
-runtime! debian.vim
-
-
 
 " GENERAL
+
+" if the nocompatible below is not enough,
+" edit to match the system's default runtime
+" (look in /usr/share/vim/vimfiles/ for avaible ones).
+"runtime! archlinux.vim
+"runtime! debian.vim
+
+" Use Vim defaults instead of 100% vi compatibility
+set nocompatible
+
+" do not load some defaults file if ~/.vimrc is missing
+let skip_defaults_vim=1
+
+" more powerful backspacing
+set backspace=indent,eol,start
+
+" keep 50 lines of command line history
+set history=50
+
+" show the cursor position all the time
+set ruler
 
 " Turn on the WiLd menu
 set wildmenu
@@ -29,6 +43,9 @@ set lazyredraw
 " Show matching brackets when text indicator is over them
 set showmatch
 
+" Disable mouse usage by default
+set mouse=
+
 " No annoying sound on errors
 set noerrorbells
 set visualbell
@@ -39,6 +56,8 @@ set tm=500
 syntax on
 colorscheme elflord
 
+" Suffixes that get lower priority when doing tab completion for filenames.
+set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 
 " PATHOGEN
@@ -95,5 +114,15 @@ nnoremap k gk
 " map open/close fold to ,f
 nnoremap <leader>f za
 
+" switching mouse mode
+noremap M :call ToggleMouse() <CR>
 
-
+function! ToggleMouse()
+  if &mouse == 'a'
+    set mouse=
+    echo "Mouse usage disabled"
+  else
+    set mouse=a
+    echo "Mouse usage enabled"
+  endif
+endfunction
