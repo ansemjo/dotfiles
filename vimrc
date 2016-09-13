@@ -1,5 +1,7 @@
 
-" GENERAL
+	"/---------\"
+	"| GENERAL |"
+	"\---------/"
 
 " if the nocompatible below is not enough,
 " edit to match the system's default runtime
@@ -13,16 +15,23 @@ set nocompatible
 " do not load some defaults file if ~/.vimrc is missing
 let skip_defaults_vim=1
 
-" more powerful backspacing
+" modelines have historically been a source of security/resource
+" vulnerabilities -- disable by default, even when 'nocompatible' is set
+set nomodeline
+
+" allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
 " keep 50 lines of command line history
-set history=50
+set history=200
 
 " show the cursor position all the time
 set ruler
 
-" Turn on the WiLd menu
+" display partial commands
+set showcmd
+
+" Turn on the WiLd menu (completion matches in status line)
 set wildmenu
 
 " Ignore case when searching
@@ -56,15 +65,36 @@ set tm=500
 syntax on
 colorscheme elflord
 
+" only if support for autocommands is present
+if has("autocmd")
+
+  " Enable file type detection.
+  filetype plugin indent on
+
+  " When editing a file, always jump to the last known cursor position.
+  " Don't do it when the position is invalid or when inside an event handler
+  " (happens when dropping a file on gvim).
+  autocmd BufReadPost *
+    \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+endif
+
 " Suffixes that get lower priority when doing tab completion for filenames.
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 
-" PATHOGEN
+	"/----------\"
+	"| PATHOGEN |"
+	"\----------/"
 
 silent! call pathogen#infect()
 
-" VIM AIRLINE
+
+	"/-------------\"
+	"| VIM AIRLINE |"
+	"\-------------/"
 
 let g:airline_theme             = 'powerlineish'
 let g:airline_enable_branch     = 1
@@ -73,8 +103,9 @@ let g:airline_enable_syntastic  = 1
 set laststatus=2
 
 
-
-" TEXT / TABS / INDENTATION
+	"/---------------------------\"
+	"| TEXT / TABS / INDENTATION |"
+	"\---------------------------/"
 
 " Use spaces instead of tabs
 set expandtab
@@ -94,9 +125,13 @@ set ai      "Auto indent
 set si      "Smart indent
 set wrap    "Wrap lines
 
+" show context around cursor
+set scrolloff=5
 
 
-" KEY BINDINGS
+	"/--------------\"
+	"| KEY BINDINGS |"
+	"\--------------/"
 
 " make ',' the leader key
 let mapleader=","
@@ -126,3 +161,16 @@ function! ToggleMouse()
     echo "Mouse usage enabled"
   endif
 endfunction
+
+
+	"/-----------\"
+	"| FUNCTIONS |"
+	"\-----------/"
+
+" Convenient command to see the difference between the current buffer and the
+" file it was loaded from, thus the changes you made.
+if !exists(":Diff")
+  command Diff vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+      \ | wincmd p | diffthis
+endif
+
