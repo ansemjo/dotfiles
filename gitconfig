@@ -1,5 +1,6 @@
 [push]
 	default = simple
+	followTags = true
 [format]
 	pretty = custom
 [pretty]
