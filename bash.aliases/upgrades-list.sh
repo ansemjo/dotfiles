@@ -23,14 +23,14 @@ elif [[ -x /usr/bin/pacman ]]; then
     # update db
     fakeroot pacman -Sy --dbpath "$tmp"
 
-    # if pacaur is installed, display updates with it
+    # display package updates
     echo "------ Package updates:"
+    pacman -Qu --dbpath "$tmp"
+    
+    # if pacaur is installed, display AUR updates with it
     if [[ -x /usr/bin/pacaur ]]; then
-      pacaur -Qu -- --dbpath "$tmp"
       echo "------ AUR package updates:"
       pacaur -k
-    else
-      pacman -Qu --dbpath "$tmp"
     fi
 
     # cleanup temporary db
