@@ -1,12 +1,20 @@
 [push]
 	default = simple
 	followTags = true
+
 [format]
 	pretty = custom
 [pretty]
-	custom = format:%Cred%h %Cblue%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 %Creset%s
+	custom = format:%Cred%h %Cblue%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 (%cr)% GS %Creset%f
+
 [alias]
 	graph = log --graph --all
 	summary = log --summary
+  st = status --verbose
+  co = checkout
+  br = branch --verbose
+  l = log -n 5
+  d = diff
+
 [color]
 	ui = auto
