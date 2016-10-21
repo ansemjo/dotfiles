@@ -5,7 +5,7 @@
 [format]
 	pretty = custom
 [pretty]
-	custom = format:%Cred%h %Cblue%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 (%cr)% GS %Creset%f
+	custom = format:%Cred%h %Cblue%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 (%cr)% GS %Creset%s
 
 [alias]
 	graph = log --graph --all
