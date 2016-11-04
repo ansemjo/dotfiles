@@ -1,3 +1,3 @@
-if test -x /usr/bin/qrencode; then
-    alias qr='qrencode -t UTF8'
+if hash qrencode; then
+  alias qr='qrencode -t UTF8 "$(argumentorclipboard)"'
 fi
