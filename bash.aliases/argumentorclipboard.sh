@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if hash xclip; then
+if hash xclip 2>/dev/null; then
   argumentorclipboard() {
     if [[ -n $* ]]; then
       # if arguments given, use those
