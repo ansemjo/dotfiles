@@ -10,7 +10,7 @@
 [alias]
 	graph = log --graph --all
 	summary = log --summary
-  st = status --verbose
+  st = status
   co = checkout
   br = branch --verbose
   l = log -n 5
