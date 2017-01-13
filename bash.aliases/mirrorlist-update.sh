@@ -23,9 +23,11 @@ update-mirrorlist() {
     # uncomment all Servers
     echo "--> uncomment Servers in source file"
     rnktmp=$(mktemp -t rankmirrors-temp-XXXXX)
+    countries='Germany\|United Kingdom\|Netherlands\|France'
+    echo "--> selectring ($countries)"
     sed -ne 's/^#Server/Server/'\
-        -e '/Germany\|United Kingdom\|Netherlands\|France/,/^$/p'\
-        "$source" | tee $rnktmp
+        -e "/$countries/,/^$/p"\
+        "$source" > "$rnktmp"
     # run rankmirrors
     echo "--> running rankmirrors ..."
     rankmirrors -n 15 $rnktmp | tee $rnktmp.r
