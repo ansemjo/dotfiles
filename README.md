@@ -1,38 +1,70 @@
-_various settings for bash, vim and git .._
+# rcfiles
 
-# bashrc
+This repository contains various configuration files which you can use in place
+of your system's default ones. To apply these settings systemwide start by
+cloning the repository into `/usr/local/etc/` or `/etc/`, whichever you prefer.
 
-### installation
-The directory where bash looks for global configuration files may differ and/or
-should be included in /etc/profile. Usually it should be `/etc/bash.bashrc`
+```
+# clone repository:
+rcfiles=/usr/local/etc/rcfiles
+git clone https://git.semjonov.de/ansemjo/rcfiles.git $rcfiles
+```
+
+Now apply the configurations by symlinking.
+
+
+
+# bash
+
+This bashrc mainly gives you a nice and colourful prompt and a good amount of
+aliases. The aliases are individually split into seperate files in
+`$rcfiles/bash/bash.aliases/`.
+
+The path where bash looks for the global configuration file may differ but
+should be included in `/etc/profile`. Usually it should be `/etc/bash.bashrc`
 though.
 
-The following commands apply these settings globally for all users, thus you'll
-need superuser permissions along the way.
+```
+# symlink systemwide bashrc and skel, making backup of any existing files
+ln -svb $rcfiles/bash/bash.bashrc /etc/
+ln -svb $rcfiles/bash/skel/.bashrc /etc/skel/
+```
 
-+ __clone repository:__
-  * `# git clone https://git.semjonov.de/ansemjo/rcfiles.git /etc/rcfiles`
-+ __create symlinks in `/etc` (creating backups of any existing files):__
-  * `# ln -svbS .bak /etc/rcfiles/bash.* /etc/`
-  
-### per-user customization
-+ __copy & edit per-user-config file:__
-  * `$ cp /etc/rcfiles/.bash_options ~/`
-  * `$ vi ~/.bash_options`
-+ __.. or copy it into the skeleton for new users:__
-  * `# cp /etc/rcfiles/.bash_options /etc/skel/`
-  
-All the options are explained within the file. For colour escape codes see
-[here](http://misc.flogisoft.com/bash/tip_colors_and_formatting) or use your new
-bash alias 'colors'.
+The `.bashrc` that is symlinked into the skeleton directory contains options
+to customize the PS1 prompt, so you might want to copy it to your own home, too.
+For usable colour escape codes either use your new bash alias `colors` or look
+[here](http://misc.flogisoft.com/bash/tip_colors_and_formatting).
 
 
-# vimrc
 
-Your global vimrc should be either at `/etc/vimrc` or `/etc/vim/vimrc`:
+# git
 
-+ __create symlink in `/etc` (creating a backup of any existing file):__
-  * `# ln -svbS .bak /etc/rcfiles/vimrc /etc/`
+You can set some default behaviour and command aliases in git. This config sets
+things like pushing new tags and using a colorful ui by default, sets some
+aliases (`graph`, `summary`, `st`, `co`, `br` ...) and defines a new pretty
+format.
 
-Inside the file, you might need to change the `runtime! ...` line to reflect
-your system. Look in your original vimrc for hints.
+The system
+configuration should be at `/etc/gitconfig`. The global (per-user) one is at
+`~/.gitconfig`.
+
+```
+# symlink systemwide gitconfig
+ln -svf $rcfiles/git/gitconfig /etc/
+```
+
+
+
+# vim
+
+There are to many settings in that vimrc to list them all.
+
+Your global vimrc should be either at `/etc/vimrc` or `/etc/vim/vimrc`.
+
+```
+# symlink systemwide vimrc
+ln -svb $rcfiles/vim/vimrc /etc/
+```
+
+You might need to uncomment a `runtime! ...` line to reflect your system. Look
+in your original vimrc for hints.
