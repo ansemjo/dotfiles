@@ -4,7 +4,7 @@ This repository contains various configuration files which you can use in place
 of your system's default ones. To apply these settings systemwide start by
 cloning the repository into `/usr/local/etc/` or `/etc/`, whichever you prefer.
 
-```
+```sh
 # clone repository:
 rcfiles=/usr/local/etc/rcfiles
 git clone https://git.semjonov.de/ansemjo/rcfiles.git $rcfiles
@@ -24,7 +24,7 @@ The path where bash looks for the global configuration file may differ but
 should be included in `/etc/profile`. Usually it should be `/etc/bash.bashrc`
 though.
 
-```
+```sh
 # symlink systemwide bashrc and skel, making backup of any existing files
 ln -svb $rcfiles/bash/bash.bashrc /etc/
 ln -svb $rcfiles/bash/skel/.bashrc /etc/skel/
@@ -48,7 +48,7 @@ The system
 configuration should be at `/etc/gitconfig`. The global (per-user) one is at
 `~/.gitconfig`.
 
-```
+```sh
 # symlink systemwide gitconfig
 ln -svf $rcfiles/git/gitconfig /etc/
 ```
@@ -61,7 +61,7 @@ There are to many settings in that vimrc to list them all.
 
 Your global vimrc should be either at `/etc/vimrc` or `/etc/vim/vimrc`.
 
-```
+```sh
 # symlink systemwide vimrc
 ln -svb $rcfiles/vim/vimrc /etc/
 ```
