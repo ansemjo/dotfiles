@@ -1,5 +1,8 @@
 # System-wide .bashrc file for interactive bash(1) shells.
 
+# Get directory containing this file, following symlinks
+rcdir=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")" );
+
 # To enable the settings / commands in this file for login shells as well,
 # this file has to be sourced in /etc/profile.
 
@@ -29,7 +32,7 @@ shopt -s histappend
 # save multiline commands in .. literally multiple lines
 shopt -s lithist
 
-# If set, the pattern "**" used in a pathname expansion context will
+# the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 
@@ -93,11 +96,6 @@ GIT_PS1_SHOWDIRTYSTATE=yes
 GIT_PS1_SHOWSTASHSTATE=yes
 GIT_PS1_SHOWUNTRACKEDFILES=yes
 GIT_PS1_SHOWUPSTREAM=auto
-
-# source user-specific options for PS1
-if [ -f ~/.bash_options ]; then
-    . ~/.bash_options
-fi
 
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
@@ -186,17 +184,21 @@ PROMPT_COMMAND='prompt_builder'
 case "$TERM" in
     xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
         PROMPT_COMMAND+='; echo -ne "\033]0;${USER} @${HOSTNAME} [${PWD}]\007"' ;;
-    *)
-        ;;
+    *) ;;
 esac
 
+# source user-specific options
+if [[ -f ~/.bashrc ]]; then
+    . ~/.bashrc
+fi
+
 # source aliases; if $src is a dir, source all files within
-for src in /etc/bash.aliases ~/.bash_aliases; do
-    if [ -f $src ]; then
-        source $src
-    elif [ -d $src ]; then
-        for srcsh in $src/*.sh; do
-            source $srcsh;
+for aliases in "$rcdir"/bash.aliases ~/.bash_aliases; do
+    if [[ -f $aliases ]]; then
+        source "$aliases";
+    elif [[ -d $aliases ]]; then
+        for alias in "$aliases"/*.sh; do
+            source "$alias";
         done
     fi
 done
