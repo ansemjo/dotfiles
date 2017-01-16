@@ -10,7 +10,10 @@ rcfiles=/usr/local/etc/rcfiles
 git clone https://git.semjonov.de/ansemjo/rcfiles.git $rcfiles
 ```
 
-Now apply the configurations by symlinking.
+Now apply the configurations by symlinking. If you wanted a quasi-installer, you
+could use awk to extract the commands in codeblocks and pipe that to a shell:
+
+`awk '/^...sh$/{marker=1;next}/^...$/{marker=0}marker' README.md`
 
 
 
@@ -50,7 +53,7 @@ configuration should be at `/etc/gitconfig`. The global (per-user) one is at
 
 ```sh
 # symlink systemwide gitconfig
-ln -svf $rcfiles/git/gitconfig /etc/
+ln -svb $rcfiles/git/gitconfig /etc/
 ```
 
 
