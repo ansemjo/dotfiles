@@ -184,11 +184,6 @@ case "$TERM" in
     *) ;;
 esac
 
-# source user-specific options
-if [[ -f ~/.bashrc ]]; then
-    . ~/.bashrc
-fi
-
 # source aliases; if $src is a dir, source all files within
 for aliases in "$rcdir"/bash.aliases ~/.bash_aliases; do
     if [[ -f $aliases ]]; then
