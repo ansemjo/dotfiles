@@ -9,12 +9,10 @@
 
 clipboard() {
 
-  alias xclip='xclip -selection clipboard'
-
   if [ -t 0 ]; then
-    xclip -out
+    xclip -selection clipboard -out
   else
-    xclip -in
+    xclip -selection clipboard -in
   fi
 
 }
