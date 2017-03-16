@@ -7,12 +7,26 @@
 # then assume we are receiving content and put it into clipboard
 # otherwise output what is currently inside
 
-clipboard() {
+if hash xclip 2>/dev/null; then
 
-  if [ -t 0 ]; then
-    xclip -selection clipboard -out
-  else
-    xclip -selection clipboard -in
-  fi
+  clipboard() {
 
-}
+    if [[  $1 == out || -t 0 ]]; then
+      xclip -selection clipboard -out
+    else
+      xclip -selection clipboard -in
+    fi
+
+  };
+
+  argumentorclipboard() {
+
+    if [[ -n $* ]]; then
+      printf '%s\n' "$*";
+    else
+      clipboard out
+    fi
+
+  };
+
+fi
