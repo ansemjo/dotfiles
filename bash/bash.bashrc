@@ -63,9 +63,10 @@ if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-no
 fi
 
 # source git-prompt if needed
-gitprompt="/usr/share/git/completion/git-prompt.sh"
-if ! command -v __git_ps1 >/dev/null && [ -f "$gitprompt" ]; then
-    . $gitprompt
+if ! command -v __git_ps1 >/dev/null; then
+  for gitps1 in "/usr/share/git"{,-core/contrib}"/completion/git-prompt.sh"; do
+    [[ -f $gitps1 ]] && . $gitps1;
+  done
 fi
 
 
