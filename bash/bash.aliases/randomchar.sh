@@ -11,3 +11,11 @@ randomchar () {
 randomhex () {
   randomchar "$1" 'A-F0-9';
 }
+
+# output a random mac address with possibility to define vendor part yourself
+randommac () {
+  a() { randomhex 2; }
+  vendor=`a`:`a`:`a`;
+  device=`a`:`a`:`a`;
+  echo "${1-$vendor}:$device";
+}
