@@ -3,9 +3,14 @@
 	followTags = true
 
 [format]
-	pretty = custom
+	pretty = infoline
+
 [pretty]
-	custom = format:%Cred%h %Cblue%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08%x08 (%cr)% GS %Creset%s
+	infoline = format:%C(auto,magenta)%cd %C(auto,green)%h %C(auto,blue)%G? %C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
+
+[log]
+  decorate = auto
+  date = short-local
 
 [alias]
 	graph = log --graph --all
