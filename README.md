@@ -10,26 +10,21 @@ rcfiles=/usr/local/etc/rcfiles
 git clone https://git.semjonov.de/ansemjo/rcfiles.git $rcfiles
 ```
 
-Now apply the configurations by symlinking. If you wanted a quasi-installer, you
-could use awk to extract the commands in codeblocks and pipe that to a shell:
-
-`awk '/^...sh$/{marker=1;next}/^...$/{marker=0}marker' README.md`
-
-
+Now apply the configurations by symlinking.
 
 # bash
 
 This bashrc mainly gives you a nice and colourful prompt and a good amount of
 aliases. The aliases are individually split into seperate files in
-`$rcfiles/bash/bash.aliases/`.
+`$rcfiles/bash/aliases/`.
 
 The path where bash looks for the global configuration file may differ but
-should be included in `/etc/profile`. Usually it should be `/etc/bash.bashrc`
+should be included in `/etc/profile`. Usually it should be `/etc/bashrc`
 though.
 
 ```sh
 # symlink systemwide bashrc and skel, making backup of any existing files
-ln -svb $rcfiles/bash/bash.bashrc /etc/
+ln -svb $rcfiles/bash/bashrc /etc/
 ln -svb $rcfiles/bash/skel/.bashrc /etc/skel/
 ```
 

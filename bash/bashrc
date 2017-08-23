@@ -186,7 +186,7 @@ case "$TERM" in
 esac
 
 # source aliases; if $src is a dir, source all files within
-for aliases in "$rcdir"/bash.aliases ~/.bash_aliases; do
+for aliases in "$rcdir"/aliases ~/.bash_aliases; do
     if [[ -f $aliases ]]; then
         source "$aliases";
     elif [[ -d $aliases ]]; then
