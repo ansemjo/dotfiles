@@ -39,12 +39,11 @@ For usable colour escape codes either use your new bash alias `colors` or look
 
 You can set some default behaviour and command aliases in git. This config sets
 things like pushing new tags and using a colorful ui by default, sets some
-aliases (`graph`, `summary`, `st`, `co`, `br` ...) and defines a new pretty
+aliases (`graph`, `ls`, `st`, `co`, `br` ...) and defines a new pretty
 format.
 
-The system
-configuration should be at `/etc/gitconfig`. The global (per-user) one is at
-`~/.gitconfig`.
+The system configuration should be at `/etc/gitconfig`. The global (per-user)
+one is at `~/.gitconfig`.
 
 ```sh
 # symlink systemwide gitconfig
