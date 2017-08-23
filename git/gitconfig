@@ -1,6 +1,5 @@
-[push]
-	default = simple
-	followTags = true
+[color]
+	ui = auto
 
 [format]
 	pretty = infoline
@@ -13,13 +12,21 @@
   date = short-local
 
 [alias]
-	graph = log --graph --all
-	summary = log --summary
-  st = status
-  co = checkout
-  br = branch --verbose
-  l = log -n 5
-  d = diff
 
-[color]
-	ui = auto
+  chunk = add --patch
+  sign  = commit --amend --gpg-sign
+  graph = log --graph --all
+  ls = log --stat
+  ll = log -n 10
+  st = status --short
+  co = checkout
+  cm = commit
+  br = branch --verbose
+  re = remote --verbose
+
+[push]
+	default = simple
+	followTags = true
+
+[commit]
+  gpgSign = false
