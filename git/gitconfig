@@ -1,11 +1,12 @@
 [color]
-	ui = auto
+  ui = auto
 
 [format]
-	pretty = infoline
+  pretty = infoline
 
 [pretty]
-	infoline = format:%C(auto,magenta)%cd %C(auto,green)%h %C(auto,blue)%G? %C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
+  infoline  = format:%C(auto,green)%h %C(auto,yellow)%cr %C(auto,blue)%G? %C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
+  infoblock = format:%C(auto)Commit:   %C(auto,green)%H\n%C(auto)From:     %C(auto,magenta)%cN <%cE>\n%C(auto)Date:     %C(auto,yellow)%cD %C(auto,dim)(%cr)\n%C(auto)Signed:   %C(auto,blue)[%GK]% GS\n%C(auto)Subject:  %C(auto,bold)%s\n%C(auto)%+b\n
 
 [log]
   decorate = auto
@@ -25,8 +26,8 @@
   re = remote --verbose
 
 [push]
-	default = simple
-	followTags = true
+  default = simple
+  followTags = true
 
 [commit]
   gpgSign = false
