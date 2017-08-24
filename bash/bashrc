@@ -33,6 +33,9 @@ shopt -s lithist
 # match all files and zero or more directories and subdirectories.
 shopt -s globstar
 
+# bind ctrl-d to delete one element from unix path (i.e. until previous '/')
+bind '\C-d:unix-filename-rubout'
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
