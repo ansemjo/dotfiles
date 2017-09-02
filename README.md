@@ -65,3 +65,8 @@ ln -svb $rcfiles/vim/vimrc /etc/
 
 You might need to uncomment a `runtime! ...` line to reflect your system. Look
 in your original vimrc for hints.
+
+This config includes some lines for vim-pathogen and vim-airline. Please refer
+to your distribution docs or [tpope/vim-pathogen](https://github.com/tpope/vim-pathogen)
+on how to install those. You can find your global runtime path with
+`vim --cmd 'echo $VIMRUNTIME|q'`.
