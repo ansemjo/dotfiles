@@ -22,7 +22,7 @@ set nomodeline
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" keep 50 lines of command line history
+" keep 200 lines of command line history
 set history=200
 
 " show the cursor position all the time
