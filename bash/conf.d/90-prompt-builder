@@ -1,0 +1,110 @@
+# Set some defaults for the prompt line; defaults to 'no' if unset
+# use color? (yes/no)
+PS1_COLOURFUL=yes
+# show exit status of last command? (yes/no)
+PS1_EXITSTATUS=yes
+# display user name? (yes/no)
+PS1_USERNAME=yes
+# display hostname? (yes/no)
+PS1_HOSTNAME=yes
+# display current path? if yes, full or realtive only? (full/relative/no)
+PS1_PATHDISPLAY=full
+# display git prompt? (yes/no)
+# (requires /usr/share/git/completion/git-prompt.sh)
+PS1_GITDISPLAY=yes
+
+# defaults for __git_ps1
+GIT_PS1_SHOWDIRTYSTATE=yes
+GIT_PS1_SHOWSTASHSTATE=yes
+GIT_PS1_SHOWUNTRACKEDFILES=yes
+GIT_PS1_SHOWUPSTREAM=auto
+
+# prompt_builder; is called after every command to refresh prompt
+function prompt_builder {
+
+    # get exit status of previously run command
+    local exitstatus=$?
+
+    PS1=""
+
+    if [ "$PS1_COLOURFUL" = yes ]; then
+
+        local reset='\[\e[0m\]'
+        local bold='\[\e[1m\]'
+
+        local green='\[\e[32m\]'
+        local red='\[\e[31m\]'
+        local blue='\[\e[34m\]'
+        local yellow='\[\e[33m\]'
+
+        if [ $PS1_COLOUR ]; then
+            local color=$PS1_COLOUR
+        else
+            if [ "`id -u`" -eq 0 ]; then
+                local color=$bold$red # root
+            else
+                local color=$bold$green # others
+            fi
+        fi
+
+    fi
+
+    #'\[\342\234\]\227' --> ✗
+    #'\[\342\234\]\223' --> ✓
+    local exitsymbol='•'
+
+    # <exit status>
+    if [ "$PS1_EXITSTATUS" = yes ]; then
+
+        if [ $exitstatus -eq 0 ]; then
+            PS1+="$bold$green"
+        else
+            PS1+="$bold$red"
+        fi
+
+        PS1+="$exitsymbol$reset "
+
+    fi
+
+    # <username>
+    if [ "$PS1_USERNAME" = yes ]; then
+        PS1+="$color\u$reset "
+    fi
+
+    # @<hostname>
+    if [ "$PS1_HOSTNAME" = yes ]; then
+        PS1+="@$bold\h$reset "
+    fi
+
+    # <path>
+    if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
+
+        PS1+="$color"
+
+        if [ "$PS1_PATHDISPLAY" = full ]; then
+            PS1+="\w"
+        elif [ "$PS1_PATHDISPLAY" = relative ]; then
+            PS1+="\W"
+        fi
+
+        # insert git-prompt
+        if [ "$PS1_GITDISPLAY" = yes ]; then
+            PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
+        fi
+
+        PS1+="$reset "
+    fi
+
+    # prompt symbol $/#
+    PS1+="$bold\\$ $reset"
+
+}
+
+PROMPT_COMMAND='prompt_builder'
+
+# If this is an xterm set the window title too
+case "$TERM" in
+    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+        PROMPT_COMMAND+='; echo -ne "\033]0;${USER} @${HOSTNAME} [${PWD}]\007"' ;;
+    *) ;;
+esac
