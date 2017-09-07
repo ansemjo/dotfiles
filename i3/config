@@ -137,6 +137,10 @@ mode "resize" {
   bindsym Escape mode "default"
 }
 
+# scratchpad
+bindsym $mod+M move scratchpad
+bindsym $mod+Shift+M scratchpad show
+
 
 # //* execute commands / actions *//
 
@@ -147,7 +151,10 @@ bindsym $mod+Return exec konsole
 bindsym $mod+Shift+B exec --no-startup-id ~/.fehbg
 
 # launch browser
+bindsym $mod+B exec firefox
 
+# launch dolphin
+bindsym $mod+E exec dolphin
 
 
 # //* plasma integration *//
@@ -158,6 +165,7 @@ for_window [title="Desktop — Plasma"] kill; floating enable; border none
 
 # avoid tiling popups, dropdown windows from plasma
 for_window [class="plasmashell"]        floating enable; border none
+for_window [class="plasmawindowed"]     floating enable; border none
 for_window [class="Plasma"]             floating enable; border none
 for_window [title="plasma-desktop"]     floating enable; border none
 for_window [class="krunner"]            floating enable; border none
@@ -172,3 +180,4 @@ for_window [class="Plasmoidviewer"]     floating enable; border none
 for_window [title="KeePassXC"] floating enable;
 for_window [title="pinentry"] floating enable;
 #for_window [class="Nautilus"] floating enable;
+#for_window [title="Calculator"] floating enable;
