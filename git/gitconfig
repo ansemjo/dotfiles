@@ -13,7 +13,7 @@
 
 [alias]
 
-  chunk = add --patch
+  patch = add --patch
   sign  = commit --amend --gpg-sign
   graph = log --graph --all
   ls = log --stat
