@@ -13,9 +13,10 @@
 
 [alias]
 
-  patch = add --patch
-  sign  = commit --amend --gpg-sign
-  graph = log --graph --all
+  patch  = add --patch
+  sign   = commit --amend --gpg-sign
+  graph  = log --graph --all
+  staged = diff --cached
   ls = log --stat
   ll = log -n 10
   st = status --short
