@@ -1,110 +1,127 @@
-# Set some defaults for the prompt line; defaults to 'no' if unset
-# use color? (yes/no)
-PS1_COLOURFUL=yes
-# show exit status of last command? (yes/no)
-PS1_EXITSTATUS=yes
-# display user name? (yes/no)
-PS1_USERNAME=yes
-# display hostname? (yes/no)
-PS1_HOSTNAME=yes
-# display current path? if yes, full or realtive only? (full/relative/no)
-PS1_PATHDISPLAY=full
+# Set some defaults for the prompt line; defaults to false if unset
+
+# use color?
+PS1_COLORFUL=true
+# show exit status of last command?
+PS1_STATUS=true
+# display username?
+PS1_USERNAME=true
+# display hostname?
+PS1_HOSTNAME=true
+# display working directory? [true|full|relative]
+PS1_DIRECTORY=true
 # display git prompt? (yes/no)
 # (requires /usr/share/git/completion/git-prompt.sh)
-PS1_GITDISPLAY=yes
+PS1_GIT=true
 
 # defaults for __git_ps1
-GIT_PS1_SHOWDIRTYSTATE=yes
-GIT_PS1_SHOWSTASHSTATE=yes
-GIT_PS1_SHOWUNTRACKEDFILES=yes
+GIT_PS1_SHOWDIRTYSTATE=true
+GIT_PS1_SHOWSTASHSTATE=true
+GIT_PS1_SHOWUNTRACKEDFILES=true
 GIT_PS1_SHOWUPSTREAM=auto
 
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
 
-    # get exit status of previously run command
-    local exitstatus=$?
+  # get exit status of previously run command
+  local exitstatus=$?
 
-    PS1=""
+  # save settings; set case-insensitivity
+  settings=$(shopt -p)
+  shopt -s nocasematch
 
-    if [ "$PS1_COLOURFUL" = yes ]; then
+  # check if a variable has truthy value
+  truthy() { [[ $1 =~ true|y(es)|on ]]; }
 
-        local reset='\[\e[0m\]'
-        local bold='\[\e[1m\]'
+  # empty PS1 to be built
+  PS1=""
 
-        local green='\[\e[32m\]'
-        local red='\[\e[31m\]'
-        local blue='\[\e[34m\]'
-        local yellow='\[\e[33m\]'
+  # use color at all?
+  if truthy "$PS1_COLORFUL"; then
 
-        if [ $PS1_COLOUR ]; then
-            local color=$PS1_COLOUR
-        else
-            if [ "`id -u`" -eq 0 ]; then
-                local color=$bold$red # root
-            else
-                local color=$bold$green # others
-            fi
-        fi
+    # color escape sequences
+    local   reset='\[\e[00m\]'
+    local    bold='\[\e[01m\]'
 
+    local     red='\[\e[31m\]'
+    local   green='\[\e[32m\]'
+    local  yellow='\[\e[33m\]'
+    local    blue='\[\e[34m\]'
+    local magenta='\[\e[35m\]'
+    local    cyan='\[\e[36m\]'
+
+    if [[ -n $PS1_COLOR ]]; then
+      # match user-defined color
+      case "$PS1_COLOR" in
+        red)      local color="$bold$red"     ;;
+        green)    local color="$bold$green"   ;;
+        yellow)   local color="$bold$yellow"  ;;
+        blue)     local color="$bold$blue"    ;;
+        magenta)  local color="$bold$magenta" ;;
+        cyan)     local color="$bold$cyan"    ;;
+        bold)     local color="$bold"         ;;
+        *)        local color=""              ;;
+      esac
+    else
+      # otherwise root = red and others = green
+      [[ $EUID = 0 ]] && \
+        local color="$bold$red" || \
+        local color="$bold$green";
     fi
 
-    #'\[\342\234\]\227' --> ✗
-    #'\[\342\234\]\223' --> ✓
-    local exitsymbol='•'
+  fi
 
-    # <exit status>
-    if [ "$PS1_EXITSTATUS" = yes ]; then
+  # <exit status>
+  if truthy "$PS1_STATUS"; then
 
-        if [ $exitstatus -eq 0 ]; then
-            PS1+="$bold$green"
-        else
-            PS1+="$bold$red"
-        fi
+    # '\[\342\234\]\227' --> ✗
+    # '\[\342\234\]\223' --> ✓
+    # '\[\342\200\]\242' --> •
+    # '\[\342\200\]\243' --> ‣
+    local exitsymbol='\[\342\200\]\242'
 
-        PS1+="$exitsymbol$reset "
+    # colorcoded exitstatus bullet
+    [[ $exitstatus = 0 ]]   \
+      && PS1+="$bold$green" \
+      || PS1+="$bold$red"   ;
+    PS1+="$exitsymbol$reset "
 
-    fi
+  fi
 
-    # <username>
-    if [ "$PS1_USERNAME" = yes ]; then
-        PS1+="$color\u$reset "
-    fi
+  # <username>
+  truthy "$PS1_USERNAME" && \
+    PS1+="$color\u$reset ";
 
-    # @<hostname>
-    if [ "$PS1_HOSTNAME" = yes ]; then
-        PS1+="@$bold\h$reset "
-    fi
+  # @<hostname>
+  truthy "$PS1_HOSTNAME" && \
+    PS1+="@$bold\h$reset ";
 
-    # <path>
-    if [ "$PS1_PATHDISPLAY" = full -o "$PS1_PATHDISPLAY" = relative ]; then
+  # <workingdirectory>
+  if truthy "$PS1_DIRECTORY" || \
+    [[ $PS1_DIRECTORY =~ full|relative ]]; then
 
-        PS1+="$color"
+    PS1+="$color"
+    [[ $PS1_DIRECTORY =~ relative ]] && \
+      PS1+="\W" || \
+      PS1+="\w";
 
-        if [ "$PS1_PATHDISPLAY" = full ]; then
-            PS1+="\w"
-        elif [ "$PS1_PATHDISPLAY" = relative ]; then
-            PS1+="\W"
-        fi
+    # <git status>
+    truthy "$PS1_GIT" && \
+      PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
 
-        # insert git-prompt
-        if [ "$PS1_GITDISPLAY" = yes ]; then
-            PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
-        fi
+    PS1+="$reset "
+  fi
 
-        PS1+="$reset "
-    fi
+  # prompt symbol $/#
+  PS1+="$bold\$$reset "
 
-    # prompt symbol $/#
-    PS1+="$bold\\$ $reset"
+  # restore settings
+  eval "$settings"
 
 }
 
-PROMPT_COMMAND='prompt_builder'
+PROMPT_COMMAND='prompt_builder;'
 
 # If this is an xterm set the window title too
-case "$TERM" in
-    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
-        PROMPT_COMMAND+='; echo -ne "\033]0;${USER} @${HOSTNAME} [${PWD}]\007"' ;;
-    *) ;;
-esac
+[[ $TERM =~ xterm*|rxvt*|Eterm|aterm|kterm|gnome* ]] && \
+  PROMPT_COMMAND+='printf "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
