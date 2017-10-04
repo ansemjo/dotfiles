@@ -31,3 +31,20 @@
 
 [commit]
   gpgSign = false
+
+
+[url "https://github.com/"]
+  insteadOf = github:
+
+[url "git@github.com:"]
+  insteadOf = ssh+github:
+  pushInsteadOf = github:
+  pushInsteadOf = https://github.com/
+
+[url "https://gist.github.com/"]
+  insteadOf = gist:
+
+[url "git@gist.github.com:"]
+  insteadOf = ssh+gist:
+  pushInsteadOf = gist:
+  pushInsteadOf = https://gist.github.com/
