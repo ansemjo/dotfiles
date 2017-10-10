@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Credit belongs here:
 # https://bbs.archlinux.org/viewtopic.php?pid=1145058#p1145058
