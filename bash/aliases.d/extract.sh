@@ -1,21 +1,20 @@
-# extraction function
+# universal extraction function
 extract () {
-  if [ -f $1 ] ; then
-    case $1 in
-	*.tar.bz2)   tar xjf $1		;;
-	*.tar.gz)    tar xzf $1		;;
-	*.bz2)       bunzip2 $1		;;
-	*.rar)       rar x $1		;;
-	*.gz)        gunzip $1		;;
-	*.tar)       tar xf $1		;;
-	*.tbz2)      tar xjf $1		;;
-	*.tgz)       tar xzf $1		;;
-	*.zip)       unzip $1		;;
-	*.Z)         uncompress $1	;;
-	*.7z)        7z x $1		;;
-	*)           echo "'$1' cannot be extracted via extract()" ;;
-    esac
+  if [[ ! -f $1 ]]; then
+    printf '%q is not a valid file\n' "$1"
   else
-    echo "'$1' is not a valid file"
+    if [[ $1 =~ \.t((ar\.)?(bz2|gz|lz|xz|Z)|b2|bz|ar\.lzma)$ ]]; then
+      (set -o xtrace; tar xf "$1";)
+    else
+      case "$1" in
+        *.Z)    (set -o xtrace; uncompress  "$1";);;
+	      *.gz)   (set -o xtrace; gunzip      "$1";);;
+	      *.bz2)  (set -o xtrace; bunzip2     "$1";);;
+	      *.zip)  (set -o xtrace; unzip       "$1";);;
+	      *.rar)  (set -o xtrace; rar x       "$1";);;
+	      *.7z)   (set -o xtrace; 7z x        "$1";);;
+        *)      printf '%q cannot be extracted via extract()\n' "$1";;
+      esac
+    fi
   fi
 }
