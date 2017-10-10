@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # a simple way to fill the xclipboard or paste from it,
 # to push content between a terminal and gui programs
