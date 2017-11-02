@@ -116,6 +116,7 @@ set smarttab
 " 1 tab == 4 spaces
 set shiftwidth=2
 set tabstop=2
+set softtabstop=2
 
 " Linebreak on 500 characters
 set lbr
@@ -127,6 +128,9 @@ set wrap    "Wrap lines
 
 " show context around cursor
 set scrolloff=5
+
+" don't use PEP8 recommendation
+let g:python_recommended_style = 0
 
 
 	"/--------------\"
