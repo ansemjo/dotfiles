@@ -138,13 +138,11 @@ let g:python_recommended_style = 0
 	"\--------------/"
 
 " make ',' the leader key
-let mapleader=","
-
-" Map <Space> to / (search)
-map <space> /
+"let mapleader=","
+"(use default of '\')
 
 " turn of search highlight
-nnoremap <leader><space> :nohlsearch<CR>
+nnoremap <leader>/ :nohlsearch<CR>
 
 " make jk move vertical by visual no by real lines
 nnoremap j gj
