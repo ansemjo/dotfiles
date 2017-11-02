@@ -115,6 +115,9 @@ function prompt_builder {
   # prompt symbol $/#
   PS1+="$bold\$$reset "
 
+  # line-continuation prompt
+  PS2="$bold$yellow>$reset "
+
   # restore settings
   eval "$settings"
 
