@@ -82,9 +82,9 @@ function prompt_builder {
 
     # colorcoded exitstatus bullet
     [[ $exitstatus = 0 ]]   \
-      && PS1+="$bold$green" \
-      || PS1+="$bold$red"   ;
-    PS1+="$exitsymbol$reset "
+      && PS1+="$bold$green$exitsymbol" \
+      || PS1+="$bold$red$exitstatus"   ;
+    PS1+="$reset "
 
   fi
 
