@@ -1,0 +1,20 @@
+$include /etc/inputrc
+
+# colorize completions
+set colored-stats On
+
+# case insensitive completion
+set completion-ignore-case On
+
+# ellipsis for more than 10 common characters
+set completion-prefix-display-length 10
+
+# append slash on symlinked directories
+set mark-symlinked-directories On
+
+# show completions immediately
+#set show-all-if-ambiguous On
+#set show-all-if-unmodified On
+
+# append characters indicating filetype
+set visible-stats On
