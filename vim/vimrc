@@ -63,7 +63,7 @@ set tm=500
 
 " Colors!
 syntax on
-colorscheme elflord
+colorscheme default
 
 " only if support for autocommands is present
 if has("autocmd")
