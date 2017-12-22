@@ -1,21 +1,24 @@
 # output random characters from urandom
 randomchar () {
-    case $1 in
-        ''|*[!0-9]*) AMM=32 ;;
-        *) AMM=$1 ;;
-    esac
-    < /dev/urandom tr -dc "${2:-_A-Z-a-z-0-9}" | head -c${1:-$AMM};echo;
+  if [[ $1 =~ ^[0-9]+$ ]]; then
+    n=$1; g=$2;
+  else
+    n=45; g=$1;
+  fi
+  </dev/urandom tr -dc "${g:-[:alnum:]_.~-}" | head -c$n;
+  echo;
 }
 
 # output random hex characters from urandom
 randomhex () {
-  randomchar "$1" 'A-F0-9';
+  randomchar "${1:-32}" "a-f0-9";
 }
 
 # output a random mac address with possibility to define vendor part yourself
 randommac () {
-  a() { randomhex 2; }
-  vendor=`a`:`a`:`a`;
-  device=`a`:`a`:`a`;
-  echo "${1-$vendor}:$device";
+  h() { randomhex 2; }
+  vendor=`h`:`h`:`h`;
+  device=`h`:`h`:`h`;
+  mac="${1-$vendor}:$device";
+  echo "${mac,,}";
 }
