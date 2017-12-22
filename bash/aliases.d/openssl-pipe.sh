@@ -1,9 +1,9 @@
 # encrypt pipe using AES-256-CTR
 encrypt() {
   if [[ ${1,,} =~ ^rand ]]; then shift;
-    # if the first argument is '/^rand/i', use a random 256 bits
-    # base64 encoded as password and echo that to stderr
-    rand=$(</dev/urandom head -c32 | base64);
+    # if the first argument matches '/^rand/i', use a random string with
+    # approximately 256 bits of entropy and echo that to stderr
+    rand=$(</dev/urandom tr -dc '[:alnum:]_.~-' | head -c45);
     openssl enc -e -aes-256-ctr -pass "pass:$rand" "$@";
     echo "$rand" >&2;
   else
