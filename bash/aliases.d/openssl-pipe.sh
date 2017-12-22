@@ -4,18 +4,18 @@ encrypt() {
     # if the first argument matches '/^rand/i', use a random string with
     # approximately 256 bits of entropy and echo that to stderr
     rand=$(</dev/urandom tr -dc '[:alnum:]_.~-' | head -c45);
-    openssl enc -e -aes-256-ctr -pass "pass:$rand" "$@";
+    openssl enc -e -aes-256-ctr -md sha256 -pass "pass:$rand" "$@";
     echo "$rand" >&2;
   else
     # prompt for password by default
-    openssl enc -e -aes-256-ctr "$@";
+    openssl enc -e -aes-256-ctr -md sha256 "$@";
   fi
 }
 
 # decrypt pipe using AES-256-CTR
 decrypt() {
   # password is prompted by default
-  openssl enc -d -aes-256-ctr "$@";
+  openssl enc -d -aes-256-ctr -md sha256 "$@";
 }
 
 # Hint: Both commands are a pipe by default, i.e. stdin is encrypted
