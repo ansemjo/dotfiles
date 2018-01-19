@@ -118,7 +118,7 @@ function prompt_builder {
   fi
 
   # prompt symbol $/#
-  PS1+="$bold\$$reset "
+  PS1+="$bold\\\$$reset "
 
   # line-continuation prompt
   PS2="$bold$yellow>$reset "
