@@ -81,9 +81,9 @@ function prompt_builder {
     #local symbol='\[\342\234\]\226' # --> ✖
     #local symbol='\[\342\234\]\227' # --> ✗
     #local symbol='\[\342\200\]\242' # --> •
-    #local symbol='\[\342\246\]\201' # --> ⦁
+    local symbol='\[\342\246\]\201' # --> ⦁
     #local symbol='\[\342\236\]\244' # --> ➤
-    local symbol='\[\342\212\]\263' # --> ⊳
+    #local symbol='\[\342\212\]\263' # --> ⊳
     #local symbol='\[\342\256\]\236' # --> ⮞
     #local symbol='\[\342\226\]\252' # --> ▪
     #local symbol='\[\342\235\]\261' # --> ❱
