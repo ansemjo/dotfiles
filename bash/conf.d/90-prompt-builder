@@ -135,4 +135,4 @@ PROMPT_COMMAND='prompt_builder;'
 
 # If this is an xterm set the window title too
 [[ $TERM =~ xterm*|rxvt*|Eterm|aterm|kterm|gnome* ]] && \
-  PROMPT_COMMAND+='printf "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+  PROMPT_COMMAND+='printf "\033]0;%s@%s: %s\007" "$USER" "$HOSTNAME" "$PWD"'
