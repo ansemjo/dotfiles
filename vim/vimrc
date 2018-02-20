@@ -176,3 +176,7 @@ if !exists(":Diff")
       \ | wincmd p | diffthis
 endif
 
+" commands to show various whitespace
+command ShowSpaces :set list listchars=eol:¶,space:·,tab:»·
+command NoShowSpaces :set nolist
+
