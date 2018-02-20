@@ -16,9 +16,24 @@ randomhex () {
 
 # output a random mac address with possibility to define vendor part yourself
 randommac () {
-  h() { randomhex 2; }
-  vendor=`h`:`h`:`h`;
-  device=`h`:`h`:`h`;
+  _h() { randomhex 2; }
+  vendor=`_h`:`_h`:`_h`;
+  device=`_h`:`_h`:`_h`;
   mac="${1-$vendor}:$device";
   echo "${mac,,}";
+  unset -f _h
+}
+
+# echo a random 10.0.0.0/8 ipv4
+randomip() {
+  _rndip() { shuf -i 1-254 -n 1; };
+  echo "10.$(_rndip).$(_rndip).$(_rndip)";
+  unset -f _rndip
+}
+
+# random semi-readable password
+randompass() {
+  _pad() { randomchar 4 ${1:-'a-zA-Z0-9#+*$%&?/'}; }
+  echo -n "$(_pad "$1"):$(_pad "$1"):$(_pad "$1"):$(_pad "$1"):$(_pad "$1")";
+  unset -f _pad
 }
