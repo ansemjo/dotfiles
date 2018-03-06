@@ -96,10 +96,15 @@ silent! call pathogen#infect()
 	"| VIM AIRLINE |"
 	"\-------------/"
 
-let g:airline_theme             = 'powerlineish'
-let g:airline_enable_branch     = 1
-let g:airline_enable_syntastic  = 1
+" airline settings (:help airline)
+let g:airline_theme           = 'base16_bright'
+let g:airline_powerline_fonts = 0
+let g:airline_symbols_ascii   = 1
 
+" refresh on startup
+autocmd VimEnter * AirlineRefresh
+
+" always show status line
 set laststatus=2
 
 
