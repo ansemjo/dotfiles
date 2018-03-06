@@ -1,19 +1,11 @@
 
-	"/---------\"
-	"| GENERAL |"
-	"\---------/"
+" ---------- GENERAL ----------
 
-" if the nocompatible below is not enough,
-" edit to match the system's default runtime
-" (look in /usr/share/vim/vimfiles/ for avaible ones).
-"runtime! archlinux.vim
-"runtime! debian.vim
-
-" Use Vim defaults instead of 100% vi compatibility
+" use vim defaults instead of strict vi compatibility
 set nocompatible
 
-" do not load some defaults file if ~/.vimrc is missing
-let skip_defaults_vim=1
+" do not load defaults.vim if .vimrc is missing
+let skip_defaults_vim = 1
 
 " modelines have historically been a source of security/resource
 " vulnerabilities -- disable by default, even when 'nocompatible' is set
@@ -25,55 +17,57 @@ set backspace=indent,eol,start
 " persitence with ~/.viminfo (:help 'viminfo')
 set viminfo=<0,'5,@5,/10,:20,f0,h
 
+" always show status line
+set laststatus=2
+
 " show the cursor position all the time
 set ruler
 
 " display partial commands
 set showcmd
 
-" Turn on the WiLd menu (completion matches in status line)
+" turn on the wild menu (completion matches in status line)
 set wildmenu
 
-" Ignore case when searching
+" ignore case by default but try to be smart when searching
 set ignorecase
-
-" When searching try to be smart about cases 
 set smartcase
 
-" Highlight search results
+" highlight search results
 set hlsearch
 
-" Makes search act like search in modern browsers
+" keybinding to turn off search highlight
+nnoremap <leader>/ :nohlsearch<CR>
+
+" incremental search, show results while you are typing
 set incsearch
 
-" Don't redraw while executing macros (good performance config)
+" do not redraw while executing macros (performance)
 set lazyredraw
 
-" Show matching brackets when text indicator is over them
+" show matching brackets
 set showmatch
 
-" Disable mouse usage by default
+" disable mouse usage by default
 set mouse=
 
-" No annoying sound on errors
+" disable annoying sounds
 set noerrorbells
 set visualbell
 set t_vb=
 set tm=500
 
-" Colors!
+" enable colors and syntax highlighting
 syntax on
 colorscheme default
 
 " only if support for autocommands is present
 if has("autocmd")
 
-  " Enable file type detection.
+  " enable file type detection
   filetype plugin indent on
 
-  " When editing a file, always jump to the last known cursor position.
-  " Don't do it when the position is invalid or when inside an event handler
-  " (happens when dropping a file on gvim).
+  " jump to the last known cursor position when editing a file
   autocmd BufReadPost *
     \ if line("'\"") >= 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
@@ -85,16 +79,12 @@ endif
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 
-	"/----------\"
-	"| PATHOGEN |"
-	"\----------/"
+" ---------- PATHOGEN ----------
 
 silent! call pathogen#infect()
 
 
-	"/-------------\"
-	"| VIM AIRLINE |"
-	"\-------------/"
+" ---------- AIRLINE ----------
 
 " airline settings (:help airline)
 let g:airline_theme           = 'base16_bright'
@@ -104,61 +94,50 @@ let g:airline_symbols_ascii   = 1
 " refresh on startup
 autocmd VimEnter * AirlineRefresh
 
-" always show status line
-set laststatus=2
 
+" ---------- TABS AND INDENTATION ----------
 
-	"/---------------------------\"
-	"| TEXT / TABS / INDENTATION |"
-	"\---------------------------/"
-
-" Use spaces instead of tabs
+" use spaces instead of tabs
 set expandtab
 
-" Be smart when using tabs ;)
+" be smart with tabs at the start of a line
 set smarttab
 
-" 1 tab == 4 spaces
+" smarter indentation on new lines
+set autoindent
+set smartindent
+
+" set relevant tabwidths
 set shiftwidth=2
 set tabstop=2
 set softtabstop=2
 
-" Linebreak on 500 characters
-set lbr
-set tw=500
-
-set ai      "Auto indent
-set si      "Smart indent
-set wrap    "Wrap lines
+" smarter linebreaks and show with '> ' at start of broken line
+set wrap
+set linebreak
+set breakindent
+set showbreak=>\ 
 
 " show context around cursor
-set scrolloff=5
+set scrolloff=10
 
-" don't use PEP8 recommendation
+" don't use PEP8 recommendation in python
 let g:python_recommended_style = 0
 
 
-	"/--------------\"
-	"| KEY BINDINGS |"
-	"\--------------/"
+" ---------- KEY BINDINGS ----------
 
-" make ',' the leader key
-"let mapleader=","
-"(use default of '\')
-
-" turn of search highlight
-nnoremap <leader>/ :nohlsearch<CR>
+" <leader> key is [\] by default
 
 " make jk move vertical by visual no by real lines
 nnoremap j gj
 nnoremap k gk
 
-" map open/close fold to ,f
+" toggle folding with \f
 nnoremap <leader>f za
 
-" switching mouse mode
+" toggle mouse mode
 noremap M :call ToggleMouse() <CR>
-
 function! ToggleMouse()
   if &mouse == 'a'
     set mouse=
@@ -169,19 +148,14 @@ function! ToggleMouse()
   endif
 endfunction
 
-
-	"/-----------\"
-	"| FUNCTIONS |"
-	"\-----------/"
-
-" Convenient command to see the difference between the current buffer and the
-" file it was loaded from, thus the changes you made.
+" show diff between current buffer and the file it was loaded from
 if !exists(":Diff")
+  nnoremap <leader>d :Diff <CR>
   command Diff vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
       \ | wincmd p | diffthis
 endif
 
 " commands to show various whitespace
+nnoremap <leader>s :ShowSpaces <CR>
 command ShowSpaces :set list listchars=eol:¶,space:·,tab:»·
 command NoShowSpaces :set nolist
-
