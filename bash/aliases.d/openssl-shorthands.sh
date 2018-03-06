@@ -8,6 +8,7 @@ alias openssl-view-revocationlist='openssl crl -noout -text -in'
 alias openssl-view-key='openssl rsa -check -in'
 alias openssl-view-pkcs12='openssl pkcs12 -info -in'
 alias openssl-client='openssl s_client -status -connect'
+openssl-client-getcert() { sni=$1; port=$2; shift; shift; </dev/null openssl s_client -status -connect "$sni:${port:-443}" -servername "$sni" "$@"; }
 
 openssl-check-modulus-cert() { openssl x509 -noout -modulus -in "${1}" | shasum -a 256; }
 openssl-check-modulus-rsakey() { openssl rsa -noout -modulus -in "${1}" | shasum -a 256; }
