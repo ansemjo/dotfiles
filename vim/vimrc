@@ -92,7 +92,9 @@ let g:airline_powerline_fonts = 0
 let g:airline_symbols_ascii   = 1
 
 " refresh on startup
-autocmd VimEnter * AirlineRefresh
+if exists(":AirlineRefresh")
+  autocmd VimEnter * AirlineRefresh
+endif
 
 
 " ---------- TABS AND INDENTATION ----------
