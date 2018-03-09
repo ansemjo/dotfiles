@@ -117,8 +117,10 @@ set softtabstop=2
 " smarter linebreaks and show with '> ' at start of broken line
 set wrap
 set linebreak
-set breakindent
-set showbreak=>\ 
+if exists('+breakindent')
+  set breakindent
+  set showbreak=↳\ 
+endif
 
 " show context around cursor
 set scrolloff=10
