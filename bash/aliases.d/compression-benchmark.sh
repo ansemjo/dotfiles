@@ -13,9 +13,9 @@ if [[ -z $FILE || ! -f $FILE ]]; then
 fi
 
 shift 1;
-COMPRESSORS=$*
+COMPRESSORS=("$@")
 if [[ -z $COMPRESSORS ]]; then
-  COMPRESSORS="cat lz4 gzip bzip2 xz lzip"
+  COMPRESSORS=(cat lz4 gzip bzip2 xz lzip)
 fi
 
 say() { printf '\033[1m%s\033[0m %s\n' "$1" "$2"; }
@@ -24,13 +24,12 @@ say() { printf '\033[1m%s\033[0m %s\n' "$1" "$2"; }
 SIZE=$(wc -c <$FILE)
 say "Original file:" "$FILE, $SIZE bytes"
 
-for compressor in $COMPRESSORS; do
+for compressor in "${COMPRESSORS[@]}"; do
  
-  if ! command -v "$compressor" >/dev/null; then
-    say "WARN" "command $compressor not found"
+  say "Testing compressor:" "$compressor";
+  if ! $compressor <<< 'Hello, World!' >/dev/null; then
     continue
   fi
-  say "Testing compressor:" "$compressor";
 
   # runtime info in: $outputsize[Bytes] $runtime[seconds]
   run=$( (TIMEFORMAT='%3R'; time $compressor <$FILE | wc -c) 2>&1)
