@@ -32,11 +32,10 @@ for compressor in $COMPRESSORS; do
   fi
   say "Testing compressor:" "$compressor";
 
-  # runtime info in: $runtime[sec] $memory[kB] $output[B]
-  run=$( (/usr/bin/time -f '%e %M' $compressor <$FILE | wc -c) 2>&1)
-  t=$(echo $run | awk '{print $1}')
-  m=$(echo $run | awk '{print $2}')
-  o=$(echo $run | awk '{print $3}')
+  # runtime info in: $outputsize[Bytes] $runtime[seconds]
+  run=$( (TIMEFORMAT='%3R'; time $compressor <$FILE | wc -c) 2>&1)
+  o=$(echo $run | awk '{print $1}')
+  t=$(echo $run | awk '{print $2}')
 
   # calculate compression ratio
   ratio=$(bc <<< "scale=3; $o / $SIZE")
@@ -46,7 +45,6 @@ for compressor in $COMPRESSORS; do
   [[ -z $score ]] && score="∞";
   
   echo " time   : $t seconds";
-  echo " memory : $m kiloBytes";
   echo " output : $o Bytes";
   echo " ratio  : $ratio";
   echo " score  : $score";
