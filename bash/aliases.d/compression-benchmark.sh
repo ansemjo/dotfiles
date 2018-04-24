@@ -37,10 +37,10 @@ for compressor in "${COMPRESSORS[@]}"; do
   t=$(echo $run | awk '{print $2}')
 
   # calculate compression ratio
-  ratio=$(bc <<< "scale=3; $o / $SIZE")
+  ratio=$(bc -l <<< "scale=5; $o / $SIZE")
 
-  # calculate performance as ratio / time
-  score=$(bc <<< "scale=3; $ratio / $t" 2>/dev/null)
+  # calculate performance as -ln(ratio) / time
+  score=$(bc -l <<< "scale=3; -l($ratio) / $t" 2>/dev/null)
   [[ -z $score ]] && score="∞";
   
   echo " time   : $t seconds";
