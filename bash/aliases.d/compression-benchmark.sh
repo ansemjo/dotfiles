@@ -8,8 +8,9 @@ compression-benchmark() {
 
 FILE=$1
 if [[ -z $FILE || ! -f $FILE ]]; then
-  printf 'no such file: %q\n' "$FILE";
-  exit 1;
+  printf 'no such / not a file: %q\n' "$FILE" >&2;
+  printf 'usage: $ %s testing-file [compressor [compressor]]\n' "${FUNCNAME[0]}" >&2;
+  return 1;
 fi
 
 shift 1;
