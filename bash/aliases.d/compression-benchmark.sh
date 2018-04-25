@@ -40,8 +40,9 @@ for compressor in "${COMPRESSORS[@]}"; do
   # calculate compression ratio
   ratio=$(bc -l <<< "scale=5; $o / $SIZE")
 
-  # calculate performance as -ln(ratio) / time
-  score=$(bc -l <<< "scale=3; -l($ratio) / $t" 2>/dev/null)
+  # calculate performance metric
+  # plot: https://www.wolframalpha.com/input/?i=3d+plot+ln(-ln(c)%2Fln(t%2B1)%2B1)+from+c%3D0.1..1,+t%3D0..10
+  score=$(bc -l <<< "scale=3; l((-l($ratio)/l($t+1))+1)" 2>/dev/null)
   [[ -z $score ]] && score="∞";
   
   echo " time   : $t seconds";
