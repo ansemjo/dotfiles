@@ -66,3 +66,7 @@ ln -svb $dotfiles/vim/vimrc /etc/vimrc
 ## others
 
 Additionally there are currently some semi-maintained files for Ansible, i3 and an inputrc.
+
+## colors
+
+The colorscheme used above is [Base 16 Bright Dark](https://github.com/aaron-williamson/base16-gnome-terminal).
