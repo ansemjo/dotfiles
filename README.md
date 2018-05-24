@@ -1,41 +1,40 @@
-# rcfiles
+# dotfiles
 
 This repository contains various configuration files which you can use in place
 of your system's default ones. To apply these settings systemwide start by
-cloning the repository into `/usr/local/etc/` or `/etc/`, whichever you prefer.
+cloning the repository into `/usr/local/etc/`. **Alternatively** you can use
+the [Ansible role](https://github.com/ansemjo/role-dotfiles) that I created for
+this purpose.
 
-```sh
-# clone repository:
-rcfiles=/usr/local/etc/rcfiles
-git clone https://git.semjonov.de/ansemjo/rcfiles.git $rcfiles
+```bash
+# dotfiles=/usr/local/etc/dotfiles
+# git clone https://github.com/ansemjo/dotfiles "$rcfiles"
 ```
 
-Now apply the configurations by symlinking.
+Then apply the configurations by symlinking to the appropriate files in `/etc`.
 
-# bash
+## bash
 
 This bashrc mainly gives you a nice and colourful prompt and a good amount of
 aliases. The aliases are individually split into seperate files in
-`$rcfiles/bash/aliases/`.
+`bash/aliases.d/`. Additional configuration files and the prompt builder are in
+`bash/conf.d/`.
 
 The path where bash looks for the global configuration file may differ but
-should be included in `/etc/profile`. Usually it should be `/etc/bashrc`
-though.
+should be included in `/etc/profile`. Usually it should be `/etc/bashrc` or
+`/etc/bash.bashrc`.
 
-```sh
-# symlink systemwide bashrc and skel, making backup of any existing files
-ln -svb $rcfiles/bash/bashrc /etc/
-ln -svb $rcfiles/bash/skel/.bashrc /etc/skel/
+```bash
+ln -svb $dotfiles/bash/bashrc /etc/bashrc
+ln -svb $dotfiles/bash/dot-bashrc /etc/skel/.bashrc
 ```
 
-The `.bashrc` that is symlinked into the skeleton directory contains options
-to customize the PS1 prompt, so you might want to copy it to your own home, too.
-For usable colour escape codes either use your new bash alias `colors` or look
-[here](http://misc.flogisoft.com/bash/tip_colors_and_formatting).
+The `dot-bashrc` that is symlinked into the skel directory contains options
+to customize the commandline prompt, so you might want to copy it to your own home, too.
 
+![screenshot from 2018-05-24 20-47-26](https://user-images.githubusercontent.com/11139925/40505161-ecadccc2-5f82-11e8-8331-5bf86bf9e683.png)
 
-
-# git
+## git
 
 You can set some default behaviour and command aliases in git. This config sets
 things like pushing new tags and using a colorful ui by default, sets some
@@ -50,9 +49,7 @@ one is at `~/.gitconfig`.
 ln -svb $rcfiles/git/gitconfig /etc/
 ```
 
-
-
-# vim
+## vim
 
 There are to many settings in that vimrc to list them all.
 
