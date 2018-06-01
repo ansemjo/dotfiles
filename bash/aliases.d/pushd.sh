@@ -3,4 +3,4 @@
 # of pushd:
 # $ sd other/dir  // put current dir on stack and switch to other/dir
 # $ sd            // rotate through stack
-alias sd='pushd'
+sd() { pushd "${1-+1}"; }
