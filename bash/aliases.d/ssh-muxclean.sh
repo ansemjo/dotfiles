@@ -20,8 +20,9 @@ muxclean () {
 _muxlist () {
   local g="$SSHMUX_GLOB"
   for f in $g; do
-    [[ $f != $g && $f =~ ${g%%\**}(.*)${g##*\*} ]] \
-      && echo "${BASH_REMATCH[1]}"
+    if [[ "$f" != "$g" && $f =~ ${g%%\**}(.*)${g##*\*} ]]; then
+      echo "${BASH_REMATCH[1]}"
+    fi
   done
 }
 
@@ -30,7 +31,9 @@ _muxclean () {
   _init_completion || return
   [[ ${#words[@]} -gt 2 ]] && return
   local list=$(_muxlist)
-  [[ -z $list ]] && echo "no ssh muxes found"
+  [[ -z $list ]] \
+    && echo "no ssh muxes found for $SSHMUX_GLOB" \
+    || list="all $list"
   COMPREPLY=($(compgen -W "$list" "$cur"))
 }
 
