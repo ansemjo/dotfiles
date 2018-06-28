@@ -33,3 +33,5 @@ openssl-convert-p12-to-pem() {
     test -n "$1" -a -n "$2" ||\
         { echo "\$1:p12-in \$2:out"; return 1; }
     openssl pkcs12 -nodes -in "${1}" -out "${2}"; }
+
+openssl-gen-snakeoil() { openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout "${1:?path required}.key" -out "${1:?}.crt"; }
