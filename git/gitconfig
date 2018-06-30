@@ -14,12 +14,12 @@
 [alias]
 
   patch  = add --patch
-  sign   = commit --amend --gpg-sign
+  signlast = commit --amend --gpg-sign
   graph  = log --graph --all
   staged = diff --cached
   ls = log --stat
   ll = log -n 10
-  st = status --short
+  st = status --short --branch
   co = checkout
   cm = commit
   br = branch --verbose
