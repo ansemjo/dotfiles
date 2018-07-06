@@ -28,6 +28,8 @@
   new-version = "!bash -c \"git tag -a $(semver $(git describe --abbrev=0 --tags) -i $*)\""
   nv          = "!git new-version"
 
+  upstream = push --set-upstream --all
+
 [push]
   default = simple
   followTags = true
