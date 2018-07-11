@@ -1,15 +1,8 @@
 # make and enter
-mkcd () {
-  if [ ! -n "$1" ]; then
-    echo "Enter a directory name"
-  elif [ -d $1 ]; then
-    echo "'$1' already exists"
-  else
-    mkdir $1 && cd $1
-  fi
-}
+mkcd () { ([[ -d ${1:?directory name required} ]] && echo "$1 already exists" >&2 || mkdir -p "$1") && cd "$1"; }
 
 # make and enter a temporary directory
-mkcdtmp () {
-    cd $(mktemp -d) && pwd
-}
+mkcdtmp () { cd $(mktemp -d) && pwd; }
+
+# switch to completely temporary directory
+tmp () { t=$(mktemp -d); test -n "$t" && pushd "$t" && bash && popd && rm -rf "$t"; }
