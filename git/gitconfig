@@ -31,6 +31,16 @@
 
   upstream = push --set-upstream --all
 
+  # clone a repository and create a new tree as if it was the first commit
+  clone-restart = "!f(){ { test ! -d .git || (echo 'this is an existing git directory' && false); } && git init && git fetch -n --depth 1 \"${1:?need clone url}\" && git reset --hard \"$(git commit-tree FETCH_HEAD^{tree} -m 'a new hope')\" && git expire-gc-fsck && git commit --amend; };f"
+
+  # ~ squash history, begin a new tree
+  # https://stackoverflow.com/a/23486788
+  restart = "!f(){ git reset $(git commit-tree HEAD^{tree} -m \"${1:-just do git}\") && git commit --amend; };f"
+
+  # extensive cleanup
+  expire-gc-fsck = "!f(){ git reflog expire --expire-unreachable=now --all && git gc --prune=now && git prune && git fsck --full; };f"
+
 [push]
   default = simple
   followTags = true
