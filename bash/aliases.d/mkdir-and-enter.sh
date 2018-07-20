@@ -10,9 +10,12 @@ mkcdtmp() { cd $(mkdicetemp) && pwd; }
 # switch to ephemeral directory
 tmp() {
   t=$(mkdicetemp) \
-    && pushd "$t" \
-    && echo 'this directory will be removed upon exit' \
-    && ${SHELL:-/usr/bin/env bash} \
-    && popd \
+    && { $SHELL -c \
+     "cd '$t' \
+      && printf '\033[31m%s\033[0m\n' 'this directory will be removed upon exit' \
+      && pwd \
+      && exec $SHELL" \
+     || true; \
+    } \
     && rm -rf "$t"
 }
