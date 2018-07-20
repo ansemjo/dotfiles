@@ -25,8 +25,9 @@
   br = branch --verbose
   re = remote --verbose
 
-  new-version = "!bash -c \"git tag -a $(semver $(git describe --abbrev=0 --tags) -i $*)\""
-  nv          = "!git new-version"
+  # semver versioning
+  new-version = "!f(){ V=$(git describe --abbrev=0 --tags); V=$(semver \"${V:-0.0.0}\" -i \"$@\") && git tag -a \"$V\"; };f"
+  nv = "!git new-version"
 
   upstream = push --set-upstream --all
 
