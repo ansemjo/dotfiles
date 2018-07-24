@@ -16,4 +16,10 @@ alias l='ls -1F'	# one file per line
 alias ll='ls -lF'	# long, classify
 alias lla='ls -alF'	# all, long, classify; pretty verbose
 alias la='ls -AF'	# almost all; like ls, but with .dot
-alias lll='ls -lhARF'	# dirlist, generates huge output for many subfolders!
+
+# tree view
+if iscommand tree; then
+  alias lll='tree -pugF' # using dedicated tree command
+else
+  alias lll='ls -lARF'	# dirlist, generates huge output for many subfolders!
+fi
