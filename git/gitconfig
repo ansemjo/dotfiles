@@ -13,10 +13,19 @@
 
 [alias]
 
+  # add pieces of files individually
   patch  = add --patch
+
+  # amend the last commit with a signature
   signlast = commit --amend --gpg-sign
+
+  # show log in a graph with different branches
   graph  = log --graph --all
+
+  # show a diff of files staged so far
   staged = diff --cached
+
+  # various shorthands
   ls = log --stat
   ll = log -n 10
   st = status --short --branch
@@ -43,6 +52,9 @@
 
   # show changed files in commit
   show-changed = show --name-status
+
+  # show current branch name for scripting
+  branch-name = rev-parse --abbrev-ref --symbolic-full-name HEAD
 
 [push]
   default = simple
