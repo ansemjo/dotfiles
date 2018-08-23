@@ -4,6 +4,7 @@ if command -v yarn >/dev/null; then
   if [[ -d ~/.yarn/bin ]]; then
     export PATH=~/.yarn/bin:$PATH
   else
-    export PATH=$(yarn global bin):$PATH
+    YARNPATH=$(yarn global bin 2>/dev/null)
+    [[ $? -eq 0 ]] && export PATH=$YARNPATH:$PATH
   fi
 fi
