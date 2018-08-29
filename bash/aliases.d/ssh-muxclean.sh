@@ -4,7 +4,7 @@ SSHMUX_GLOB="/run/user/$EUID/sshmux-*.sock"
 muxclean () {
   local g="$SSHMUX_GLOB"
   if [[ -z $1 ]]; then
-    echo "\$ $0 (all / user@host:port)" >&2 && return 1
+    echo "\$ muxclean {all|user@host:port}" >&2 && return 1
   elif [[ $1 == all ]]; then
     rm -Iv $g
   else
