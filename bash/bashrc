@@ -7,20 +7,15 @@
 BASH_DOTFILES="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")" )"
 
 # load configuration and aliases
-for d in 'conf.d' 'aliases.d'; do
-  
-  confd="$BASH_DOTFILES/$d";
+for rc in "$BASH_DOTFILES"/{conf,aliases}.d /etc/bashrc.d; do
 
-  if [[ -d $confd ]]; then
-    for file in "$confd"/*; do
+  if [[ -d $rc ]]; then
+    for file in "$rc"/*.sh; do
       source "$file";
     done
-  else
-    echo "${BASH_SOURCE[0]}: missing configuration directory at $confd" >&2
   fi
 
 done
-unset d confd
 
 # load user aliases
 [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases;
