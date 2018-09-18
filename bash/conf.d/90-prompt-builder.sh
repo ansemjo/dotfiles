@@ -148,8 +148,8 @@ function prompt_builder {
 
 }
 
-PROMPT_COMMAND='prompt_builder;'
+PROMPT_COMMAND="prompt_builder; ${PROMPT_COMMAND}"
 
 # If this is an xterm set the window title too
 [[ $TERM =~ xterm*|rxvt*|Eterm|aterm|kterm|gnome* ]] && \
-  PROMPT_COMMAND+='printf "\033]0;%s@%s: %s\007" "$USER" "$HOSTNAME" "$PWD"'
+  PROMPT_COMMAND='printf "\033]0;%s@%s: %s\007" "$USER" "$HOSTNAME" "$PWD"'"; ${PROMPT_COMMAND}"
