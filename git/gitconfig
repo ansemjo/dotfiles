@@ -61,6 +61,9 @@
   changelog = "!f(){ git log \"${1:-$(git describe --tags --abbrev=0)}\"..HEAD --pretty=changelog; };f"
   cl = "!git changelog"
 
+  # show the hash of the initial commit
+  initial-commit = rev-list --max-parents=0 HEAD
+
 [push]
   default = simple
   followTags = true
