@@ -7,6 +7,7 @@
 [pretty]
   infoline  = format:%C(auto,green)%h %C(auto,yellow)%ci %C(auto,blue)%G? %C(auto,reset)%C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
   infoblock = format:%C(auto)Commit:   %C(auto,green)%H\n%C(auto)From:     %C(auto,magenta)%cN <%cE>\n%C(auto)Date:     %C(auto,yellow)%cD %C(auto,dim)(%cr)\n%C(auto)Signed:   %C(auto,blue)[%GK]% GS\n%C(auto)Subject:  %C(auto,bold)%s\n%C(auto)%+b\n
+  changelog = format:%C(auto,green)%h %C(auto,reset)%C(auto)%s %C(auto,dim)[%cN]%C(auto)
 
 [log]
   decorate = auto
@@ -55,6 +56,10 @@
 
   # show current branch name for scripting
   branch-name = rev-parse --abbrev-ref --symbolic-full-name HEAD
+
+  # show changelog / list of commits since last tag
+  changelog = "!f(){ git log \"${1:-$(git describe --tags --abbrev=0)}\"..HEAD --pretty=changelog; };f"
+  cl = "!git changelog"
 
 [push]
   default = simple
