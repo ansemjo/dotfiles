@@ -64,6 +64,9 @@
   # show the hash of the initial commit
   initial-commit = rev-list --max-parents=0 HEAD
 
+  # bundle all, entire repo
+  bundle-repo = "!f(){ git bundle create \"${1:?target file or -}\" --all; };f"
+
 [push]
   default = simple
   followTags = true
