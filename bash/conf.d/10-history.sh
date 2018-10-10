@@ -15,7 +15,7 @@ shopt -s histappend
 shopt -s lithist
 
 # use hstr if available
-if command -V hstr >/dev/null; then
+if command -v hstr >/dev/null; then
   # bind to ctrl-r, use a space to ignore hstr command itself
   bind '"\C-r": "\C-a hstr -- \C-j"'
   # make it colorful
