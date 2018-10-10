@@ -7,7 +7,7 @@
 [pretty]
   infoline  = format:%C(auto,green)%h %C(auto,yellow)%ci %C(auto,blue)%G? %C(auto,reset)%C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
   infoblock = format:%C(auto)Commit:   %C(auto,green)%H\n%C(auto)From:     %C(auto,magenta)%cN <%cE>\n%C(auto)Date:     %C(auto,yellow)%cD %C(auto,dim)(%cr)\n%C(auto)Signed:   %C(auto,blue)[%GK]% GS\n%C(auto)Subject:  %C(auto,bold)%s\n%C(auto)%+b\n
-  changelog = format:%C(auto,green)%h %C(auto,reset)%C(auto)%s %C(auto,dim)[%cN]%C(auto)
+  changelog = format:%C(auto,green)%h %C(auto,reset)%C(auto)%s%C(auto)
 
 [log]
   decorate = auto
