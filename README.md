@@ -1,7 +1,5 @@
 # dotfiles
 
-[![CodeFactor](https://www.codefactor.io/repository/github/ansemjo/dotfiles/badge)](https://www.codefactor.io/repository/github/ansemjo/dotfiles)
-
 This repository contains various configuration files which you can use in place
 of your system's default ones. To apply these settings systemwide start by
 cloning the repository into `/usr/local/etc/`. **Alternatively** you can use
@@ -16,6 +14,8 @@ this purpose.
 Then apply the configurations by symlinking to the appropriate files in `/etc`.
 
 ## bash
+
+[![CodeFactor](https://www.codefactor.io/repository/github/ansemjo/dotfiles/badge)](https://www.codefactor.io/repository/github/ansemjo/dotfiles)
 
 ![screenshot from 2018-05-24 20-47-26](https://user-images.githubusercontent.com/11139925/40505161-ecadccc2-5f82-11e8-8331-5bf86bf9e683.png)
 
