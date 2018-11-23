@@ -1,5 +1,7 @@
 # dotfiles
 
+[![CodeFactor](https://www.codefactor.io/repository/github/ansemjo/dotfiles/badge)](https://www.codefactor.io/repository/github/ansemjo/dotfiles)
+
 This repository contains various configuration files which you can use in place
 of your system's default ones. To apply these settings systemwide start by
 cloning the repository into `/usr/local/etc/`. **Alternatively** you can use
