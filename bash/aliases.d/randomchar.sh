@@ -17,8 +17,8 @@ randomhex () {
 # output a random mac address with possibility to define vendor part yourself
 randommac () {
   _h() { randomhex 2; }
-  vendor=`_h`:`_h`:`_h`;
-  device=`_h`:`_h`:`_h`;
+  vendor=$(_h):$(_h):$(_h);
+  device=$(_h):$(_h):$(_h);
   mac="${1-$vendor}:$device";
   echo "${mac,,}";
   unset -f _h

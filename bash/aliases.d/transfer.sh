@@ -16,7 +16,7 @@ transfer() {
 
   # upload from stdin if piped
   tty -s && up "$file" || up "-";
-  echo "$(cat "$link")";
+  printf '%s\n' "$(< "$link")";
   rm -f $link;
 
 }

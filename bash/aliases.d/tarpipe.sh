@@ -29,7 +29,7 @@ case "$mode" in
         echo "FETCHING ..."
         (ssh $host "test -e $pipe && rm -f $pipe; mkfifo $pipe; cat $pipe; rm $pipe" 2>/dev/null |\
           tar xkf - )&
-        ssh -t $host "sudo tar cv --xform s:^.*/:: -f $pipe $@" ;;
+        ssh -t $host "sudo tar cv --xform s:^.*/:: -f $pipe $*" ;;
 
     * )
         echo "$usage"; return 1;;

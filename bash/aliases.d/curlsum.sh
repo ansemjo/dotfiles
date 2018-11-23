@@ -8,7 +8,7 @@ curlsum() {
   # parse checksum arg (algorithm/checksum)
   alg=$(dirname "$checksum")
   KNOWNALG=(md5 sha1 sha224 sha256 sha384 sha512)
-  if [[ -z $alg ]] || [[ ! " ${KNOWNALG[@]} " =~ " ${alg} " ]] || ! which "${alg}sum" >/dev/null; then
+  if [[ -z $alg ]] || [[ ! " ${KNOWNALG[*]} " =~ " ${alg} " ]] || ! which "${alg}sum" >/dev/null; then
     echo "unknown checksum algorithm: '$alg'" >&2; return 1;
   fi
   prog="${alg}sum"

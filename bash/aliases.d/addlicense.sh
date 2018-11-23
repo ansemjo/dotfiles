@@ -2,7 +2,7 @@ addlicense-MIT() {
   
   # author from git config
   author="$(git config user.name)"
-  [[ -z $author ]] && { echo 'no user.name!' >&2; return 1; }
+  [[ -z $author ]] && { echo 'no user.name in git config' >&2; return 1; }
 
   # assemble strings
   sym="${1:-#}"
@@ -10,8 +10,11 @@ addlicense-MIT() {
   string=$(printf '%s Copyright (c) %d %s\\n%s Licensed under the MIT License\\n' "$sym" "$year" "$author" "$sym")
   echo -e "$string" >&2
 
+  # usage note
+  echo "type filenames or pipe from a find(1) command ..." >&2
+
   # filename on stdin
-  while read file; do
+  while read -r file; do
     sed -i "1i$string" "$file";
   done
 
