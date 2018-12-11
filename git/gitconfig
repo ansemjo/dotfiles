@@ -68,7 +68,7 @@
   bundle-repo = "!f(){ git bundle create \"${1:?target file or -}\" --all; };f"
 
   # imitates a compressed github download
-  download = "!f(){ set -x; ref=\"${1:-master}\"; name=\"${2:-$(basename \"$PWD\")}\"; git archive \"$ref\" --prefix=\"$name-$ref/\" | gzip -n; };f"
+  download = "!f(){ ref=\"${1:-master}\"; name=\"${2:-$(basename \"$PWD\")}\"; git archive \"$ref\" --prefix=\"$name-$ref/\" | gzip -n; };f"
 
 [push]
   default = simple
