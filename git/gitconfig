@@ -49,7 +49,7 @@
   restart = "!f(){ git reset $(git commit-tree HEAD^{tree} -m \"${1:-just do git}\") && git commit --amend; };f"
 
   # extensive cleanup
-  expire-gc-fsck = "!f(){ git reflog expire --expire-unreachable=now --all && git gc --prune=now && git prune && git fsck --full; };f"
+  tidyup = "!f(){ git reflog expire --expire-unreachable=now --all && git gc --prune=now && git prune && git fsck --full; };f"
 
   # show changed files in commit
   show-changed = show --name-status
