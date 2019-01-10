@@ -15,12 +15,15 @@ if iscommand uget-gtk; then
     # where to put downloads
     local folder=~/Downloads
 
-    # filename may optionally be given
+    # filename may optionally be given directly
     if [[ -n $2 ]]; then
-      uget-gtk --quiet --folder="$folder" --filename="$2" "$file"
+      filename="$2"
     else
-      uget-gtk --quiet --folder="$folder" "$file"
+      read -p 'Enter filename: ' -e filename
     fi
+
+    # add to queue
+    uget-gtk --quiet --folder="$folder" --filename="$filename" "$file"
 
   }
 
