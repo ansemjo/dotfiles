@@ -37,3 +37,8 @@ randompass() {
   echo -n "$(_pad "$1"):$(_pad "$1"):$(_pad "$1"):$(_pad "$1"):$(_pad "$1")";
   unset -f _pad
 }
+
+# random 32 byte key in base64 encoding
+randomkey() {
+  head -c 32 /dev/urandom | base64
+}
