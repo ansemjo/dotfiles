@@ -5,7 +5,7 @@
 
 haveibeenpwned() {
 
-  printf '\033[1m%-40s\t%9s\t%s\033[0m\n' 'sha1 hash' '# hits' 'password'
+  printf '\033[1m%-40s %9s  %s\033[0m\n' 'sha1 hash' '# hits' 'password'
   while read -r password; do
 
     # calculate hash with uppercase hex
@@ -13,9 +13,8 @@ haveibeenpwned() {
     prefix="${pwhash:0:5}"; suffix="${pwhash:5}";
   
     # check haveibeenpwned api
-    response=$(curl -s "https://api.pwnedpasswords.com/range/${prefix^^}");
-    if [[ $? -ne 0 ]] || [[ -z $response ]]; then
-      printf '%-40s\terror\tfailed to receive response\n' "${prefix}" >&2;
+    if ! response=$(curl -s "https://api.pwnedpasswords.com/range/${prefix^^}") || [[ -z $response ]]; then
+      printf '%-40s %9s  %s\n' "${prefix}" 'error' 'failed to receive response' >&2;
       continue
     fi
   
@@ -23,7 +22,8 @@ haveibeenpwned() {
     while read -r line; do
       # only first 35 chars of line is hash suffix
       if [ "${line:0:35}" == "${suffix^^}" ]; then
-        printf '%-40s\t% 9d\t%s\n' $(echo "${prefix}${line,,}" | tr -d '\r' | cut -d: -f1,2 --output-delimiter=" ") "${password}"
+        result=($(echo "${prefix}${line,,}" | tr -d '\r' | cut -d: -f1,2 --output-delimiter=" "))
+        printf '%-40s % 9d  %s\n' "${result[0]}" "${result[1]}" "${password}"
         continue
       fi
     done <<< "${response}"

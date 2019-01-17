@@ -19,7 +19,7 @@ if iscommand uget-gtk; then
     if [[ -n $2 ]]; then
       filename="$2"
     else
-      read -p 'Enter filename: ' -e filename
+      read -r -p 'Enter filename: ' -e filename
     fi
 
     # add to queue
