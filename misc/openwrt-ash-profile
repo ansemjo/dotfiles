@@ -1,0 +1,79 @@
+#!/bin/ash
+# this is an /etc/profile for OpenWRT devices
+
+# banners
+[ -f /etc/banner ] && cat /etc/banner
+[ -e /tmp/.failsafe ] && cat /etc/banner.failsafe
+fgrep -sq '/ overlay ro,' /proc/mounts && {
+	echo 'Your JFFS2-partition seems full and overlayfs is mounted read-only.'
+	echo 'Please try to remove files from /overlay/upper/... and reboot!'
+}
+
+# sysinfo
+device=$(sed -n 's/.*"name": "\(.*\)"$/\1/p' /etc/board.json)
+release=$(sed -n "s/.*DISTRIB_TARGET='\(.*\)'$/\1/p" /etc/openwrt_release)
+updates=$(sed -n '1s;.*\(://.*/releases/\).*;https\1;p' /etc/opkg/distfeeds.conf)
+target=$(sed -n 's;.*/releases/.*\(/targets/.*\)/packages.*;\1;p' /etc/opkg/distfeeds.conf)
+
+echo " update : $updates"
+echo " target : $target"
+echo " device : $device"
+echo " uptime :$(uptime)"
+echo
+
+# environment
+export PATH="/usr/sbin:/usr/bin:/sbin:/bin"
+export HOME=$(grep -e "^${USER:-root}:" /etc/passwd | cut -d ":" -f 6)
+export HOME=${HOME:-/root}
+
+# prompt line
+export PS1="\e[0;1m\H \e[38;5;9m\w \e[0;1m\\$ \e[0m"
+case "$TERM" in xterm*) export PS1='\[\e]0;\u@\h: \w\a\]'"$PS1" ;; esac
+
+# aliases
+[ -x /bin/more ] || alias more=less
+[ -x /usr/bin/vim ] && alias vi=vim
+
+alias ls='ls --color=auto'
+alias ll='ls -alF'      # all, long, classify; pretty verbose
+alias lll='ls -lhARF'   # dirlist, generates huge output for many subfolders!
+
+# safeguard
+alias rm='rm -i'
+alias mv='mv -i'
+alias cp='cp -i'
+
+[ -z "$KSH_VERSION" -o \! -s /etc/mkshrc ] || . /etc/mkshrc
+
+[ -x /usr/bin/arp -o -x /sbin/arp ] || arp() { cat /proc/net/arp; }
+[ -x /usr/bin/ldd ] || ldd() { LD_TRACE_LOADED_OBJECTS=1 $*; }
+
+# enter temporary directory
+alias tmp='cd `mktemp -d`'
+
+# help the dropbear ssh client ..
+alias ssh='ssh -i /root/.ssh/id_rsa'
+alias scp='scp -i /root/.ssh/id_rsa'
+
+# show status of network ports
+alias ports='swconfig dev switch0 show | grep "link:" | sed "s/^[\t]*link: port:/port /"'
+
+# Load more profiles
+[ -n "$FAILSAFE" ] || {
+	for FILE in /etc/profile.d/*.sh; do
+		[ -e "$FILE" ] && . "$FILE"
+	done
+	unset FILE
+}
+
+# Password warning
+if ( grep -qs '^root::' /etc/shadow && [ -z "$FAILSAFE" ] ); then
+cat << EOF
+=== WARNING! =====================================
+There is no root password defined on this device!
+Use the "passwd" command to set up a new password
+in order to prevent unauthorized SSH logins.
+--------------------------------------------------
+EOF
+fi
+
