@@ -76,6 +76,9 @@
   # show files with most commits (https://stackoverflow.com/a/5670168)
   topfiles = "!f(){ git rev-list --objects --all \"$@\" | awk '$2' | awk '{$1=\"\"}1' | sort | uniq -c | sort -rn | head -20; };f"
 
+  # output directory structure or a single file at a particular ref
+  output = "!f(){ if [ -z \"$1\" ]; then echo \"git output <ref> [<path/to/file>]\" >&2; return 1; fi; if [ -z \"$2\" ]; then git archive \"$1\" | tar tv; else git archive \"$1\" | tar x --to-stdout \"$2\"; fi; };f"
+
 [push]
   default = simple
   followTags = true
