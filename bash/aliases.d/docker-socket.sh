@@ -6,8 +6,10 @@ if iscommand docker; then
   # environment for local docker to use forwarded socket
   docker-ssh-socket() {
     connect=${1:?destination host or ssh alias required}
-    ssh -nNT -L "$XDG_RUNTIME_DIR/docker-$connect.sock:/var/run/docker.sock" "$connect" \
-      && export DOCKER_HOST="unix://$XDG_RUNTIME_DIR/docker-$connect.sock"
+    socket="$XDG_RUNTIME_DIR/docker-$connect.sock"
+    rm -f "$socket" && \
+    ssh -fN -n -T -o ControlPath=none -L "$socket:/var/run/docker.sock" "$connect" && \
+    export DOCKER_HOST="unix://$socket"
   }
 
 fi
