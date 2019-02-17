@@ -7,7 +7,7 @@
 # then assume we are receiving content and put it into clipboard
 # otherwise output what is currently inside
 
-if hash xclip 2>/dev/null; then
+if iscommand xclip; then
 
   clipboard() {
 
@@ -18,6 +18,10 @@ if hash xclip 2>/dev/null; then
     fi
 
   };
+
+  if ! iscommand cb; then
+    alias cb=clipboard
+  fi
 
   argumentorclipboard() {
 
