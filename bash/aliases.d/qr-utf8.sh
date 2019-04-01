@@ -4,5 +4,5 @@ if iscommand qrencode; then
 fi
 
 if iscommand zbarcam; then
-  qrread() { zbarcam --raw; }
+  qrread() { zbarcam --raw --nodisplay; }
 fi
