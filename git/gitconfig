@@ -36,7 +36,7 @@
   re = remote --verbose
 
   # semver versioning
-  new-version = "!f(){ V=$(git describe --abbrev=0 --tags); [[ $1 =~ (major|minor|patch) ]] && I=$1 && shift; V=$(semver \"${V:-0.0.0}\" -i $I) && git tag \"$V\" \"${@:--s}\"; };f"
+  new-version = "!f(){ V=$(git describe --abbrev=0 --tags); [[ $1 =~ (major|minor|patch) ]] && I=$1 && shift; V=$(semver \"${V:-0.0.0}\" -i $I) && git tag \"$V\" ${@:--s -em \"$(echo; echo; git changelog)\"}; };f"
   nv = "!git new-version"
 
   upstream = push --set-upstream --all
