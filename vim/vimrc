@@ -119,7 +119,7 @@ set wrap
 set linebreak
 if exists('+breakindent')
   set breakindent
-  set showbreak=↳\ 
+  set showbreak=\\\ 
 endif
 
 " show context around cursor
