@@ -1,3 +1,10 @@
+[push]
+  default = simple
+  followTags = true
+
+[commit]
+  gpgSign = false
+
 [color]
   ui = auto
 
@@ -78,14 +85,6 @@
 
   # output directory structure or a single file at a particular ref
   output = "!f(){ if [ -z \"$1\" ]; then echo \"git output <ref> [<path/to/file>]\" >&2; return 1; fi; if [ -z \"$2\" ]; then git archive \"$1\" | tar tv; else git archive \"$1\" | tar x --to-stdout \"$2\"; fi; };f"
-
-[push]
-  default = simple
-  followTags = true
-
-[commit]
-  gpgSign = false
-
 
 [url "https://github.com/"]
   insteadOf = github:
