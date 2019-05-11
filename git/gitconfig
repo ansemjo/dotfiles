@@ -3,7 +3,7 @@
   followTags = true
 
 [pull]
-  rebase = true
+  ff = only
 
 [commit]
   gpgSign = false
