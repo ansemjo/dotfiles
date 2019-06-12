@@ -102,6 +102,9 @@ endif
 " use spaces instead of tabs
 set expandtab
 
+" use shift+tab for literal tabs
+inoremap <S-Tab> <C-V><Tab>
+
 " be smart with tabs at the start of a line
 set smarttab
 
