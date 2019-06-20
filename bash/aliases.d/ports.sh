@@ -1,2 +1,2 @@
 # show listening ports and established connections
-alias ports='ss -tulanp'
+ports() { ss -tulnp "$@" | column -t; }
