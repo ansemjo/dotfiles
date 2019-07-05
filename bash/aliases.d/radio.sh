@@ -1,3 +1,5 @@
+if iscommand mpv; then
+
 # play radio livestreams, quietly, show only icy-titles
 radio() {
   ch=${1:-info}
@@ -25,3 +27,5 @@ complete -W "$(command -V radio | sed -n 's/^ \+\([a-z]\+\))$/\1/p')" radio
 # alias for ndr streams
 alias ndr=radio
 complete -W "info kultur" ndr
+
+fi
