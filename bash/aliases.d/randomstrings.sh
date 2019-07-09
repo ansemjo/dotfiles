@@ -42,3 +42,16 @@ randompass() {
 randomkey() {
   head -c 32 /dev/urandom | base64
 }
+
+# random ICU star name
+randomstar () {
+  stars=https://www.pas.rochester.edu/~emamajek/WGSN/IAU-CSN.txt
+  file=/tmp/iau-csn.txt
+  if [[ -f $file ]] || curl "$stars" -o "$file"; then
+    grep '^[a-zA-Z]\+ ' "$file" | cut -d\  -f1 | uniq | shuf -n1;
+  else
+    echo "couldn't download $stars" >&2;
+    return 1
+  fi
+}
+
