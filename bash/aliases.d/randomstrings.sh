@@ -8,6 +8,9 @@ randomchar () {
   </dev/urandom tr -dc "${g:-[:alnum:]_.~-}" | head -c$n;
   echo;
 }
+randomalnum () {
+  randomchar "${1:-24}" "[:alnum:]"
+}
 
 # output random hex characters from urandom
 randomhex () {
