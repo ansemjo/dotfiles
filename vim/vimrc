@@ -131,6 +131,9 @@ set scrolloff=10
 " don't use PEP8 recommendation in python
 let g:python_recommended_style = 0
 
+" don't re-indent when inserting # in yaml
+autocmd FileType yaml setlocal indentkeys-=0#
+
 
 " ---------- KEY BINDINGS ----------
 
