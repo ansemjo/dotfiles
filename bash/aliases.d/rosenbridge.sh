@@ -1,16 +1,5 @@
 #!/usr/bin/env bash
 
-# find a local unused port
-# https://unix.stackexchange.com/a/248319
-unusedport() {
-  read LOWERPORT UPPERPORT < /proc/sys/net/ipv4/ip_local_port_range
-  while :; do
-    PORT="$(shuf -i $LOWERPORT-$UPPERPORT -n 1)"
-    ss -lpn | grep -q ":$PORT " || break
-  done
-  echo "$PORT"
-}
-
 # pipe stuff over a forwarding port on a multiplexed ssh connection
 # this is basically my older tarpipe function, but without the implicit tar
 rosenbridge() {
@@ -31,16 +20,23 @@ README
 
     # receiver
     r|recv|receive)
-      # find unused port locally
-      port=$(unusedport)
+      # create a new fifo
+      fifo=$(mktemp -p "${TMPDIR:-/tmp}" -u rosenbridge-XXXXXX)
+      mkfifo "$fifo"
+      # check if mux master is running or (re)start
+      if ! ssh -O check "$2" 2>/dev/null; then
+        ssh -fN -M "$2" || { echo "can't open control master" >&2; return 1; }
+      fi
       # add forwarding in multiplexed connection
-      remote=$(ssh -O forward -R "0:localhost:$port" "$2") || \
-        { echo "are you connected?" >&2; return 1; }
+      remote=$(ssh -O forward -R "0:$fifo" "$2") || \
+        { echo "can't create forwarding" >&2; return 1; }
       printf 'Listening on port \033[1m%s\033[0m remotely ...\n' "$remote" >&2
       # listen with netcat
-      nc -l -p "$port"
-      # cancel forwarding when done
-      ssh -O cancel -R "0:localhost:$port" "$2"
+      nc -Ul "$fifo"
+      # cancel forwarding and remove fifo when done
+      # TODO: couldn't get traps for cleanup to work reliably so far ..
+      ssh -O cancel -R "0:$fifo" "$2" 2>/dev/null
+      rm -f "$fifo"
     ;;
 
     # sender
