@@ -2,30 +2,30 @@
 
 This repository contains various configuration files which you can use in place
 of your system's default ones. To apply these settings systemwide start by
-cloning the repository into `/usr/local/etc/`. **Alternatively** you can use
-the [Ansible role](https://github.com/ansemjo/role-dotfiles) that I created for
-this purpose.
+cloning the repository into `/usr/local/etc/` and then symlink the desired
+configurations in `/etc` appropriately.
+
+You can use the [ansible role](https://github.com/ansemjo/role-dotfiles)
+that I created for this purpose aswell.
 
 ```bash
-# dotfiles=/usr/local/etc/dotfiles
-# git clone https://github.com/ansemjo/dotfiles "$rcfiles"
+dotfiles=/usr/local/etc/dotfiles
+git clone https://github.com/ansemjo/dotfiles "$dotfiles"
 ```
-
-Then apply the configurations by symlinking to the appropriate files in `/etc`.
 
 ## bash
 
 [![CodeFactor](https://www.codefactor.io/repository/github/ansemjo/dotfiles/badge)](https://www.codefactor.io/repository/github/ansemjo/dotfiles)
 
-![screenshot from 2018-05-24 20-47-26](https://user-images.githubusercontent.com/11139925/40505161-ecadccc2-5f82-11e8-8331-5bf86bf9e683.png)
+![dotfiles-bash](https://user-images.githubusercontent.com/11139925/64062822-21205c00-cbec-11e9-8030-61beb5066905.png)
 
 This bashrc mainly gives you a nice and colourful prompt and a good amount of
 aliases. The aliases are individually split into seperate files in
-`bash/aliases.d/`. Additional configuration files and the prompt builder are in
-`bash/conf.d/`.
+[`bash/aliases.d/`](bash/aliases.d/). Additional configuration files and the
+prompt builder are in [`bash/conf.d/`](bash/conf.d/).
 
 The path where bash looks for the global configuration file may differ but
-should be included in `/etc/profile`. Usually it should be `/etc/bashrc` or
+it should be included in `/etc/profile`. Usually it is `/etc/bashrc` or
 `/etc/bash.bashrc`.
 
 ```bash
@@ -38,12 +38,25 @@ to customize the commandline prompt, so you might want to copy it to your own ho
 
 ## git
 
-![screenshot from 2018-05-24 20-53-26](https://user-images.githubusercontent.com/11139925/40505468-c3f38406-5f83-11e8-927c-7eb0067e5c57.png)
+![dotfiles-git](https://user-images.githubusercontent.com/11139925/64062823-21205c00-cbec-11e9-9173-c2c2b14220dd.png)
 
 You can set some default behaviour and command aliases in git. This config sets
-things like pushing new tags and using a colorful ui by default, sets some
-aliases (`graph`, `ls`, `st`, `co`, `br` ...) and defines a new pretty
-format.
+things like pushing new tags and using a colorful interface by default, defines
+a new pretty format and sets some useful aliases:
+
+* `ll` - log last ten commits
+* `st` - short status output
+* `co`, `br`, `re` - aliases for `checkout`, `branch` and `remote`
+* `upstream` - push to a remote and mark it as upstream
+* `cl` - show a changelog, overview of commits since last tag
+* `nv` - parse previous annotated tags and create a new semver-incremented
+    tag (`patch`, `minor` or `major`)
+* `patch` - begin adding changes with the `--patch` flag
+* `rinse` - deep scrub clean up: expire reflog, gc, prune and fsck
+* `output ref path/to/file` - output a specific version of a file to stdout
+* `download` - save current HEAD archive as gzipped tar to stdout, as if it
+    was a download from GitHub etc.
+
 
 The system configuration should be at `/etc/gitconfig`. The global (per-user)
 one is at `~/.gitconfig`.
@@ -54,15 +67,40 @@ ln -svb $dotfiles/git/gitconfig /etc/gitconfig
 
 ## vim
 
-![screenshot from 2018-05-24 20-56-36](https://user-images.githubusercontent.com/11139925/40505592-391dc656-5f84-11e8-8e40-3dc02d5554db.png)
+![dotfiles-vim](https://user-images.githubusercontent.com/11139925/64062825-21205c00-cbec-11e9-9b47-ed5ae907544a.png)
 
-There are too many settings in that vimrc to list them all. I do, however, suggest that you install
-[`vim-pathogen`](https://github.com/tpope/vim-pathogen) and [`vim-airline`](https://github.com/vim-airline/vim-airline).
+There are too many settings in that vimrc to list them all. I do, however,
+suggest that you install [`vim-pathogen`](https://github.com/tpope/vim-pathogen)
+and [`vim-airline`](https://github.com/vim-airline/vim-airline).
 
 Your global vimrc should be either at `/etc/vimrc` or `/etc/vim/vimrc`.
 
 ```bash
 ln -svb $dotfiles/vim/vimrc /etc/vimrc
+```
+
+## tmux
+
+![dotfiles-tmux](https://user-images.githubusercontent.com/11139925/64062824-21205c00-cbec-11e9-8154-111a97327937.png)
+
+After a while of constantly forgetting common `tmux` keys, I spent an evening
+customizing my configuration to make it usable and more intuitive to me.
+
+Highlights include:
+
+* prefix key on <kbd>ctrl</kbd>-<kbd>a</kbd>
+* switch panes with <kbd>alt</kbd>-<kbd>arrows</kbd>
+* split panes with <kbd>prefix</kbd>-<kbd>\\</kbd> (horizontally) and
+    <kbd>prefix</kbd>-<kbd>-</kbd> (vertically)
+* switch windows with <kbd>prefix</kbd>-<kbd>left</kbd> (previous) and
+    <kbd>prefix</kbd>-<kbd>right</kbd> (next)
+* distinctive status line that should be compatible with older versions
+
+There is also a bash alias `tm` to attach to an existing session or create
+a new one if none exists.
+
+```bash
+ln -svb $dotfiles/tmux/tmux.conf /etc/tmux.conf
 ```
 
 ## others
