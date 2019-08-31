@@ -12,23 +12,31 @@ README
 
   # at least one argument required
   [[ -z $1 ]] && { usage >&2; return 1; }
+  local conn
+  conn=("$@")
 
   # create a new fifo
+  local fifo
   fifo=$(mktemp -p "${TMPDIR:-/tmp}" -u rosenbridge-XXXXXX)
   mkfifo "$fifo"
+  _rosencleanup() { echo rmfifo; rm -fv "$fifo"; }
+  trap _rosencleanup INT
   # check if mux master is running or (re)start
-  if ! ssh -O check "$@" 2>/dev/null; then
-    ssh -fN -M "$@" || { echo "can't open control master" >&2; return 1; }
+  if ! ssh -O check "${conn[@]}" 2>/dev/null; then
+    ssh -fN -M "${conn[@]}" || { echo "can't open control master" >&2; return 1; }
   fi
   # add forwarding in multiplexed connection
-  remote=$(ssh -O forward -R "0:$fifo" "$@") || \
+  local remote
+  remote=$(ssh -O forward -R "0:$fifo" "${conn[@]}") || \
     { echo "can't create forwarding" >&2; return 1; }
   printf 'Listening on port \033[1m%s\033[0m remotely ...\n' "$remote" >&2
+  # trap to clean up on ctrl-c
+  _rosencleanup() { echo "cleanup"; rm -fv "$fifo"; ssh -O cancel -R "0:$fifo" "${conn[@]}"; }
+  trap _rosencleanup INT
   # listen with netcat
-  nc -Ul "$fifo"
+  bash -c "nc -Ul '$fifo'"
   # cancel forwarding and remove fifo when done
-  # TODO: couldn't get traps for cleanup to work reliably so far ..
-  ssh -O cancel -R "0:$fifo" "$@" 2>/dev/null
+  ssh -O cancel -R "0:$fifo" "${conn[@]}" 2>/dev/null
   rm -f "$fifo"
 
 }
