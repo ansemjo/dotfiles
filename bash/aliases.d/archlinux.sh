@@ -1,9 +1,30 @@
 #!/usr/bin/env bash
 
+# rankmirrors is included in the pacman-contrib package
+if [[ -x /usr/bin/rankmirrors ]]; then
+  update-mirrorlist() {
+
+    say() { printf '%s\n' "$*" >&2; };
+
+    # https://wiki.archlinux.org/index.php/Mirrors#Fetching_and_ranking_a_live_mirror_list
+    say "fetch updated mirrorlist: DE/https/status=on ..."
+    local mirrors=$(curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" |\
+      sed -e 's/^#Server/Server/' -e '/^#/d')
+
+    say "rank mirrors ..."
+    local ranked=$(rankmirrors -n 10 - <<<"$mirrors")
+
+    local list="/etc/pacman.d/mirrorlist"
+    say "replace $list ..."
+    printf "# ranked on %s\n%s\n" "$(date)" "$ranked" | sudo tee "$list"
+
+  };
+fi
+
+# read archlinux news
+archnews() {
 # Credit belongs here:
 # https://bbs.archlinux.org/viewtopic.php?pid=1145058#p1145058
-
-archnews() {
 
     # Set the feed
     if [ ! -n "$1" ]; then
