@@ -1,5 +1,5 @@
 # make temporary directory with diceware words
-mkdicetemp() { mktemp --tmpdir -d "tmp-$(words 2 -)-XXX"; }
+mkdicetemp() { mktemp --tmpdir -d "tmp-$(randomwords 2 -)-XXX"; }
 
 # make and enter
 mkcd() { ([[ -d ${1:?directory name required} ]] && echo "$1 already exists" >&2 || mkdir -p "$1") && cd "$1"; }
