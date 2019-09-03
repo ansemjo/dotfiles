@@ -1,4 +1,4 @@
 # colorful diff if installed
-if command -v colordiff &>/dev/null; then
+if iscommand colordiff; then
     alias diff='colordiff'
 fi

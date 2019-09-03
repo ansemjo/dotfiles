@@ -1,4 +1,5 @@
 # shorthand to copy directories with rsync, preserving everything
-ALIAS='rsync --archive --hard-links --xattrs --acls --executability'
-command -v archive >/dev/null && alias rsync-archive="$ALIAS" || alias archive="$ALIAS";
-unset ALIAS
+alias rsync-archive='rsync --archive --hard-links --xattrs --acls --executability'
+if ! iscommand archive; then
+  alias archive='rsync-archive'
+fi

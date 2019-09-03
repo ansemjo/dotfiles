@@ -16,7 +16,15 @@ mknamedtemp() {
 # make and enter a temporary directory
 mkcdtmp() { cd $(mknamedtemp) && pwd; }
 
-# switch to ephemeral directory
+# switch to ephemeral directory, which is deleted when
+# exiting the nested shell level, i.e.:
+#
+# ~ $ tmp
+# this directory will be removed upon exit
+# /tmp/tmp-great-buck
+# /tmp/tmp-great-buck $ [ do some work ... ]
+# /tmp/tmp-great-buck $ ^Dexit
+# ~ $ 
 tmp() {
   t=$(mknamedtemp) \
     && { $SHELL -c \

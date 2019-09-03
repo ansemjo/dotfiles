@@ -16,7 +16,7 @@ fi
 shift 1;
 COMPRESSORS=("$@")
 if [[ -z $COMPRESSORS ]]; then
-  COMPRESSORS=(cat lz4 gzip bzip2 xz lzip)
+  COMPRESSORS=(cat lz4 zstd gzip xz lzip)
 fi
 
 say() { printf '\033[1m%s\033[0m %s\n' "$1" "$2"; }

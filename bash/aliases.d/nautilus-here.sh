@@ -1,4 +1,4 @@
 # open nautilus here (if system is gnome)
-if [ -x /usr/bin/nautilus ]; then
+if iscommand nautilus; then
   alias here='nautilus -w "$PWD" &>/dev/null &'
 fi

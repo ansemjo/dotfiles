@@ -1,5 +1,4 @@
 curlsum() {
-  
 
   # arguments
   link=${1:?download url}
