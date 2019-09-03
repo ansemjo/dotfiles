@@ -13,4 +13,15 @@ if iscommand docker; then
     export DOCKER_HOST="unix://$socket"
   }
 
+  _docker-ssh-socket() {
+    if iscommand _ssh; then
+      _ssh
+    else
+      local cur prev words cword
+      _init_completion || return
+      _known_hosts_real -a -- "$cur"
+    fi
+  }
+  complete -F _docker-ssh-socket docker-ssh-socket
+
 fi
