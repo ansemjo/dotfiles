@@ -182,3 +182,12 @@ MANUAL
 iscommand recode || alias recode=ffmpeg-recode
 
 fi
+
+if iscommand ffprobe; then
+
+# display media info in json format for consumption with e.g. jq
+# --------------------------------------------------
+alias ffprobe-json='ffprobe -v error -print_format json -show_streams -show_format'
+alias ffjson=ffprobe-json
+
+fi
