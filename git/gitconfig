@@ -45,10 +45,14 @@
   br = branch --verbose
   re = remote --verbose
 
+  # show current head commit hash
+  hash = describe --match ^$ --always --abbrev=0
+
   # semver versioning
   new-version = "!f(){ V=$(git describe --abbrev=0 --tags); [[ $1 =~ (major|minor|patch) ]] && I=$1 && shift; V=$(semver \"${V:-0.0.0}\" -i $I) && git tag \"$V\" ${@:--s -em \"$(echo; echo; git changelog)\"}; };f"
   nv = "!git new-version"
 
+  # push changes to a remote and make it upstream
   upstream = push --set-upstream --all
 
   # clone a repository and create a new tree as if it was the first commit
