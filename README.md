@@ -22,7 +22,30 @@ git clone https://github.com/ansemjo/dotfiles "$dotfiles"
 This bashrc mainly gives you a nice and colourful prompt and a good amount of
 aliases. The aliases are individually split into seperate files in
 [`bash/aliases.d/`](bash/aliases.d/). Additional configuration files and the
-prompt builder are in [`bash/conf.d/`](bash/conf.d/).
+prompt builder are in [`bash/conf.d/`](bash/conf.d/). Some highlights:
+
+* `ll`, `lla`, `lll` - `ls` aliases to display long, all and recursively
+* `tmp` - create a temporary playground in `/tmp` and remove it upon exit
+* `bak` - quickly create a backup of a file or dir with `.bak` suffix
+* `cb` - read or write system clipboard with xclip, e.g. `date | cb` or `var=$(cb)`
+* `sd` - use `pushd` to cycle through or add directories on stack
+* `hh`, `ff` - bash history and find-filename grep-ing
+* `suu` - `sudo su`
+* `tm` - attach to or start a new named tmux session
+* `timestampfn` - output current date in iso-like format for filenames
+* `docker-ssh-socket` - forward and use a Docker socket from a remote machine via an ssh tunnel
+* `ffmpeg-*` - some convenience functions for ffmpeg
+* `haveibeenpwned` - check piped-in passwords against leaked databases
+* `ìpaddr` - parse `ip addr` output to cleanly display only addresses
+* `wtfismyip` - contact `wtfismyip.com` to get public addresses
+* `markman` - read a markdown file with `man`
+* `nuke` - delete all files with `shred` and remove directory
+* `openssl-*` - convenience functions for openssl to display certificate info etc.
+* `ports` - show listening ports in reduced tabular output
+* `qrclip` - display clipboard contents as qr code in terminal
+* `randomname` - Docker's random naming function converted for bash
+* `random{char,hex,mac,ip,key,words,star}` - various randomness functions
+* `rosenbridge`, `rbsend` - pipe data back from a host through a temporary ssh tunnel
 
 The path where bash looks for the global configuration file may differ but
 it should be included in `/etc/profile`. Usually it is `/etc/bashrc` or
@@ -47,6 +70,8 @@ a new pretty format and sets some useful aliases:
 * `ll` - log last ten commits
 * `st` - short status output
 * `co`, `br`, `re` - aliases for `checkout`, `branch` and `remote`
+* `cc` - quickly clean files
+* `hash` - print current HEAD hash
 * `upstream` - push to a remote and mark it as upstream
 * `cl` - show a changelog, overview of commits since last tag
 * `nv` - parse previous annotated tags and create a new semver-incremented
