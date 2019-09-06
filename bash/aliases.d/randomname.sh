@@ -850,6 +850,7 @@ randomname() {
 
     # print concatenated
     printf "%s%s%s" "$l" "$c" "$r"
+    ttyecho
     break
 
   done

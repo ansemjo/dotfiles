@@ -9,7 +9,7 @@ randomchar () {
   fi
   tr -dc "${chars:-[:alnum:]}" </dev/urandom | head -c"$n";
   # print final newline if output is a terminal
-  [[ -t 1 ]] && echo;
+  ttyecho
 }
 
 # output random hex characters from urandom
@@ -21,14 +21,16 @@ randommac () {
   vendor=$(_h):$(_h):$(_h);
   device=$(_h):$(_h):$(_h);
   mac="${1-$vendor}:$device";
-  echo "${mac,,}";
+  echo -n "${mac,,}";
+  ttyecho
   unset -f _h
 }
 
 # echo a random 10.0.0.0/8 ipv4
 randomip() {
   _rndip() { shuf -i 1-254 -n 1; };
-  echo "10.$(_rndip).$(_rndip).$(_rndip)";
+  echo -n "10.$(_rndip).$(_rndip).$(_rndip)";
+  ttyecho
   unset -f _rndip
 }
 
@@ -81,7 +83,7 @@ randomwords() {
   # print words
   array=($(for i in $(seq $n); do word; done))
   printf "%s$c" "${array[@]}" | head -c-1
-  echo
+  ttyecho
 
 }
 
@@ -94,5 +96,6 @@ randomstar () {
     mkdir -p "$(dirname "$file")" || return 1
     curl -# -Lo "$file" "$stars" || return 1
   fi
-  grep '^[a-zA-Z]\+ ' "$file" | cut -d\  -f1 | uniq | shuf -n1;
+  grep '^[a-zA-Z]\+ ' "$file" | cut -d\  -f1 | uniq | shuf -n1 | head -c -1;
+  ttyecho
 }
