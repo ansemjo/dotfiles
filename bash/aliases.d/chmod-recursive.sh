@@ -10,7 +10,7 @@ chmodr() {
   err() { echo "err: $1" >&2; usage >&2; }
 
   # argument parser
-  local OPTIND=0
+  local opt OPTIND OPTARG
   while getopts 'dft:vh' opt; do
     case $opt in
       d) local TYPE="d" ;;
