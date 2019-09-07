@@ -1,19 +1,11 @@
-# netinfo - shows network information for your system
+# show ip addresses more readably
 ipaddress () {
- local _grep="^[[:digit:]]\+:\|^[[:space:]]*\(link/\|inet\)"
-
- local _mac="[a-f0-9:]*"
- local _ipv4s="[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\/[0-9]\{1,3\}"
- local _ipv6s="$_mac\/[0-9]\{1,3\}"
-
- local _iface="s/^[[:digit:]]\+: \(.*\): <.*> .* state \(UP\|DOWN\|UNKNOWN\).*$/\n\1 (\2):/"
- local _link="s/link\/\(.* $_mac\) .*$/\1/"
- local _inet4="s/inet \($_ipv4s\) .*$/ipv4 \1/"
- local _inet6="s/inet6 \($_ipv6s\) .*$/ipv6 \1/"
-
- ip addr | grep -e "$_grep" | sed -e "$_iface" -e "$_link" -e "$_inet4" -e "$_inet6"
-
- echo
+  ip addr | sed -n \
+    -e "s/^[0-9]\+: \(.*\): <.*> .* state \([A-Z]\+\) .*/\n$(printf '\033[1m\\1:\033[0m') \2/p" \
+    -e "s/link\/\(\w\+ [0-9a-f:]\+\).*/\1/p" \
+    -e "s/inet \([^ ]\+\).*/ipv4 \1/p" \
+    -e "s/inet6 \([^ ]\+\).*/ipv6 \1/p";
+  echo;
 }
 alias ipaddr='ipaddress'
 
