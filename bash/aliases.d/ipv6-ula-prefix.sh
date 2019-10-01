@@ -44,4 +44,5 @@ console.log((function prefix() {
 })());
 SCRIPT
 }
+alias randomprefix=ipv6prefix
 fi
