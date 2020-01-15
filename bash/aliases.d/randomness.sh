@@ -7,7 +7,8 @@ randomchar () {
     # otherwise use default n and assume it's a character class
     local n=42; local chars=$1;
   fi
-  tr -dc "${chars:-[:alnum:]}" </dev/urandom | head -c"$n";
+  # use alphanumeric without some lookalike characters by default
+  tr -dc "${chars:-a-hjkmnp-zA-HJKLMNP-Z2-9}" </dev/urandom | head -c"$n";
   # print final newline if output is a terminal
   ttyecho
 }
