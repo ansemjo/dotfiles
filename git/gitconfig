@@ -98,6 +98,9 @@
   # simply clean up everything that does not belong
   cc = clean -idx
 
+  # amend changes to previous commit without asking for message again
+  amend = commit --amend --no-edit
+
 [url "https://github.com/"]
   insteadOf = github:
 
