@@ -26,6 +26,7 @@ mkcdtmp() { cd $(mknamedtemp) && pwd; }
 # /tmp/tmp-great-buck $ ^Dexit
 # ~ $ 
 tmp() {
+  history -w || true
   t=$(mknamedtemp) \
     && { $SHELL -c \
      "cd '$t' \
@@ -34,5 +35,10 @@ tmp() {
       && exec $SHELL" \
      || true; \
     } \
-    && rm -rf "$t"
+    && if awk '{ print $2 }' /etc/mtab | grep "$t"; then
+      echo -e "\033[31maborting removal due to mounts\033[0m" >&2
+    else
+      echo -e "\033[31mremoving temporary directory ...\033[0m" >&2
+      rm -rf "$t"
+    fi
 }
