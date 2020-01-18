@@ -1,8 +1,16 @@
-# activate a python virtualenv created with:
-# $ virtualenv venv/
+# activate a python virtualenv or create one if none exists
 venv () {
-  test -d venv && test -r venv/bin/activate && \
-  source venv/bin/activate \
-  || { echo "venv/: no virtualenv found" 1>&2; return 1; }
+  # if venv/ exists
+  if test -d venv; then
+    if test -r venv/bin/activate; then
+      source venv/bin/activate
+    else
+      echo "err: venv/: not a virtualenv" >&2
+      return 1
+    fi
+  else
+    virtualenv venv/
+    source venv/bin/activate
+  fi
 }
 
