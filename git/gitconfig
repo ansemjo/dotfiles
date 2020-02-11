@@ -101,6 +101,9 @@
   # amend changes to previous commit without asking for message again
   amend = commit --amend --no-edit
 
+  # output a revision count and hash as a universal version description
+  revision = "!f() { printf 'r%s-g%s\\n' \"$(git rev-list --count HEAD)\" \"$(git describe --always --abbrev=7 --match '^$')\"; };f"
+
 [url "https://github.com/"]
   insteadOf = github:
 
