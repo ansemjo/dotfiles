@@ -16,7 +16,8 @@ $1 == "signal:" {
   sig = $2 " " $3
 }
 $1 == "SSID:" {
-  printf("%s\t%s\t%.3f MHz\t%s\t%s%s\n", dev, bss, frq / 1000, sig, ass, $2)
+  $1 = ""
+  printf("%s\t%s\t%.3f MHz\t%s\t%s%s\n", dev, bss, frq / 1000, sig, ass, $0)
 }
 '
 }
