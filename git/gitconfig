@@ -32,7 +32,7 @@
   signlast = commit --amend --gpg-sign
 
   # show log in a graph with different branches
-  graph  = log --graph --all
+  graph  = log --graph --all --pretty=line
 
   # show a diff of files staged so far
   staged = diff --cached
