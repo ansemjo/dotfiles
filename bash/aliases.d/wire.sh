@@ -28,9 +28,9 @@ wire() {
         echo "err: link is already up ..." >/dev/stderr
         return 1
       else
-        sudo wg-quick up "$profile"
-        watch --color sudo WG_COLOR_MODE=always wg show "$profile"
-        sudo wg-quick down "$profile"
+        sudo wg-quick up "$profile" && \
+        watch --color sudo WG_COLOR_MODE=always wg show "$profile";
+        sudo wg-quick down "$profile";
       fi
     ;;
 
