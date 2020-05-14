@@ -103,7 +103,7 @@ MANUAL
 
       v) # video codec selection
         case "${arg}" in
-          libx265|x265|h265|hvec) vcodec=hevc;;
+          libx265|x265|h265|hevc) vcodec=hevc;;
           libx264|x264|h264|avc) vcodec=h264;;
           libvpx|libvpx-vp9|vp9|webm) vcodec=vp9;;
           *) vcodec="${arg}";;
@@ -149,8 +149,6 @@ MANUAL
   # input file required in first argument
   if [[ -z ${1+undefined} ]]; then
     err "input file required"; return 1;
-  elif [[ ! -r ${1} ]]; then
-    err "not a readable file: ${1}"; return 1;
   else
     input="${1}"
     shift 1
@@ -165,7 +163,8 @@ MANUAL
   # print executed command and run ffmpeg
   echo "+ ffmpeg-recode: v=$vcodec a=$acodec p=$preset ${quality[1]/#/q=}"
   set -x
-  ffmpeg -i "${input}" \
+  ffmpeg "$@" \
+    -i "${input}" \
     -hide_banner -loglevel error -stats \
     -c:v "${vcodec}" \
       -x265-params log-level=error \
@@ -174,7 +173,7 @@ MANUAL
       -pix_fmt yuv420p \
       -movflags +faststart \
     -c:a "${acodec}" \
-    "$@" "${output}"
+    "${output}"
   { set +x; } 2>/dev/null
 
 )
