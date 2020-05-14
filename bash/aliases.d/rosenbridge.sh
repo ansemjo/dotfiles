@@ -38,6 +38,8 @@ README
   # cancel forwarding and remove fifo when done
   ssh -O cancel -R "0:$fifo" "${conn[@]}" 2>/dev/null
   rm -f "$fifo"
+  # reset trap to default
+  trap - INT
 
 }
 _rosenbridge() {
