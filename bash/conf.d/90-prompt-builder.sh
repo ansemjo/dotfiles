@@ -17,6 +17,8 @@ PS1_ONLYPROMPT=false
 # display git prompt? (yes/no)
 # (requires /usr/share/git/completion/git-prompt.sh)
 PS1_GIT=true
+# display kubernetes context and namespace
+PS1_KUBERNETES=false
 
 # defaults for __git_ps1
 GIT_PS1_SHOWDIRTYSTATE=true
@@ -84,31 +86,6 @@ function prompt_builder {
 
   fi
 
-  # <exit status>
-  if falsy "$PS1_ONLYPROMPT" && truthy "$PS1_STATUS"; then
-
-    #local symbol='\[\342\234\]\224' # --> ✔
-    #local symbol='\[\342\234\]\226' # --> ✖
-    #local symbol='\[\342\234\]\227' # --> ✗
-    #local symbol='\[\342\200\]\242' # --> •
-    local symbol='\[\342\246\]\201' # --> ⦁
-    #local symbol='\[\342\236\]\244' # --> ➤
-    #local symbol='\[\342\212\]\263' # --> ⊳
-    #local symbol='\[\342\256\]\236' # --> ⮞
-    #local symbol='\[\342\226\]\252' # --> ▪
-    #local symbol='\[\342\235\]\261' # --> ❱
-
-    # colorcoded exitstatus bullet
-    [[ $exitstatus = 0 ]]   \
-      && PS1+="$bold$green$symbol" \
-      || PS1+="$bold$red$exitstatus"   ;
-    PS1+="$reset "
-
-  fi
-
-  # n background jobs
-  falsy "$PS1_ONLYPROMPT" && truthy "$PS1_JOBS" && \
-    PS1+="$magenta$(_jobscounter)$reset";
 
   # <username>
   falsy "$PS1_ONLYPROMPT" && truthy "$PS1_USERNAME" && \
@@ -129,13 +106,38 @@ function prompt_builder {
 
     # <git status>
     truthy "$PS1_GIT" && \
-      PS1+='$(__git_ps1 " : %s" 2>/dev/null)'
+      PS1+="$reset$yellow"'$(__git_ps1 " %s" 2>/dev/null)'
 
     PS1+="$reset "
   fi
 
+  # <kubernetes info>
+  falsy "$PS1_ONLYPROMPT" && truthy "$PS1_KUBERNETES" && \
+    PS1+="$reset$blue\$(kubectx -c)$reset:$green\$(kubens -c) "
+
+  # <n background jobs> if != 0
+  falsy "$PS1_ONLYPROMPT" && truthy "$PS1_JOBS" && {
+    local j; j=$(_jobscounter); [[ $j -gt 0 ]] && \
+    PS1+="${magenta}j${bold}$(_jobscounter)$reset"
+  }
+
+  # e<exit status> if != 0
+  falsy "$PS1_ONLYPROMPT" && truthy "$PS1_STATUS" && \
+    [[ $exitstatus != 0 ]] && PS1+="${red}e${bold}${exitstatus} "
+  # these symbols were used for 'green' exit status indicators
+  #local symbol='\[\342\234\]\224' # --> ✔
+  #local symbol='\[\342\234\]\226' # --> ✖
+  #local symbol='\[\342\234\]\227' # --> ✗
+  #local symbol='\[\342\200\]\242' # --> •
+  #local symbol='\[\342\246\]\201' # --> ⦁
+  #local symbol='\[\342\236\]\244' # --> ➤
+  #local symbol='\[\342\212\]\263' # --> ⊳
+  #local symbol='\[\342\256\]\236' # --> ⮞
+  #local symbol='\[\342\226\]\252' # --> ▪
+  #local symbol='\[\342\235\]\261' # --> ❱
+
   # prompt symbol $/#
-  PS1+="$bold\\\$$reset "
+  PS1+="$reset$bold\\\$$reset "
 
   # line-continuation prompt
   PS2="$bold$yellow>$reset "
