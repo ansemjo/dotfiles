@@ -19,6 +19,7 @@ chmodr() {
       t) local TYPE="$OPTARG" ;;
       v) local VERBOSE="-v" ;;
       h) usage; return 0 ;;
+      *) usage; return 1 ;;
     esac
   done
   shift $((OPTIND - 1))
