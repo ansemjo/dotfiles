@@ -5,12 +5,13 @@ of your system's default ones. To apply these settings systemwide start by
 cloning the repository into `/usr/local/etc/` and then symlink the desired
 configurations in `/etc` appropriately.
 
-You can use the [ansible role](https://github.com/ansemjo/role-dotfiles)
-that I created for this purpose aswell.
+You can use the `install.sh` script to create the symlinks aswell.
 
 ```bash
-dotfiles=/usr/local/etc/dotfiles
-git clone https://github.com/ansemjo/dotfiles "$dotfiles"
+cd /usr/local/etc
+git clone https://github.com/ansemjo/dotfiles
+cd dotfiles/
+./install.sh -B -abgtv
 ```
 
 ## bash
