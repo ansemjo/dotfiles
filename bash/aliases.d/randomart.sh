@@ -4,8 +4,8 @@ if iscommand randomart.py; then
 
   artcompare() {
     echo "Enter two hashes/strings/lines to compare ..."
-    read left;   left=$(randomart.py <<<"$left");
-    read right; right=$(randomart.py <<<"$right");
+    read -r left;   left=$(randomart.py <<<"$left");
+    read -r right; right=$(randomart.py <<<"$right");
     if [[ $left == $right ]]; then
       printf '\033[32mThe inputs match.\n'
     else
