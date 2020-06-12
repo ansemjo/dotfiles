@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Set some defaults for the prompt line; defaults to false if unset
 
 # use color?

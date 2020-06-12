@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # enable any key to restart output flow after pressing ctrl-s
 stty ixany
 

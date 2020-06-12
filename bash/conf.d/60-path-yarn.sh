@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # add global yarn bin path to $PATH if yarn is installed
 # check if common path exists first because yarn is slow
 if command -v yarn >/dev/null; then
