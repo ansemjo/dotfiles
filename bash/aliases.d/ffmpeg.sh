@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if iscommand ffmpeg; then
 
 # concatenate video files with ffmpeg

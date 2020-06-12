@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if iscommand tmux; then
 
   # attach or create a tmux session

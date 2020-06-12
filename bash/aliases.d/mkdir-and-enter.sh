@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # make temporary directory with diceware words
 mkdicetemp() { mktemp --tmpdir -d "tmp-$(randomwords 2 -)-XXX"; }
 

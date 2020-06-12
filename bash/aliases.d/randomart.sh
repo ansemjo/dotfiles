@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # useful alias to compare two hashes with https://github.com/ansemjo/randomart.py
 if iscommand randomart.py; then
 

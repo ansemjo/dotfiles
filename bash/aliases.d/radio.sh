@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if iscommand mpv; then
 
 # play radio livestreams, quietly, show only icy-titles

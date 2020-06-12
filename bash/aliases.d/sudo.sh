@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # check command after sudo for aliases
 alias sudo='sudo '
 

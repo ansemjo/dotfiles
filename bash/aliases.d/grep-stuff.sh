@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # various grep shorthands
 alias igrep='egrep -i'
 alias hh='history | igrep '

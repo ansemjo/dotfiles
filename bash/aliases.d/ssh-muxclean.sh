@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # provide a simple function to clean up ssh multiplexing sockets
 # for usage with ssh config 'ControlPath /run/user/%i/sshmux-%r@%h:%p.sock'
 SSHMUX_GLOB="/run/user/$EUID/sshmux-*.sock"

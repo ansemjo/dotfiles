@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # try to memorize that pushd and popd are really useful ..
 # meanwhile, use 'sd' (switch directory) for a common use case
 # of pushd:

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # make a curl request through tor
 tor-curl() {
   # check if tor is running and socks proxy is listening

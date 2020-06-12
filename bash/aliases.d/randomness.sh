@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # output random alphanumeric characters from urandom
 randomchar () {
   if [[ $1 =~ ^[0-9]+$ ]]; then

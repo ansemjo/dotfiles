@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # print color table
 terminal-colors() {
   

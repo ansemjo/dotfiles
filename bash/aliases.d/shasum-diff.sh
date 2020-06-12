@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # check files in two directories with sha*sum
 shadiff() {
   shasum=${3:-sha384sum}

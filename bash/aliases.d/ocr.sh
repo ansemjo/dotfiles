@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # run ocr on pdfs with ocrmypdf (install via pip)
 if iscommand ocrmypdf; then
 ocr() {

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # recursively shred files in given folder and then
 # remove directories with rm -rf
 

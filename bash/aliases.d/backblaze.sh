@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # if boost is not installed we want backblaze to use b2
 if iscommand backblaze-b2; then
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # pingscan, preferably show all active IPs on local network
 pingscan () {
   if [[ -n $1 ]] && [[ $1 != -h ]]; then

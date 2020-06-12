@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # pop first line of a file
 popline() { sed -e "1w /dev/stdout" -e "1d" -i "${1:?file to pop}"; }
 

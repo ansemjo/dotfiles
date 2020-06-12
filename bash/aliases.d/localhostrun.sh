@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # use localhost.run to expose a local port on the internet
 localhostrun() {
   PORT=${1:?localhost port required}

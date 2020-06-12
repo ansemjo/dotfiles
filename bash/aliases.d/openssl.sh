@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 ### OpenSSL shortcuts taken from: https://certsimple.com/blog/openssl-shortcuts
 ### Supplemented with some info from https://www.phildev.net/ssl/managing_ca.html
 

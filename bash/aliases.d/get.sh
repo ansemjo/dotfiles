@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # simplified alias for uget-gtk
 if iscommand uget-gtk; then
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # chmod files or directories recursively
 chmodr() {
 

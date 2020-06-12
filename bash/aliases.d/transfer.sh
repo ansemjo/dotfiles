@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # upload files to https://transfer.sh
 # adapted from https://gist.github.com/nl5887/a511f172d3fb3cd0e42d
 transfer() {

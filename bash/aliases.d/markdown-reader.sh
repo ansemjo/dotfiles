@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # read markdown files
 if iscommand pandoc; then
   markman() {

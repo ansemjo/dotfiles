@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # show ip addresses more readably
 ipaddress () {
   ip addr | sed -n \

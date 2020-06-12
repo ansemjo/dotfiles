@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 addlicense-MIT() {
   
   # author from git config

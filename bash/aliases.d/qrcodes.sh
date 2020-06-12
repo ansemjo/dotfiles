@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if iscommand qrencode; then
   # encode stdin and clipboard to qrcode on terminal
   alias qr='qrencode -t UTF8'

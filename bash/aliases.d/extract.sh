@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # universal extraction function
 extract () {
   if [[ ! -f $1 ]]; then

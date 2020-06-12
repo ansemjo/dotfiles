@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # create some "filesystem noise" in the current directory by
 # creating directories and files randomly
 fsnoise() {

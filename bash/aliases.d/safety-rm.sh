@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # safety!
 # makes these commands interactive,
 # i.e. prevents accidental overwrites

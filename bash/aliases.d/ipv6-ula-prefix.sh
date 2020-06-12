@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # generate ula prefix
 # https://gist.githubusercontent.com/ansemjo/40667dd9ee072107ae75000d047a89a0/raw/
 if iscommand node; then

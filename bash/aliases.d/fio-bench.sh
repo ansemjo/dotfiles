@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 if iscommand fio; then
 
   # a fio alias for commonly used quick benchmarks

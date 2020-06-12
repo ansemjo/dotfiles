@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # activate a python virtualenv or create one if none exists
 venv () {
   # if venv/ exists
