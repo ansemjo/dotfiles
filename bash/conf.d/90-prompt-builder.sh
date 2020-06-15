@@ -21,6 +21,8 @@ PS1_ONLYPROMPT=false
 PS1_GIT=true
 # display kubernetes context and namespace
 PS1_KUBERNETES=false
+# use linewrap indicator trick
+PS1_LINEWRAP=true
 
 # defaults for __git_ps1
 GIT_PS1_SHOWDIRTYSTATE=true
@@ -28,15 +30,13 @@ GIT_PS1_SHOWSTASHSTATE=true
 GIT_PS1_SHOWUNTRACKEDFILES=true
 GIT_PS1_SHOWUPSTREAM=auto
 
-
-
 # prompt_builder; is called after every command to refresh prompt
 function prompt_builder {
 
   # get exit status of previously run command
   local exitstatus=$?
 
-  # save settings; set case-insensitivity
+  # save settings; set case-insensitivity for truthy/falsy
   settings=$(shopt -p)
   shopt -s nocasematch
 
@@ -88,6 +88,12 @@ function prompt_builder {
 
   fi
 
+  # print linewrap indicator and position cursor at the beginning
+  # ref: https://www.vidarholen.net/contents/blog/?p=878
+  local linewrap='¶'
+  if truthy "$PS1_LINEWRAP"; then
+    printf "\033[33m%s\033[0m%$((COLUMNS-1))s\\r" "$linewrap"
+  fi
 
   # <username>
   falsy "$PS1_ONLYPROMPT" && truthy "$PS1_USERNAME" && \
