@@ -30,6 +30,7 @@ README
       h) usage; return 0;;
       r) READONLY="true";;
       v) VERBOSE="true";;
+      *) usage; return 1;;
     esac
   done
   shift "$((OPTIND-1))"
