@@ -36,7 +36,7 @@ wire() {
 
     *)
       echo "usage: wire <profile> {up|down|toggle|smart}" >&2
-      exit 1
+      return 1
     ;;
 
   esac
