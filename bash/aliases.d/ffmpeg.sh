@@ -157,8 +157,9 @@ MANUAL
 
   # output file optional, use suffixed input by default
   if [[ -z ${output+undefined} ]]; then
-    local ext="$(sed -n 's/.*\.\([0-9a-z]\{2,4\}\)$/\1/ip' <<<"${input}")"
-    output="${input}_${vcodec}.${ext:-mp4}"
+    #local ext="$(sed -n 's/.*\.\([0-9a-z]\{2,4\}\)$/\1/ip' <<<"${input}")"
+    #output="${input}_${vcodec}.${ext:-mp4}"
+    output="${input}_${vcodec}.mp4"
   fi
 
   # print executed command and run ffmpeg
