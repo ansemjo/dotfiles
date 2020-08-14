@@ -1,6 +1,24 @@
 #!/usr/bin/env bash
 if iscommand ffmpeg; then
 
+# download and assemble a m3u8 stream
+# expects a link and a filename
+# --------------------------------------------------
+ffmpeg-stream() {
+  usage() { cat <<USAGE
+Usage: $ ffmpeg-stream https://domain/path.m3u8 filename.mp4 [extra options]
+Use USERAGENT env to override default -user_agent argument.
+USAGE
+}
+  if [[ -z $1 ]] || [[ -z $2 ]]; then
+    usage >&2; exit 1;
+  fi
+  link="$1"; file="$2"; shift 2;
+  ua="${USERAGENT:-Mozilla/5.0 (X11; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0}"
+  ffmpeg -hide_banner -loglevel error -stats \
+    -user_agent "$ua" -i "$link" -c copy "$@" "$file";
+}
+
 # concatenate video files with ffmpeg
 # expects absolute filenames on stdin, one per line
 # --------------------------------------------------
