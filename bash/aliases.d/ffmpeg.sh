@@ -11,7 +11,7 @@ Use USERAGENT env to override default -user_agent argument.
 USAGE
 }
   if [[ -z $1 ]] || [[ -z $2 ]]; then
-    usage >&2; exit 1;
+    usage >&2; return 1;
   fi
   link="$1"; file="$2"; shift 2;
   ua="${USERAGENT:-Mozilla/5.0 (X11; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0}"
