@@ -40,6 +40,7 @@ detect-os() {
       *debian*) echo DEBIAN;;
       *suse*)   echo SUSE;;
       *arch*)   echo ARCH;;
+      *gentoo*) echo GENTOO;;
       *)        echo UNKNOWN;;
     esac
   else
@@ -59,6 +60,7 @@ if [[ $BASHRC == yes ]]; then
   BASHRC="$DOTFILES/bash/bashrc"
   case $OS in
     DEBIAN|SUSE|ARCH) link "$BASHRC" /etc/bash.bashrc;;
+    GENTOO)           link "$BASHRC" /etc/bash/bashrc;;
     *)                link "$BASHRC" /etc/bashrc;;
   esac
   link "$DOTFILES/bash/dot-bashrc" /etc/skel/.bashrc
@@ -75,7 +77,7 @@ fi
 if [[ $VIMRC == yes ]]; then
   VIMRC="$DOTFILES/vim/vimrc"
   case $OS in
-    DEBIAN) link "$VIMRC" /etc/vim/vimrc;;
-    *)      link "$VIMRC" /etc/vimrc;;
+    DEBIAN|GENTOO)  link "$VIMRC" /etc/vim/vimrc;;
+    *)              link "$VIMRC" /etc/vimrc;;
   esac
 fi
