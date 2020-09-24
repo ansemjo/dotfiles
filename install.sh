@@ -11,25 +11,11 @@ usage: $ install.sh [-h] [-B] [-a] [-b] [-g] [-t] [-v]
   -g  : link gitconfig
   -t  : link tmux.conf
   -v  : link vimrc
+
+example: quickly install bash, git, tmux and vim links
+  ./install.sh -bgtv
 USAGE
 }
-
-# parse commandline options
-while getopts 'hBabgtv' flag; do
-  case "$flag" in
-    h) usage; exit 0;;
-    B) LNBACKUP=yes;;
-    a) ANSIBLE=yes;;
-    b) BASHRC=yes;;
-    g) GITCONFIG=yes;;
-    t) TMUX=yes;;
-    v) VIMRC=yes;;
-    \?) usage; exit 1;;
-  esac
-done
-
-# find absolute path to this dotfiles directory
-DOTFILES=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 # try to detect distribution
 detect-os() {
@@ -48,6 +34,31 @@ detect-os() {
   fi
 }
 OS=$(detect-os)
+echo "detected distribution: ${OS,,}"
+
+# parse commandline options
+while getopts 'hBabgtv' flag; do
+  case "$flag" in
+    h) usage; exit 0;;
+    B) LNBACKUP=yes;;
+    a) ANSIBLE=yes;;
+    b) BASHRC=yes;;
+    g) GITCONFIG=yes;;
+    t) TMUX=yes;;
+    v) VIMRC=yes;;
+    \?) usage; exit 1;;
+  esac
+done
+
+# complain if nothing given
+if [[ $OPTIND -eq 1 ]]; then
+  echo "err: no flags given" >&2
+  usage
+  exit 1
+fi
+
+# find absolute path to this dotfiles directory
+DOTFILES=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 # ---------------------------------------- #
 link() { ln -sfv $([[ $LNBACKUP == yes ]] && echo '-b') "$@"; }
