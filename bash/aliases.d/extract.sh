@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # universal extraction function
 extract () {
   if [[ ! -f $1 ]]; then
@@ -19,3 +20,16 @@ extract () {
     fi
   fi
 }
+
+
+if iscommand unzip; then
+# extract a "split zip" archive (.zip, .z01, .z02, ...)
+unzplit() {
+  file=${1:?input *.zip required}
+  tmp=$(mktemp --tmpdir unzplit-XXXXX.zip)
+  trap "rm -fv '${tmp:?tempfile}'" EXIT RETURN
+  zip -s- "$file" --out "$tmp"
+  unzip "$tmp"
+}
+fi
+
