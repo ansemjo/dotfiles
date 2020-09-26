@@ -45,8 +45,8 @@
 
   # various shorthands
   la = log --stat --pretty=block
-  ls = log -n 10 --pretty=mini
-  ll = log -n 10 --pretty=line
+  ls = log -n 20 --pretty=mini
+  ll = log -n 20 --pretty=line
   st = status --short --branch
   co = checkout
   cm = commit
