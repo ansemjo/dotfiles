@@ -97,7 +97,7 @@ usage: $ ffmpeg-recode [-v codec] [-a codec] [-p preset] [-q quality] \\
   -v vcodec  : video encoder (hevc/h264/vp9/...)
   -a acodec  : autio encoder (copy/aac/opus/...)
   -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
-  -q quality : quality (crf) setting
+  -q crf     : quality setting (h264~23, hevc~28)
   -o outfile : output file (default: \$input_\$codec.\$ext)
   -h         : show usage help
   infile     : input video file
