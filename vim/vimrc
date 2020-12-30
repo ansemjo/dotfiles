@@ -79,11 +79,6 @@ endif
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc,.png,.jpg
 
 
-" ---------- PATHOGEN ----------
-
-silent! call pathogen#infect()
-
-
 " ---------- AIRLINE ----------
 
 " airline settings (:help airline)
@@ -169,3 +164,8 @@ endif
 nnoremap <leader>s :ShowSpaces <CR>
 command ShowSpaces :set list listchars=eol:¶,space:·,tab:»·
 command NoShowSpaces :set nolist
+
+" ---------- USER CONFIGURATION ----------
+
+" in the end load user vimrc
+silent! source ~/.vimrc
