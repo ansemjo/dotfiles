@@ -26,14 +26,14 @@ ffmpeg-concat() {
   ffmpeg -hide_banner -f concat -safe 0 \
     -i <(while read -r line; do \
       readlink -f "$line" | sed -e "s/'/'\\\''/g" -e "s/\(.*\)/file '\1'/"; \
-    done) "$@";
+    done) -c copy "$@";
 }
 
 
 # cut sections from a longer video and save to individual files
 # https://stackoverflow.com/a/42827058
 # --------------------------------------------------
-ffmpeg-sections() (
+ffmpeg-sections() {
 
   usage() { cat <<USAGE
 usage: $ ffmpeg-sections -s 00:00-05:00 [-s ...] movie.mp4 [extra args]
@@ -75,18 +75,66 @@ USAGE
     local start="${section%%-*}"
     local until="${section##*-}"
     : $((n++))
-    SECTIONARGS+=("-ss" "$start" "-to" "$until" "$(name "$start" "$until")")
+    SECTIONARGS+=("-c" "copy" "$@" "-ss" "$start" "-to" "$until" "$(name "$start" "$until")")
   done
 
-  ffmpeg -hide_banner -i "$INFILE" -c copy "$@" "${SECTIONARGS[@]}"
+  ffmpeg -hide_banner -i "$INFILE" "${SECTIONARGS[@]}"
 
-)
+}
+
+# cut sections and concatenate them directly
+# --------------------------------------------------
+ffmpeg-reslice() {
+
+  usage() { cat <<USAGE
+usage: $ ffmpeg-reslice -s 00:00-05:00 [-s ...] movie.mp4 [sliced.mp4]
+  -s from-until   section specifier timestamps [hh:mm:ss.nnn]
+  movie.mp4       input file
+  sliced.mp4      output file (default: \${input}_sliced.mp4)
+USAGE
+}
+
+  # parse commandline for sections
+  local SECTIONS=()
+  local opt OPTIND
+  while getopts 's:' opt; do
+    case "$opt" in
+      s) SECTIONS+=("-s" "$OPTARG") ;;
+      *) usage >&2; return 1 ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  # one argument required with filename
+  if [[ -z $1 ]]; then
+    echo "err: input filename required"
+    usage >&2
+    return 1
+  fi
+  INFILE="$1"
+  local name="$(basename "$INFILE")"
+  local ext="${name##*.}"
+  shift 1
+
+  # outfile name generator
+  if [[ -n $2 ]]; then
+    OUTFILE="$2"
+  else
+    OUTFILE="${name}_resliced.${ext}"
+  fi
+
+  # scripted slice and concatenate
+  ffmpeg-sections "${SECTIONS[@]}" "$INFILE" -loglevel error -stats
+  ls -1 "${name}"_s??_*."${ext}" | ffmpeg-concat -loglevel error -stats "$OUTFILE"
+  rm -fv "${name}"_s??_*."${ext}"
+
+}
 
 
 # transcode videos with ffmpeg to a different codec and container
 # by default encodes with the new hevc codec and copies audio
 # --------------------------------------------------
-ffmpeg-recode() (
+ffmpeg-recode() {
 
 # print usage information
 usage() { echo "usage: $ ffmpeg-recode [-v codec] [-a codec] [...] [-o outfile] [-h] infile" >&2; }
@@ -196,7 +244,7 @@ MANUAL
     "${output}"
   { set +x; } 2>/dev/null
 
-)
+}
 
 iscommand recode || alias recode=ffmpeg-recode
 
