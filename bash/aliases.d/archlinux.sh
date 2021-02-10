@@ -8,7 +8,7 @@ if [[ -x /usr/bin/rankmirrors ]]; then
 
     # https://wiki.archlinux.org/index.php/Mirrors#Fetching_and_ranking_a_live_mirror_list
     say "fetch updated mirrorlist: DE/https/status=on ..."
-    local mirrors=$(curl -s "https://www.archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" |\
+    local mirrors=$(curl -sL "https://archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" |\
       sed -e 's/^#Server/Server/' -e '/^#/d')
 
     say "rank mirrors ..."
