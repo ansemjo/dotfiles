@@ -141,12 +141,13 @@ usage() { echo "usage: $ ffmpeg-recode [-v codec] [-a codec] [...] [-o outfile] 
 manual() { cat >&2 <<MANUAL
 Transcode videos with ffmpeg to a more efficient format.
 usage: $ ffmpeg-recode [-v codec] [-a codec] [-p preset] [-q quality] \\
-          [-o outfile] [-h] infile [extra args]
+          [-l loglvl] [-o outfile] [-h] infile [extra args]
   -v vcodec  : video encoder (hevc/h264/vp9/...)
   -a acodec  : autio encoder (copy/aac/opus/...)
   -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
   -q crf     : quality setting (h264~23, hevc~28)
   -o outfile : output file (default: \$input_\$codec.\$ext)
+  -l loglvl  : loglevel (quiet..error..warning..info..debug)
   -h         : show usage help
   infile     : input video file
   extra args : extra ffmpeg arguments
@@ -161,10 +162,11 @@ MANUAL
   local preset="veryfast"   # encoder preset
   local quality=()          # quality factor
   local output input        # output and input filename
+  local loglvl=""           # logging level
 
   # commandline parser
   local opt OPTIND
-  while getopts ":v:a:p:q:o:h" opt; do
+  while getopts ":v:a:p:q:o:l:h" opt; do
     local arg="${OPTARG}"
     case "${opt}" in
 
@@ -200,6 +202,9 @@ MANUAL
       o) # specific output filename
         output="${arg}";;
 
+      l) # adjust loglevel
+        loglvl="${arg}";;
+
       h) # usage help
         manual; return 0;;
 
@@ -233,9 +238,9 @@ MANUAL
   set -x
   ffmpeg "$@" \
     -i "${input}" \
-    -hide_banner -loglevel error -stats \
+    -hide_banner -loglevel "${loglvl:-info}" -stats \
     -c:v "${vcodec}" \
-      -x265-params log-level=error \
+      -x265-params log-level="${loglvl:-warning}" \
       -preset "${preset}" \
       "${quality[@]}" \
       -pix_fmt yuv420p \
