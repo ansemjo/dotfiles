@@ -1,6 +1,28 @@
 #!/usr/bin/env bash
 if iscommand ffmpeg; then
 
+# progress output that comfortably fits in 80 columns ...
+# use it like: ffmpeg-recode -l info [...] 2>&1 | ffmpeg-progress
+#
+# TODO: this leaves ffmpeg hanging as a background job if
+#  aborted with ctrl-c. not sure why that is? use kill %1.
+# --------------------------------------------------
+ffmpeg-progress() {
+  stdbuf -o0 tr "\r" "\n" \
+    | grep --line-buffered -E "(Duration:|^frame=)" \
+    | while read line; do
+      if [[ $line =~ Duration ]]; then
+        dur=$(sed "s/.*Duration: \+\([0-9:.]\+\),.*/\1/" <<<"$line")
+        printf ' %11s / %11s %10s %8s %14s\n' current total size speed bitrate
+      elif [[ $line =~ ^frame= ]]; then
+        status=($(sed "s/.*size= *\([0-9]\+kB\) time=\([0-9:.]\+\) bitrate= *\([0-9.]\+kbits\/s\) .*speed= *\([0-9.]\+x\).*/\2 \1 \4 \3/" <<<"$line"))
+        printf '\033[2K\r %s / %s %10s %8s %14s' "${status[0]}" "$dur" "${status[@]:1}"
+        #echo -ne "\033[2K\r${status[0]}/$dur ${status[1]} ${status[2]} ${status[3]}"
+      fi
+    done
+    echo
+}
+
 # download and assemble a m3u8 stream
 # expects a link and a filename
 # --------------------------------------------------
