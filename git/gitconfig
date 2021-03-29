@@ -43,6 +43,9 @@
   # show a diff of files staged so far
   staged = diff --cached
 
+  # show the stats of a commit
+  stat = show --stat
+
   # various shorthands
   la = log --stat --pretty=block
   ls = log -n 20 --pretty=mini
