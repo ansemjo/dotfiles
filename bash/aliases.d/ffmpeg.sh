@@ -13,7 +13,7 @@ alias ffmpeg="ffmpeg -hide_banner -loglevel warning"
 ffmpeg-progress() {
   stdbuf -o0 tr "\r" "\n" \
     | grep --line-buffered -E "(Duration:|^frame=)" \
-    | while read line; do
+    | while read -r line; do
       if [[ $line =~ Duration ]]; then
         dur=$(sed "s/.*Duration: \+\([0-9:.]\+\),.*/\1/" <<<"$line")
         printf ' %11s / %11s %10s %8s %14s\n' current total size speed bitrate
