@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 if iscommand ffmpeg; then
 
+# shut ffmpeg up by default
+alias ffmpeg="ffmpeg -hide_banner -loglevel warning"
+
 # progress output that comfortably fits in 80 columns ...
 # use it like: ffmpeg-recode -l info [...] 2>&1 | ffmpeg-progress
 #
@@ -27,28 +30,24 @@ ffmpeg-progress() {
 # expects a link and a filename
 # --------------------------------------------------
 ffmpeg-stream() {
-  usage() { cat <<USAGE
-Usage: $ ffmpeg-stream https://domain/path.m3u8 filename.mp4 [extra options]
-Use USERAGENT env to override default -user_agent argument.
-USAGE
-}
-  if [[ -z $1 ]] || [[ -z $2 ]]; then
-    usage >&2; return 1;
+  if [[ $# -lt 2 ]] || [[ $1 = "-h" ]]; then
+    printf >&2 '%s\n' \
+      'Usage: $ ffmpeg-stream https://domain/path.m3u8 filename.mp4 [extra options]' \
+      'Use USERAGENT env to override default -user_agent argument.'
+    return 1;
   fi
-  link="$1"; file="$2"; shift 2;
-  ua="${USERAGENT:-Mozilla/5.0 (X11; Linux x86_64; rv:75.0) Gecko/20100101 Firefox/75.0}"
-  ffmpeg -hide_banner -loglevel error -stats \
-    -user_agent "$ua" -i "$link" -c copy "$@" "$file";
+  local LINK="$1"; shift 1;
+  local USERAGENT="${USERAGENT:-Mozilla/5.0 (X11; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0}";
+  ffmpeg -stats -user_agent "$USERAGENT" -i "$LINK" -c copy "$@";
 }
 
 # concatenate video files with ffmpeg
 # expects absolute filenames on stdin, one per line
 # --------------------------------------------------
 ffmpeg-concat() {
-  ffmpeg -hide_banner -f concat -safe 0 \
-    -i <(while read -r line; do \
-      readlink -f "$line" | sed -e "s/'/'\\\''/g" -e "s/\(.*\)/file '\1'/"; \
-    done) -c copy "$@";
+  ffmpeg -f concat -safe 0 \
+    -i <(while read -r line; do printf 'file %q\n' "$(readlink -f "$line")"; done) \
+    -c copy "$@";
 }
 
 
@@ -100,7 +99,7 @@ USAGE
     SECTIONARGS+=("-c" "copy" "$@" "-ss" "$start" "-to" "$until" "$(name "$start" "$until")")
   done
 
-  ffmpeg -hide_banner -i "$INFILE" "${SECTIONARGS[@]}"
+  ffmpeg -i "$INFILE" "${SECTIONARGS[@]}"
 
 }
 
@@ -128,7 +127,7 @@ USAGE
   shift $((OPTIND - 1))
 
   # one argument required with filename
-  if [[ -z $1 ]]; then
+  if [[ -z ${1+undef} ]]; then
     echo "err: input filename required"
     usage >&2
     return 1
@@ -139,7 +138,7 @@ USAGE
   shift 1
 
   # outfile name generator
-  if [[ -n $2 ]]; then
+  if [[ -n ${2+def} ]]; then
     OUTFILE="$2"
   else
     OUTFILE="${name}_resliced.${ext}"
@@ -168,11 +167,12 @@ usage: $ ffmpeg-recode [-v codec] [-a codec] [-p preset] [-q quality] \\
   -a acodec  : autio encoder (copy/aac/opus/...)
   -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
   -q crf     : quality setting (h264~23, hevc~28)
-  -o outfile : output file (default: \$input_\$codec.\$ext)
+  -o outfile : output file (default: \$input_\$vcodec.mp4)
   -l loglvl  : loglevel (quiet..error..warning..info..debug)
+  -I inargs  : extra arguments before input file
   -h         : show usage help
   infile     : input video file
-  extra args : extra ffmpeg arguments
+  extra args : extra arguments before output file
 MANUAL
 }
 
@@ -185,10 +185,11 @@ MANUAL
   local quality=()          # quality factor
   local output input        # output and input filename
   local loglvl=""           # logging level
+  local inargs              # extra input arguments
 
   # commandline parser
   local opt OPTIND
-  while getopts ":v:a:p:q:o:l:h" opt; do
+  while getopts ":v:a:p:q:o:l:I:h" opt; do
     local arg="${OPTARG}"
     case "${opt}" in
 
@@ -227,6 +228,9 @@ MANUAL
       l) # adjust loglevel
         loglvl="${arg}";;
 
+      I) # extra input arguments
+        inargs="${arg}";;
+
       h) # usage help
         manual; return 0;;
 
@@ -250,15 +254,14 @@ MANUAL
 
   # output file optional, use suffixed input by default
   if [[ -z ${output+undefined} ]]; then
-    #local ext="$(sed -n 's/.*\.\([0-9a-z]\{2,4\}\)$/\1/ip' <<<"${input}")"
-    #output="${input}_${vcodec}.${ext:-mp4}"
     output="${input}_${vcodec}.mp4"
   fi
 
   # print executed command and run ffmpeg
-  echo "+ ffmpeg-recode: v=$vcodec a=$acodec p=$preset ${quality[1]/#/q=}"
+  # shellcheck disable=SC2046
+  echo "+ settings: v=$vcodec a=$acodec p=$preset ${quality[1]/#/q=}"
   set -x
-  ffmpeg "$@" \
+  ffmpeg $inargs \
     -i "${input}" \
     -hide_banner -loglevel "${loglvl:-info}" -stats \
     -c:v "${vcodec}" \
@@ -268,7 +271,7 @@ MANUAL
       -pix_fmt yuv420p \
       -movflags +faststart \
     -c:a "${acodec}" \
-    "${output}"
+    "$@" "${output}";
   { set +x; } 2>/dev/null
 
 }
