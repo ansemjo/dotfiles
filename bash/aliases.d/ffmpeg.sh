@@ -256,9 +256,13 @@ MANUAL
   shift $((OPTIND-1))
 
   # at least another argument with an output filename is required
-  if [[ -z ${output} ]] && [[ $# -eq 0 ]]; then
+  if [[ -z $output ]] && [[ $# -eq 0 ]]; then
     err "at least another output filename is required!"; return 1;
   fi
+
+  # assemble an array of arguments
+  args=("$@");
+  [[ -n $output ]] && args+=("$output");
 
   # print executed command and run ffmpeg
   # shellcheck disable=SC2046
@@ -274,7 +278,7 @@ MANUAL
       -pix_fmt yuv420p \
       -movflags +faststart \
     -c:a "${acodec}" \
-    "$@" ${output@Q};
+    "${args[@]}";
   { set +x; } 2>/dev/null
 
 }
