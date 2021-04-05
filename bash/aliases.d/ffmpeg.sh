@@ -158,21 +158,22 @@ USAGE
 ffmpeg-recode() {
 
 # print usage information
-usage() { echo "usage: $ ffmpeg-recode [-v codec] [-a codec] [...] [-o outfile] [-h] infile" >&2; }
+usage() { echo "usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-h] [...] outfile" >&2; }
 manual() { cat >&2 <<MANUAL
 Transcode videos with ffmpeg to a more efficient format.
-usage: $ ffmpeg-recode [-v codec] [-a codec] [-p preset] [-q quality] \\
-          [-l loglvl] [-o outfile] [-h] infile [extra args]
+usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-p preset] [-q quality] \\
+          [-l loglvl] [-I inargs] [-o] [-h] -- [extra args] outfile
   -v vcodec  : video encoder (hevc/h264/vp9/...)
   -a acodec  : autio encoder (copy/aac/opus/...)
   -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
   -q crf     : quality setting (h264~23, hevc~28)
-  -o outfile : output file (default: \$input_\$vcodec.mp4)
   -l loglvl  : loglevel (quiet..error..warning..info..debug)
-  -I inargs  : extra arguments before input file
+  -I inargs  : extra ffmpeg arguments before input file
+  -o         : generate output filename as \$input_\$vcodec.mp4
   -h         : show usage help
+  extra args : extra ffmpeg arguments before output file
   infile     : input video file
-  extra args : extra arguments before output file
+  outfile    : output file
 MANUAL
 }
 
@@ -183,13 +184,23 @@ MANUAL
   local acodec="aac"        # audio codec
   local preset="veryfast"   # encoder preset
   local quality=()          # quality factor
-  local output input        # output and input filename
+  local input output        # input and generate output filename
   local loglvl=""           # logging level
   local inargs              # extra input arguments
 
+  # input file required in first argument
+  if [[ -z ${1+undefined} ]]; then
+    err "input file required"; return 1;
+  elif [[ $1 = "-h" ]]; then
+    manual; return 0;
+  else
+    input="${1}"
+    shift 1
+  fi
+
   # commandline parser
   local opt OPTIND
-  while getopts ":v:a:p:q:o:l:I:h" opt; do
+  while getopts ":v:a:p:q:l:I:oh" opt; do
     local arg="${OPTARG}"
     case "${opt}" in
 
@@ -222,8 +233,8 @@ MANUAL
           *) quality=("-crf" "${arg}")
         esac;;
 
-      o) # specific output filename
-        output="${arg}";;
+      o) # generate output filename
+        output="${input}_${vcodec}.mp4";;
 
       l) # adjust loglevel
         loglvl="${arg}";;
@@ -244,17 +255,9 @@ MANUAL
   done
   shift $((OPTIND-1))
 
-  # input file required in first argument
-  if [[ -z ${1+undefined} ]]; then
-    err "input file required"; return 1;
-  else
-    input="${1}"
-    shift 1
-  fi
-
-  # output file optional, use suffixed input by default
-  if [[ -z ${output+undefined} ]]; then
-    output="${input}_${vcodec}.mp4"
+  # at least another argument with an output filename is required
+  if [[ -z ${output} ]] && [[ $# -eq 0 ]]; then
+    err "at least another output filename is required!"; return 1;
   fi
 
   # print executed command and run ffmpeg
@@ -271,7 +274,7 @@ MANUAL
       -pix_fmt yuv420p \
       -movflags +faststart \
     -c:a "${acodec}" \
-    "$@" "${output}";
+    "$@" ${output@Q};
   { set +x; } 2>/dev/null
 
 }
