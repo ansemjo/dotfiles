@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # show ip addresses more readably
 ipaddress () {
-  ip addr | sed -n \
+  ip addr show "$@" | sed -n \
     -e "s/^[0-9]\+: \(.*\): <.*>/\n$(printf '\033[1m\\1\033[0m'): +/;s/+ .* master \([^ ]\+\)/[\1] +/;s/+\( .*\)\? state \([^ ]\+\) .*/\2/p" \
     -e "s/link\/\(\w\+ [0-9a-f:]\+\).*/\1/p" \
     -e "s/inet \([^ ]\+\).*/ipv4 \1/p" \
