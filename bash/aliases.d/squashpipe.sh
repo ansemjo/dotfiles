@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# e.g. sshnull -p 22 muliphein.semjonov.de dd if=/dev/sda bs=128k
-
+# write a file from stdin to a squashfs archive and
+# optionally create a signed checksum on-the-fly
+# e.g.:  dd if=/dev/sda | squashpipe archive.sqsh
 squashpipe() {
 
   err() { echo "err: $1" >&2; usage; return 1; }
