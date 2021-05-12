@@ -3,6 +3,10 @@
 # write a file from stdin to a squashfs archive and
 # optionally create a signed checksum on-the-fly
 # e.g.:  dd if=/dev/sda | squashpipe archive.sqsh
+#
+# alternative for acquisition of forensic evidence containers from
+# local harddisks: sfsimage (https://digitalforensics.ch/sfsimage/)
+#
 squashpipe() {
 
   err() { echo "err: $1" >&2; usage; return 1; }
