@@ -60,18 +60,15 @@ USAGE
   mkdir -p "$dummy/empty"
   trap "rm -rf ${dummy@Q}" RETURN
 
-  # constructed mksquash command
-  sqsh() { mksquashfs "$dummy/empty" "$ARCHIVE" -all-root -quiet -p "$NAME f $MODE 0 0 cat" "$@"; }
-
-  # let's roll
+  # let's roll, add file and compute checksum
+  tee >(sha256sum --tag | awk -v "name=$RAWNAME" '{ gsub("-", name, $2); print }' >"$dummy/checksum") \
+    | mksquashfs "$dummy/empty" "$ARCHIVE" -all-root -quiet -p "$NAME f $MODE 0 0 cat" "$@";
+  mksquashfs"$dummy/checksum" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
+  # optionally sign checksum
   if [[ $SIGN = yes ]]; then
-    tee >(sha256sum --tag | awk -v "name=$RAWNAME" '{ gsub("-", name, $2); print }' >"$dummy/checksum") | sqsh "$@"
-    mksquashfs "$dummy/checksum" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
     echo "signing checksum ..." >&2
     signify -S -e -m - -s "$SECKEY" -x "$dummy/checksum.sig" < "$dummy/checksum"
     mksquashfs "$dummy/checksum.sig" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
-  else
-    sqsh "$@"
   fi
   )
 
