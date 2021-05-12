@@ -67,7 +67,7 @@ USAGE
   # let's roll, add file and compute checksum
   tee >(sha256sum --tag | awk -v "name=$RAWNAME" '{ gsub("-", name, $2); print }' >"$dummy/checksum") \
     | mksquashfs "$dummy/empty" "$ARCHIVE" -all-root -quiet -p "$NAME f $MODE 0 0 cat" "$@";
-  mksquashfs"$dummy/checksum" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
+  mksquashfs "$dummy/checksum" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
   # optionally sign checksum
   if [[ $SIGN = yes ]]; then
     echo "signing checksum ..." >&2
