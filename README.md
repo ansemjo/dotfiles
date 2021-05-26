@@ -16,8 +16,6 @@ cd dotfiles/
 
 ## bash
 
-[![CodeFactor](https://www.codefactor.io/repository/github/ansemjo/dotfiles/badge)](https://www.codefactor.io/repository/github/ansemjo/dotfiles)
-
 ![dotfiles-bash](https://user-images.githubusercontent.com/11139925/64062822-21205c00-cbec-11e9-8030-61beb5066905.png)
 
 This bashrc mainly gives you a nice and colourful prompt and a good amount of
