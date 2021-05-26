@@ -8,6 +8,7 @@ muxclean () {
   if [[ -z $1 ]]; then
     echo "\$ muxclean {all|user@host:port}" >&2 && return 1
   elif [[ $1 == all ]]; then
+    # shellcheck disable=SC2086
     rm -Iv $g
   else
     mux="${g%%\**}$1${g##*\*}"
@@ -29,19 +30,24 @@ _muxlist () {
 }
 
 _muxclean () {
+  # shellcheck disable=SC2034
   local cur prev words cword
   _init_completion || return
   [[ ${#words[@]} -gt 2 ]] && return
-  local list=$(_muxlist)
-  [[ -z $list ]] \
-    && echo "no ssh muxes found for $SSHMUX_GLOB" \
-    || list="all $list"
-  COMPREPLY=($(compgen -W "$list" "$cur"))
+  local list len
+  list=($(_muxlist)); len=${#list[@]};
+  if [[ $len -eq 0 ]]; then
+    #echo "no ssh muxes found for $SSHMUX_GLOB" >&2
+    COMPREPLY=($(compgen -W "" "$cur"))
+  elif [[ $len -eq 1 ]]; then
+    COMPREPLY=($(compgen -W "${list[*]}" "$cur"))
+  elif [[ $len -ge 2 ]]; then
+    COMPREPLY=($(compgen -W "all ${list[*]}" "$cur"))
+  fi
 }
-
 complete -F _muxclean muxclean
-
 
 
 # ephemeral ssh connection without clobbering known-hosts file
 alias sshnull="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ControlPath=none"
+alias scpnull="scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ControlPath=none"

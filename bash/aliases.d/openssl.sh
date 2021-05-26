@@ -53,9 +53,10 @@ openssl-gen-snakeoil() { openssl req -x509 -nodes -days 30 -newkey rsa:2048 -key
 # password: OKCZGYu92USjuDLB5ZzhfurjjT3QnCKLIzICfqC1Uw
 aes-256-ctr-encrypt() {
   # use a random string with approx. 256 bits of entropy
-  local passwd=$(tr -dc '[:alnum:]' </dev/urandom | head -c42);
+  local passwd
+  passwd=$(tr -dc '[:alnum:]' </dev/urandom | head -c42);
   echo "password: $passwd" >&2;
-  openssl enc -e -aes-256-ctr -md sha256 -pass "pass:$rand" "$@";
+  openssl enc -e -aes-256-ctr -pbkdf2 -pass "pass:$passwd" "$@";
 }
 
 # decryption pipe using AES-256-CTR
@@ -63,7 +64,7 @@ aes-256-ctr-encrypt() {
 # enter aes-256-ctr decryption password:
 aes-256-ctr-decrypt() {
   # password is prompted
-  openssl enc -d -aes-256-ctr -md sha256 "$@";
+  openssl enc -d -aes-256-ctr -pbkdf2 "$@";
 }
 
 # add shorter alias if free

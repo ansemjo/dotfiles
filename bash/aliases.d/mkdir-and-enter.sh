@@ -3,6 +3,7 @@
 mkdicetemp() { mktemp --tmpdir -d "tmp-$(randomwords 2 -)-XXX"; }
 
 # make and enter
+# shellcheck disable=SC2164
 mkcd() { ([[ -d ${1:?directory name required} ]] && echo "$1 already exists" >&2 || mkdir -p "$1") && cd "$1"; }
 
 # make temporary directory with docker name generator
@@ -15,7 +16,7 @@ mknamedtemp() {
 }
 
 # make and enter a temporary directory
-mkcdtmp() { cd $(mknamedtemp) && pwd; }
+mkcdtmp() { cd "$(mknamedtemp)" && pwd; }
 
 # switch to ephemeral directory, which is deleted when
 # exiting the nested shell level, i.e.:

@@ -42,7 +42,8 @@ randomkey() { head -c 32 /dev/urandom | base64; }
 # simple coinflip. heads or tails.
 coinflip() {
   # get one random byte as unsigned int modulo 2
-  local flip=$(( $(head -c1 /dev/urandom | od -t u1 -An) % 2 ))
+  local flip
+  flip=$(( $(head -c1 /dev/urandom | od -t u1 -An) % 2 ))
   if [[ -n $1 && -n $2 ]]; then
     [[ $flip -eq 1 ]] && echo "$1" || echo "$2"
   else
@@ -65,8 +66,9 @@ randomwords() {
   #WORDLIST="https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt"
 
   # where to store wordlist
-  local DIR=~/.cache/wordlists
-  local WORDS="$DIR/$(basename $WORDLIST)"
+  local DIR WORDS
+  DIR=~/.cache/wordlists
+  WORDS="$DIR/$(basename $WORDLIST)"
 
   # download list if it doesn't exist
   if [[ ! -f $WORDS ]]; then
@@ -83,7 +85,7 @@ randomwords() {
   c=${2:- } # concatenate with c, default _
 
   # print words
-  array=($(for i in $(seq $n); do word; done))
+  array=($(for _ in $(seq "$n"); do word; done))
   printf "%s$c" "${array[@]}" | head -c-1
   ttyecho
 

@@ -15,14 +15,15 @@ fi
 
 shift 1;
 COMPRESSORS=("$@")
-if [[ -z $COMPRESSORS ]]; then
+if [[ ${#COMPRESSORS[@]} -eq 0 ]]; then
+  # use defaults if none given
   COMPRESSORS=(cat lz4 zstd gzip xz lzip)
 fi
 
 say() { printf '\033[1m%s\033[0m %s\n' "$1" "$2"; }
 
 # output original file info
-SIZE=$(wc -c <$FILE)
+SIZE=$(wc -c <"$FILE")
 say "Original file:" "$FILE, $SIZE bytes"
 
 for compressor in "${COMPRESSORS[@]}"; do
@@ -33,9 +34,9 @@ for compressor in "${COMPRESSORS[@]}"; do
   fi
 
   # runtime info in: $outputsize[Bytes] $runtime[seconds]
-  run=$( (TIMEFORMAT='%3R'; time $compressor <$FILE | wc -c) 2>&1)
-  o=$(echo $run | awk '{print $1}')
-  t=$(echo $run | awk '{print $2}')
+  run=$( (TIMEFORMAT='%3R'; time $compressor <"$FILE" | wc -c) 2>&1)
+  o=$(echo "$run" | awk '{print $1}')
+  t=$(echo "$run" | awk '{print $2}')
 
   # calculate compression ratio
   ratio=$(bc -l <<< "scale=5; $o / $SIZE")

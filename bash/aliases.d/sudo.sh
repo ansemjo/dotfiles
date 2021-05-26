@@ -6,4 +6,4 @@ alias sudo='sudo '
 alias suu='sudo su'
 
 # grab ownership of a file or directory
-grab() { sudo chown -R ${USER} ${1:-.}; }
+grab() { sudo chown -R "${USER}" "${1:-.}"; }

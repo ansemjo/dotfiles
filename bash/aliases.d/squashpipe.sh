@@ -62,6 +62,7 @@ USAGE
   # create an empty dummy directory, so there is no other file in archive
   dummy=$(mktemp -d --tmpdir squashpipe-tmp-XXXXXXXXX)
   mkdir -p "$dummy/empty"
+  # shellcheck disable=SC2064
   trap "rm -rf ${dummy@Q}" RETURN
 
   # let's roll, add file and compute checksum

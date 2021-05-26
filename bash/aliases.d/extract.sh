@@ -27,6 +27,7 @@ if iscommand unzip; then
 unzplit() {
   file=${1:?input *.zip required}
   tmp=$(mktemp --tmpdir unzplit-XXXXX.zip)
+  # shellcheck disable=SC2064
   trap "rm -fv '${tmp:?tempfile}'" EXIT RETURN
   zip -s- "$file" --out "$tmp"
   unzip "$tmp"

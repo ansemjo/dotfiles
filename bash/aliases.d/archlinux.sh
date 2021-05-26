@@ -4,15 +4,18 @@
 if [[ -x /usr/bin/rankmirrors ]]; then
   update-mirrorlist() {
 
+    set -e
     say() { printf '%s\n' "$*" >&2; };
 
     # https://wiki.archlinux.org/index.php/Mirrors#Fetching_and_ranking_a_live_mirror_list
     say "fetch updated mirrorlist: DE/https/status=on ..."
-    local mirrors=$(curl -sL "https://archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" |\
+    local mirrors
+    mirrors=$(curl -sL "https://archlinux.org/mirrorlist/?country=DE&protocol=https&use_mirror_status=on" |\
       sed -e 's/^#Server/Server/' -e '/^#/d')
 
     say "rank mirrors ..."
-    local ranked=$(rankmirrors -n 10 - <<<"$mirrors")
+    local ranked
+    ranked=$(rankmirrors -n 10 - <<<"$mirrors")
 
     local list="/etc/pacman.d/mirrorlist"
     say "replace $list ..."
@@ -26,8 +29,11 @@ archnews() {
 # Credit belongs here:
 # https://bbs.archlinux.org/viewtopic.php?pid=1145058#p1145058
 
+    set -e
+
     # Set the feed
-    if [ ! -n "$1" ]; then
+    local feed
+    if [ -z "$1" ]; then
         # Arch Linux News by default
         feed="https://www.archlinux.org/feeds/news/";
     else
@@ -35,16 +41,17 @@ archnews() {
     fi
     
     # Get the feed
-    local rss_source="$(curl --silent $feed | sed -e ':a;N;$!ba;s/\n/ /g')";
+    local rss_source
+    rss_source="$(curl --silent "$feed" | sed -e ':a;N;$!ba;s/\n/ /g')";
     
     # Display the feed
-    if [ ! -n "$rss_source" ]; then
+    if [ -z "$rss_source" ]; then
         echo "The feed is empty";
         return 1;
     fi
     
     # The characters "£, §" are used as metacharacters. They should not be encountered in a feed...
-    echo -e "$(echo $rss_source | \
+    echo -e "$(echo "$rss_source" | \
     sed -e 's/&amp;/\&/g
     s/&lt;\|&#60;/</g
     s/&gt;\|&#62;/>/g

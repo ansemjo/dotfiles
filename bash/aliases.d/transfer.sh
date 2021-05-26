@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # upload files to https://transfer.sh
 # adapted from https://gist.github.com/nl5887/a511f172d3fb3cd0e42d
-transfer() {
+transfersh() {
   
   # check argument
   if [[ -z $1 ]]; then
-    printf 'usage: $ transfer filename.txt\n(filename is mandatory, contents can be piped)\n';
+    printf 'usage: $ transfersh filename.txt\n(filename is mandatory, contents can be piped)\n';
     return 1;
   fi
 
@@ -16,8 +16,8 @@ transfer() {
   up() { curl --upload-file "$1" "https://transfer.sh/$name" > "$link"; }
 
   # upload from stdin if piped
-  tty -s && up "$file" || up "-";
+  if tty -s; then up "$file"; else up "-"; fi
   printf '%s\n' "$(< "$link")";
-  rm -f $link;
+  rm -f "$link";
 
 }

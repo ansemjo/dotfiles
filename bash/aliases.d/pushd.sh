@@ -4,4 +4,5 @@
 # of pushd:
 # $ sd other/dir  // put current dir on stack and switch to other/dir
 # $ sd            // rotate through stack
+# shellcheck disable=SC2164
 sd() { pushd "${1-+1}"; }

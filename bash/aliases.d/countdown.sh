@@ -5,17 +5,14 @@ countdown() {
 
   ticks=$(( ${1:-10} * 10 ))
   message=${2:-waiting}
-
   pattern=(⡇ ⠏ ⠛ ⠹ ⢸ ⣰ ⣤ ⣆)
-  pattern_len=${#pattern[@]}
 
   while [[ $ticks -gt 0 ]]; do
-    printf '  %s [%02d] %s\r' "$message" "$(( ($ticks+9) / 10 ))" "${pattern[$i]}";
+    printf '\033[2K\r  %s [%02d] %s\r' "$message" "$(( (ticks + 9) / 10 ))" "${pattern[$i]}";
     i=$(( (i+1) % ${#pattern[@]} ))
     ticks=$(( ticks - 1 ))
     sleep "0.098" # compensate a little
   done
-
-  printf '\rdone.                      \n';
+  printf '\033[2K\r'
 
 }

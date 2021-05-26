@@ -81,9 +81,11 @@ function prompt_builder {
       esac
     else
       # otherwise root = red and others = green
-      [[ $EUID = 0 ]] && \
-        local color="$bold$red" || \
-        local color="$bold$green";
+      if [[ $EUID = 0 ]]; then
+        local color="$bold$red"
+      else
+        local color="$bold$green"
+      fi
     fi
 
   fi

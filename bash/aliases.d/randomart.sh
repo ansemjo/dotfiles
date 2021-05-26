@@ -6,13 +6,12 @@ if iscommand randomart.py; then
     echo "Enter two hashes/strings/lines to compare ..."
     read -r left;   left=$(randomart.py <<<"$left");
     read -r right; right=$(randomart.py <<<"$right");
-    if [[ $left == $right ]]; then
-      printf '\033[32mThe inputs match.\n'
-    else
-      printf '\033[31;1mThe inputs differ!\033[0;31m\n';
-    fi
     paste <(cat <<<"$left") <(cat <<<"$right");
-    printf '\033[0m';
+    if [[ "$left" == "$right" ]]; then
+      printf '\033[32mThe inputs match.\033[0m\n'
+    else
+      printf '\033[31;1mThe inputs differ!\033[0m\n';
+    fi
   }
 
 fi

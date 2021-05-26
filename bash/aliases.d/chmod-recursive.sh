@@ -4,6 +4,7 @@ chmodr() {
 
   # defaults
   local TYPE="all"
+  # shellcheck disable=SC2034
   local VEBOSE=""
   
   # usage note and error
@@ -14,10 +15,10 @@ chmodr() {
   local opt OPTIND OPTARG
   while getopts 'dft:vh' opt; do
     case $opt in
-      d) local TYPE="d" ;;
-      f) local TYPE="f" ;;
-      t) local TYPE="$OPTARG" ;;
-      v) local VERBOSE="-v" ;;
+      d) TYPE="d" ;;
+      f) TYPE="f" ;;
+      t) TYPE="$OPTARG" ;;
+      v) VERBOSE="-v" ;;
       h) usage; return 0 ;;
       *) usage; return 1 ;;
     esac
@@ -31,6 +32,7 @@ chmodr() {
   shift 1
 
   # find and chmod
+  # shellcheck disable=SC2046
   find "$@" $([[ $TYPE != all ]] && printf -- '-type %q' "$TYPE") -print0 | xargs -r -0 chmod $VERBOSE "$MODE"
 
 }

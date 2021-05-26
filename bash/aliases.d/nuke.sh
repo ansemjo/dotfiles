@@ -8,7 +8,8 @@ if iscommand shred; then
       echo "specify directory: '$ nuke directory'"
       return 1
     fi
-    local n=$(find "$1" -type f -print | wc -l)
+    local n
+    n=$(find "$1" -type f -print | wc -l)
     read -r -n 1 -p "this will completely delete $n files. are you sure? (y/N) " confirm
     echo
     if [[ $confirm == 'y' ]]; then

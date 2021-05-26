@@ -59,6 +59,7 @@ rbsend() {
   cat >/dev/tcp/localhost/"${1:?port required}";
 }
 _rbsend() {
+  # shellcheck disable=SC2034
   local cur prev words cword  ports
   _init_completion || return
   ports=$(ss -tlpn | sed -n 's/.*:\([0-9]\{5\}\) .*/\1/p' | sort | uniq)

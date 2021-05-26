@@ -2,7 +2,7 @@
 
 if iscommand iw; then
 wifiscan() {
-  iw dev | awk '$1 == "Interface" { print $2 }' | xargs -n1 -IDEV sudo iw dev DEV scan | awk '
+  iw dev | awk '$1 == "Interface" { print $2 }' | xargs -IDEV sudo iw dev DEV scan | awk '
 $0 ~ /^BSS/ {
   $0 = gensub(/BSS ([0-9a-f:]+)\(on ([^)]+)\)( -- (.*))?/, "\\2 \\1 \\4", "global", $0)
   dev = $1

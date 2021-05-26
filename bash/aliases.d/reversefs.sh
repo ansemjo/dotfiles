@@ -64,6 +64,7 @@ README
   fi
 
   # run the actual command
+  # shellcheck disable=SC2046
   dpipe "$SFTPSERVER" -e \
     $([[ $READONLY == true ]] && echo -R) \
     $([[ $VERBOSE == true ]] && echo -l VERBOSE) \
@@ -74,6 +75,7 @@ _reversefs() {
   if iscommand _ssh; then
     _ssh
   else
+    # shellcheck disable=SC2034
     local cur prev words cword
     _init_completion || return
     _known_hosts_real -a -- "$cur"

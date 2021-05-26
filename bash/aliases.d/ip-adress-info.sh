@@ -14,7 +14,8 @@ alias ipaddr='ipaddress'
 wtfismyip() {
   for type in ipv4 ipv6; do
     echo "$type:"
-    local json=$(curl -s "https://$type.wtfismyip.com/json")
+    local json
+    json=$(curl -s "https://$type.wtfismyip.com/json")
     [[ -z $json ]] && { echo "  err: no $type connectivity?"; continue; }
     sed -n \
       -e 's/.*"YourFuckingIPAddress": "\(.*\)",.*/  address: \1/p' \

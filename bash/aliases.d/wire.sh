@@ -45,13 +45,16 @@ wire() {
 
 _wire() {
 
+  # shellcheck disable=SC2034
   local cur prev words cword
   _init_completion || return
 
   # find profiles with shell glob
   local wp
   wp=(/etc/wireguard/*.conf)
+  # shellcheck disable=SC2206
   wp=(${wp[@]##*/})
+  # shellcheck disable=SC2206
   wp=(${wp[@]%%.conf})
 
   # current = 1 -> profile, 2 -> action

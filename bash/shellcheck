@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# run shellcheck on alias files etc.
+
+# exclusions:
+# - SC1090/SC1091: following includes ..
+# - SC2001: see if you can use ${var//search/replace} instead
+# - SC2207: prefer mapfile ... over array=($(cmd))
+shck() {
+  shellcheck --shell=bash \
+    --exclude=SC1090 \
+    --exclude=SC1091 \
+    --exclude=SC2001 \
+    --exclude=SC2207 \
+    "$@";
+}
+
+shck bashrc aliases.d/*.sh
+shck --exclude=SC2034 dot-bashrc conf.d/*

@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 if iscommand ffmpeg; then
 
-# shut ffmpeg up by default
-alias ffmpeg="ffmpeg -hide_banner -loglevel warning"
+# hide ffmpeg banner by default
+# shellcheck disable=SC2262,SC2263
+alias ffmpeg="ffmpeg -hide_banner"
 
 # progress output that comfortably fits in 80 columns ...
 # use it like: ffmpeg-recode -l info [...] 2>&1 | ffmpeg-progress
@@ -85,9 +86,10 @@ USAGE
   shift 1
 
   # outfile name generator
-  local name="$(basename "$INFILE")"
-  local ext="${name##*.}"
-  local n=0
+  local name ext n
+  name="$(basename "$INFILE")"
+  ext="${name##*.}"
+  n=0
   name() { printf '%s_s%02d_%s_%s.%s' "$name" "$n" "$1" "$2" "$ext"; }
 
   # generate -ss and -to arguments from segment selectors
@@ -133,8 +135,9 @@ USAGE
     return 1
   fi
   INFILE="$1"
-  local name="$(basename "$INFILE")"
-  local ext="${name##*.}"
+  local name ext
+  name="$(basename "$INFILE")"
+  ext="${name##*.}"
   shift 1
 
   # outfile name generator
@@ -146,6 +149,7 @@ USAGE
 
   # scripted slice and concatenate
   ffmpeg-sections "${SECTIONS[@]}" "$INFILE" -loglevel error -stats
+  # shellcheck disable=SC2012
   ls -1 "${name}"_s??_*."${ext}" | ffmpeg-concat -loglevel error -stats "$OUTFILE"
   rm -fv "${name}"_s??_*."${ext}"
 
@@ -265,9 +269,9 @@ MANUAL
   [[ -n $output ]] && args+=("$output");
 
   # print executed command and run ffmpeg
-  # shellcheck disable=SC2046
   echo "+ settings: v=$vcodec a=$acodec p=$preset ${quality[1]/#/q=}"
   set -x
+  # shellcheck disable=SC2046,SC2086
   ffmpeg $inargs \
     -i "${input}" \
     -hide_banner -loglevel "${loglvl:-info}" -stats \
