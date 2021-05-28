@@ -29,8 +29,8 @@ wire() {
         return 1
       else
         sudo wg-quick up "$profile" && \
-        watch --color sudo WG_COLOR_MODE=always wg show "$profile";
-        sudo wg-quick down "$profile";
+          sudo bash -c "watch --color WG_COLOR_MODE=always wg show ${profile@Q}; \
+            wg-quick down ${profile@Q}";
       fi
     ;;
 
