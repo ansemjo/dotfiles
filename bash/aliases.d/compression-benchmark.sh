@@ -34,9 +34,9 @@ for compressor in "${COMPRESSORS[@]}"; do
   fi
 
   # runtime info in: $outputsize[Bytes] $runtime[seconds]
-  run=$( (TIMEFORMAT='%3R'; time $compressor <"$FILE" | wc -c) 2>&1)
-  o=$(echo "$run" | awk '{print $1}')
-  t=$(echo "$run" | awk '{print $2}')
+  run=($( (TIMEFORMAT='%3R'; time $compressor <"$FILE" | wc -c) 2>&1))
+  o=$(echo "${run[@]}" | awk '{print $1}')
+  t=$(echo "${run[@]}" | awk '{print $2}')
 
   # calculate compression ratio
   ratio=$(bc -l <<< "scale=5; $o / $SIZE")
