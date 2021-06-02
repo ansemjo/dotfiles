@@ -9,11 +9,11 @@ PS1_STATUS=true
 # show number of background jobs?
 PS1_JOBS=true
 # display username?
-PS1_USERNAME=true
+PS1_USERNAME=false
 # display hostname?
 PS1_HOSTNAME=true
 # display working directory? [true|full|relative]
-PS1_DIRECTORY=true
+PS1_DIRECTORY=relative
 # display nothing but the prompt symbol?
 PS1_ONLYPROMPT=false
 # display git prompt? (yes/no)
