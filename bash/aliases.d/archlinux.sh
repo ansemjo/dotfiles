@@ -3,7 +3,7 @@
 # rankmirrors is included in the pacman-contrib package
 if [[ -x /usr/bin/rankmirrors ]]; then
   update-mirrorlist() {
-
+    (
     set -e
     say() { printf '%s\n' "$*" >&2; };
 
@@ -20,7 +20,7 @@ if [[ -x /usr/bin/rankmirrors ]]; then
     local list="/etc/pacman.d/mirrorlist"
     say "replace $list ..."
     printf "# ranked on %s\n%s\n" "$(date)" "$ranked" | sudo tee "$list"
-
+    )
   };
 fi
 
@@ -28,7 +28,7 @@ fi
 archnews() {
 # Credit belongs here:
 # https://bbs.archlinux.org/viewtopic.php?pid=1145058#p1145058
-
+  (
     set -e
 
     # Set the feed
@@ -73,5 +73,5 @@ archnews() {
     s/[<>£§]//g')\n\n" | \
     less -r;
     # Pipe that shit to a pager ...
-
+  )
 }
