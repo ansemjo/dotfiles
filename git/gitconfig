@@ -23,6 +23,7 @@
 [pretty]
   mini  = format:%C(auto,yellow)%h %C(auto,reset)%C(auto)%s%d%C(auto,blue)% GK
   line  = format:%C(auto,yellow)%h %C(auto,green)%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08 %C(auto,blue)%G? %C(auto,reset)%C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
+  refline = format:%C(auto,yellow)%h %C(auto,green)%gD %C(auto,blue)%ci%x08%x08%x08%x08%x08%x08 %C(auto,reset)%C(auto)%gs%d%C(auto)
   block = format:commit %C(auto,yellow)%H%C(auto)%d\ndate: %C(auto,green)%cD %C(auto,dim)(%cr)\nfrom: %C(auto,magenta)%cN <%cE>%C(auto,blue)% GK\nsubject: %C(auto,bold)%s\n%+b
   changelog = format:%C(auto,yellow)%h %C(auto,reset)%C(auto)%s%C(auto)
 
@@ -32,13 +33,14 @@
 [alias]
 
   # add pieces of files individually
-  patch  = add --patch
+  patch = add --patch
 
   # amend the last commit with a signature
   signlast = commit --amend --gpg-sign
 
   # show log in a graph with different branches
-  graph  = log --graph --all --pretty=line
+  graph = log --graph --all --pretty=line
+  gr = "!git graph -n 20"
 
   # show a diff of files staged so far
   staged = diff --cached
@@ -55,6 +57,7 @@
   cm = commit
   br = branch --verbose
   re = remote --verbose
+  rl = reflog -n 20 --pretty=refline
 
   # show current head commit hash
   hash = describe --match ^$ --always --abbrev=0
