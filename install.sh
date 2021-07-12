@@ -61,7 +61,9 @@ fi
 DOTFILES=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
 
 # ---------------------------------------- #
-link() { ln -sfv "$([[ $LNBACKUP == yes ]] && echo '-b')" "$@"; }
+lnargs=(-s -f -v)
+if [[ $LNBACKUP == yes ]]; then lnargs+=(-b); fi
+link() { ln "${lnargs[@]}" "$@"; }
 
 if [[ $ANSIBLE == yes ]]; then
   link "$DOTFILES/ansible/ansible.cfg" /etc/ansible/ansible.cfg
