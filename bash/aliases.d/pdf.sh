@@ -12,3 +12,10 @@ pdfcat() {
 }
 
 fi
+
+if iscommand pdfpc; then
+
+# present a pdf in windowed mode without scrollbars etc.
+pdfpresenter() { pdfpc --switch-screens --single-screen --windowed presentation "$@"; }
+
+fi
