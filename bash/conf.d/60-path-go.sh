@@ -8,3 +8,6 @@ export GOPATH=~/.local/go
 if command -v go >/dev/null; then
   export PATH="${GOPATH:-$(go env GOPATH)}/bin:$PATH"
 fi
+
+# keep mod cache writable, see golang/go #31481
+export GOFLAGS="$GOFLAGS -modcacherw"
