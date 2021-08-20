@@ -40,13 +40,14 @@
 
   # show log in a graph with different branches
   graph = log --graph --all --pretty=line
-  gr = "!git graph -n 20"
+  gr = "!git graph -n 20 --pretty=mini"
 
   # show a diff of files staged so far
   staged = diff --cached
 
   # show the stats of a commit
   stat = show --stat
+  latest = "!git stat"
 
   # various shorthands
   la = log --stat --pretty=block
