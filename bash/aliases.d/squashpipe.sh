@@ -81,7 +81,7 @@ USAGE
   dummy=$(mktemp -d --tmpdir squashpipe-tmp-XXXXXXXXX)
   mkdir -p "$dummy/empty"
   # shellcheck disable=SC2064
-  trap "rm -rf ${dummy@Q}" RETURN
+  trap "rm -rf ${dummy@Q}" RETURN EXIT
 
   # let's roll, add file and compute checksum
   tee >(sha256sum --tag | awk -v "NAME=$NAME" '{ $2 = "(" NAME ")"; print; }' >"$dummy/$NAME.sha256") \
