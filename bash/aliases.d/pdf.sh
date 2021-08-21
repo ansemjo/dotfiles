@@ -19,3 +19,20 @@ if iscommand pdfpc; then
 pdfpresenter() { pdfpc --switch-screens --single-screen --windowed presentation "$@"; }
 
 fi
+
+if iscommand gs; then
+
+# try to make a pdf smaller by recompressing images etc.
+pdfsmaller() {
+  if [[ $1 == -h ]] || [[ -z $1 ]] || [[ -z $2 ]]; then
+    echo "usage: $ pdfsmaller <input.pdf> <output.pdf> [setting]" >&2
+    echo " where setting can be: screen, ebook, printer, prepress" >&2
+    return 1
+  fi
+  gs -sDEVICE=pdfwrite \
+    -dPDFSETTINGS="/${3:-screen}" -q \
+    -o "$2" "$1";
+}
+
+fi
+
