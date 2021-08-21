@@ -23,3 +23,6 @@ if command -v hstr >/dev/null; then
   # make it colorful
   export HSTR_CONFIG=hicolor
 fi
+
+# disable history expansion with !
+set +H
