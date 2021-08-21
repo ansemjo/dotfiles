@@ -21,7 +21,7 @@ USAGE
 
   # defaults
   local ARCHIVE
-  local RAWNAME NAME=image.bin
+  local NAME=image.bin
   local MODE=644
   local SIGN=no
   local SECKEY
@@ -32,8 +32,10 @@ USAGE
     case "$OPT" in
 
       n) # filename
-        RAWNAME="$OPTARG"
-        NAME=$(sed 's/[ \\]/\\&/g' <<<"$OPTARG") ;;
+        # TODO: sanitize the filename a little? the special character
+        # handling below seems incomplete and signify can't handle all
+        # of them either when verifying checksums ...
+        NAME="$OPTARG" ;;
       
       m) # octal mode
         [[ $OPTARG =~ ^[0-7]{3}$ ]] || { err "mode must be octal"; }
@@ -66,8 +68,8 @@ USAGE
   trap "rm -rf ${dummy@Q}" RETURN
 
   # let's roll, add file and compute checksum
-  tee >(sha256sum --tag | awk -v "name=$RAWNAME" '{ gsub("-", name, $2); print }' >"$dummy/checksum") \
-    | mksquashfs "$dummy/empty" "$ARCHIVE" -all-root -quiet -p "$NAME f $MODE 0 0 cat" "$@";
+  tee >(sha256sum --tag | awk -v "name=${NAME/&/\\\\&}" '{ gsub("-", name, $2); print }' >"$dummy/checksum") \
+    | mksquashfs "$dummy/empty" "$ARCHIVE" -all-root -quiet -p "$(sed 's/[&" \\]/\\&/g' <<<"$NAME") f $MODE 0 0 cat" "$@";
   mksquashfs "$dummy/checksum" "$ARCHIVE" -all-root -quiet -no-progress >/dev/null
   # optionally sign checksum
   if [[ $SIGN = yes ]]; then
