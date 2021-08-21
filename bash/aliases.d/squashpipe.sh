@@ -17,6 +17,7 @@ squashpipe() {
   err() { echo "err: $1" >&2; usage; return 1; }
   usage() { cat >&2 <<USAGE
 usage: $ squashpipe [-n name] [-m mode] [-s seckey] archive.sqsh [extra]
+ (reads from stdin and writes a pseudofile + its checksum to archive)
   -n name    filename in archive
   -m mode    octal mode of file
   -s seckey  create signed checksum with signify on-the-fly
@@ -83,14 +84,16 @@ USAGE
   trap "rm -rf ${dummy@Q}" RETURN
 
   # let's roll, add file and compute checksum
-  tee >(sha256sum --tag | awk -v "NAME=$NAME" '{ $2 = "(" NAME ")"; print; }' >"$dummy/checksum") \
+  tee >(sha256sum --tag | awk -v "NAME=$NAME" '{ $2 = "(" NAME ")"; print; }' >"$dummy/$NAME.sha256") \
     | mksquashfs "$dummy/empty" "${sqargs[@]}" -p "$(sed 's/[&" \\]/\\&/g' <<<"$NAME") f $MODE 0 0 cat" "$@";
-  mksquashfs "$dummy/checksum" "${sqargs[@]}" -no-progress >/dev/null
-  # optionally sign checksum
+  # append (optionally signed) checksum
   if [[ $SIGN = yes ]]; then
     echo "signing checksum ..." >&2
-    signify -S -e -m - -s "$SECKEY" -x "$dummy/checksum.sig" < "$dummy/checksum"
-    mksquashfs "$dummy/checksum.sig" "${sqargs[@]}" -no-progress >/dev/null
+    signify -S -e -m - -s "$SECKEY" -x "$dummy/$NAME.sig" < "$dummy/$NAME.sha256"
+    sed -i '1c untrusted comment: verify with `signify -Cx *.sig -p /path/to/key.pub`' "$dummy/$NAME.sig"
+    mksquashfs "$dummy/$NAME.sig" "${sqargs[@]}" -no-progress >/dev/null
+  else
+    mksquashfs "$dummy/$NAME.sha256" "${sqargs[@]}" -no-progress >/dev/null
   fi
   )
 
