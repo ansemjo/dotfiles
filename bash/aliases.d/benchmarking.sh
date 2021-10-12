@@ -20,12 +20,35 @@ compression-benchmark() {
   fi
 
   # print a header and function for result lines
+  printf "+------------+------------+----------------+----------+----------+\n"
   printf "| %10s | %10s | %14s | %8s | %8s |\n" Compressor Time Bytes Ratio Score
   printf "|------------|------------|----------------|----------|----------|\n"
   res() { printf "\r| %10s | %10s | %14s | %8s | %8s |\n" "$@"; }
 
   # print original file info
   res original "" "$SIZE" "1.000" ""
+
+  # calculator for the arbitrary performance "score"
+  # plot: https://www.wolframalpha.com/input/?i=3d+plot+100*e%5E%28-3*c%29*e%5E%28-0.3*t%29+from+c%3D0.1..1%2C+t%3D0..10
+  metric() {
+    # arguments:
+    RATIO=$1
+    TIME=$2
+    # there are a few "tweaks":
+    HIGH=100  # highest score
+    SKEW=2    # factor between ratio and time weights
+    MULT=3    # common multiplier, accellerating decrease of score
+    bc -l <<< "scale=4; $HIGH * e(-$MULT*$SKEW*$RATIO) * e(-0.1*$MULT*$TIME)" 2>/dev/null
+  }
+
+  # print some bandwidth-limited transmission calculations
+  t=$(bc -l <<< "scale=3; $SIZE / 32768")      # 256 kBit
+  res "256 kbit/s" "$t" "$SIZE" "1.000" "$(metric 1 "$t")"
+  t=$(bc -l <<< "scale=3; $SIZE / 2097152")    #  16 MiB
+  res "16 Mbit/s" "$t" "$SIZE" "1.000" "$(metric 1 "$t")"
+  t=$(bc -l <<< "scale=3; $SIZE / 134217728")  #   1 GiB
+  res "1 Gbit/s" "$t" "$SIZE" "1.000" "$(metric 1 "$t")"
+  printf "|------------|------------|----------------|----------|----------|\n"
 
   # try all the compressors and print results
   for compressor in "${COMPRESSORS[@]}"; do
@@ -39,20 +62,18 @@ compression-benchmark() {
     o=$(echo "${run[@]}" | awk '{print $1}')
     t=$(echo "${run[@]}" | awk '{print $2}')
 
-    # calculate compression ratio
+    # calculate compression ratio and performance metric
     ratio=$(bc -l <<< "scale=3; $o / $SIZE")
-
-    # calculate an arbitrary performance metric
-    # TODO: find a better calculation?
-    # plot: https://www.wolframalpha.com/input/?i=3d+plot+ln(-ln(c)%2Fln(t%2B1)%2B1)+from+c%3D0.1..1,+t%3D0..10
-    score=$(bc -l <<< "scale=3; l((-l($ratio)/l($t+1))+1)" 2>/dev/null)
-    #score=$(bc -l <<< "scale=3; (-l($ratio)/l($t+1))+1" 2>/dev/null)
+    score=$(metric "$ratio" "$t")
     if [[ -z $score ]]; then score="∞"; fi
   
     # print result
     res "$compressor" "$t" "$o" "$ratio" "$score"
 
   done
+  
+  # close the table with a footer
+  printf "+------------+------------+----------------+----------+----------+\n"
 
 }
 
