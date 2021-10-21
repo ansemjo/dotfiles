@@ -26,11 +26,11 @@ if iscommand gs; then
 pdfsmaller() {
   if [[ $1 == -h ]] || [[ -z $1 ]] || [[ -z $2 ]]; then
     echo "usage: $ pdfsmaller <input.pdf> <output.pdf> [setting]" >&2
-    echo " where setting can be: screen, ebook, printer, prepress" >&2
+    echo " where setting can be: screen, *ebook, printer, prepress" >&2
     return 1
   fi
   gs -sDEVICE=pdfwrite \
-    -dPDFSETTINGS="/${3:-screen}" -q \
+    -dPDFSETTINGS="/${3:-ebook}" -q \
     -o "$2" "$1";
 }
 
