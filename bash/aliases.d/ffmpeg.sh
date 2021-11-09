@@ -171,6 +171,7 @@ usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-p preset] [-q quality] \\
   -a acodec  : autio encoder (copy/aac/opus/...)
   -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
   -q crf     : quality setting (h264~23, hevc~28)
+  -s scale   : rescale video with vf
   -l loglvl  : loglevel (quiet..error..warning..info..debug)
   -I inargs  : extra ffmpeg arguments before input file
   -o         : generate output filename as \$input_\$vcodec.mp4
@@ -188,6 +189,7 @@ MANUAL
   local acodec="aac"        # audio codec
   local preset="veryfast"   # encoder preset
   local quality=()          # quality factor
+  local scale=()            # scale video
   local input output        # input and generate output filename
   local loglvl=""           # logging level
   local inargs              # extra input arguments
@@ -204,7 +206,7 @@ MANUAL
 
   # commandline parser
   local opt OPTIND
-  while getopts ":v:a:p:q:l:I:oh" opt; do
+  while getopts ":v:a:p:q:s:l:I:oh" opt; do
     local arg="${OPTARG}"
     case "${opt}" in
 
@@ -236,6 +238,9 @@ MANUAL
           ''|*[!0-9]*) err "quality/crf must be an integer: ${arg}"; return 1;;
           *) quality=("-crf" "${arg}")
         esac;;
+
+      s) # scale filter
+        scale=("-vf" "scale=${arg}");;
 
       o) # generate output filename
         output="${input}_${vcodec}.mp4";;
@@ -282,6 +287,7 @@ MANUAL
       -pix_fmt yuv420p \
       -movflags +faststart \
     -c:a "${acodec}" \
+    "${scale[@]}" \
     "${args[@]}";
   { set +x; } 2>/dev/null
 
