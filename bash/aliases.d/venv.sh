@@ -10,7 +10,7 @@ venv () {
       return 1
     fi
   else
-    virtualenv venv/
+    virtualenv "$@" venv/
     source venv/bin/activate
   fi
 }
