@@ -8,6 +8,9 @@ radio() {
     # Norddeutscher Rundfunk: https://www.ndr.de/radio/index.html
     info)   play="https://www.ndr.de/resources/metadaten/audio_ssl/m3u/ndrinfo_hh.m3u";;
     kultur) play="https://www.ndr.de/resources/metadaten/audio_ssl/m3u/ndrkultur.m3u";;
+    # Deutschlandradio
+    dlf) play="https://st01.sslstream.dlf.de/dlf/01/high/opus/stream.opus?aggregator=web" ;;
+    dlfkultur) play="https://st02.sslstream.dlf.de/dlf/02/high/opus/stream.opus?aggregator=web" ;;
     # Technobase et. al.: https://www.technobase.fm/
     technobase) play="http://listen.technobase.fm/aac-hd.pls";;
     housetime) play="http://listen.housetime.fm/aac-hd.pls";;
@@ -25,8 +28,9 @@ radio() {
 # completion for channels
 complete -W "$(command -V radio | sed -n 's/^ \+\([a-z]\+\))$/\1/p')" radio
 
-# alias for ndr streams
+# alias for some streams
 alias ndr=radio
 complete -W "info kultur" ndr
+alias dlf="radio dlf"
 
 fi
