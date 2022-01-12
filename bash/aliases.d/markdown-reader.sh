@@ -8,4 +8,7 @@ if iscommand pandoc; then
       -M footer="$(readlink -f "$file")" \
     | man -l -
   }
+  if ! iscommand readme; then
+    alias readme=markman
+  fi
 fi
