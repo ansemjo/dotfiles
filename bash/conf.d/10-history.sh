@@ -5,7 +5,7 @@ HISTCONTROL=ignoreboth
 
 # enlarge history
 HISTSIZE=
-HISTFILESIZE=10000
+HISTFILESIZE=500000
 
 # timestamp display for history file
 HISTTIMEFORMAT="[%F %T] "
