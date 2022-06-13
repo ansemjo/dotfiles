@@ -64,13 +64,17 @@ USAGE
   ARCHIVE="$1"; shift 1;
 
   # common mksquashfs arguments
-  sqargs=("$ARCHIVE" "-quiet")
+  sqargs=("$ARCHIVE" "-no-progress")
+  # be quiet if possible
+  if mksquashfs -help 2>&1 | grep "^-quiet" >/dev/null; then
+    sqargs+=("-quiet")
+  fi
   # use zstd if it is available
-  if mksquashfs -help | grep "zstd" >/dev/null; then
+  if mksquashfs -help 2>&1 | grep "zstd" >/dev/null; then
     sqargs+=("-comp" "zstd")
   fi
   # add all-root if it is available
-  if mksquashfs -help | grep "^-all-root" >/dev/null; then
+  if mksquashfs -help 2>&1 | grep "^-all-root" >/dev/null; then
     sqargs+=("-all-root")
   fi
 
