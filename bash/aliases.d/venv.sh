@@ -10,7 +10,7 @@ venv () {
       return 1
     fi
   else
-    virtualenv "$@" venv/
+    python -m venv "$@" venv/
     source venv/bin/activate
   fi
 }
