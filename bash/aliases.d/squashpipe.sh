@@ -94,7 +94,7 @@ USAGE
   if [[ $SIGN = yes ]]; then
     echo "signing checksum ..." >&2
     signify -S -e -m - -s "$SECKEY" -x "$dummy/$NAME.sig" < "$dummy/$NAME.sha256"
-    sed -i '1c untrusted comment: verify with `signify -Cx *.sig -p /path/to/key.pub`' "$dummy/$NAME.sig"
+    sed -i "1c untrusted comment: verify with 'signify -Cx *.sig -p /path/to/key.pub'" "$dummy/$NAME.sig"
     mksquashfs "$dummy/$NAME.sig" "${sqargs[@]}" -no-progress >/dev/null
   else
     mksquashfs "$dummy/$NAME.sha256" "${sqargs[@]}" -no-progress >/dev/null
