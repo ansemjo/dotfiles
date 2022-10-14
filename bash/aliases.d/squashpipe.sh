@@ -64,7 +64,7 @@ USAGE
   ARCHIVE="$1"; shift 1;
 
   # common mksquashfs arguments
-  sqargs=("$ARCHIVE" "-no-progress")
+  sqargs=("$ARCHIVE")
   # be quiet if possible
   if mksquashfs -help 2>&1 | grep "^-quiet" >/dev/null; then
     sqargs+=("-quiet")
