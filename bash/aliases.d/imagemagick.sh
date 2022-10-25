@@ -6,6 +6,8 @@ imageres() {
   usage() { cat <<USAGE
 usage: imageres [-i] [-s 40%] filename [output]
   -i       : convert in-place and overwrite original file
+  -b       : add --gaussian-blur 0.05
+  -q 85%   : specify quality factor
   -s 40%   : scaling factor, use any number or size accepted by -resize
   filename : input file
   output   : output file (when not using in-place)
@@ -15,11 +17,13 @@ USAGE
   # defaults
   local res="40%"
   local inplace="false"
+  local gauss="false"
+  local quality="85%"
   local input output
 
   # commandline parser
   local opt OPTIND
-  while getopts "his:" opt; do
+  while getopts "hibs:q:" opt; do
     local arg="${OPTARG}"
     case "${opt}" in
 
@@ -27,6 +31,8 @@ USAGE
       \?) usage >&2; return 1;;  # invalid
       :)  usage >&2; return 1;;  # missing arg
       i)  inplace="true";;       # opt: in-place
+      b)  gauss="true";;         # opt: gaussian blur
+      q)  quality="${arg}";;     # opt: quality
       s)  res="${arg}";;         # opt: resize
 
     esac
@@ -54,8 +60,9 @@ USAGE
   fi
 
   # run command
-  convert -strip -interlace Plane -gaussian-blur 0.05\
-    -resize "${res}" -quality "85%" \
+  convert -strip -interlace Plane \
+    $([[ $gauss == true ]] && printf '%s ' -gaussian-blur 0.05) \
+    -resize "${res}" -quality "${quality}" \
     "${input}" "${output}";
 
 }
