@@ -60,6 +60,7 @@ USAGE
   fi
 
   # run command
+  # shellcheck disable=SC2046
   convert -strip -interlace Plane \
     $([[ $gauss == true ]] && printf '%s ' -gaussian-blur 0.05) \
     -resize "${res}" -quality "${quality}" \
