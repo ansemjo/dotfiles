@@ -27,3 +27,8 @@ if iscommand tree; then
 else
   alias lll='ls -lARF'	# dirlist, generates huge output for many subfolders!
 fi
+
+# use exa if available
+if iscommand exa; then
+  alias ls='exa --group-directories-first'
+fi
