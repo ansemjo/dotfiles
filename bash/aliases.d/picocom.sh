@@ -3,7 +3,9 @@
 # picocom config for usb serial device
 # most devices want 115200 baud nowadays ...
 if iscommand picocom; then
-  alias picocom='picocom --baud 115200 --omap crcrlf,delbs --quiet'
+  # TODO: crcrlf often leads to problems ..
+  #alias picocom='picocom --baud 115200 --omap crcrlf,delbs --quiet'
+  alias picocom='picocom --baud 115200 --quiet'
   # autocompletion with a few common paths
   # shellcheck disable=SC2010
   _picocom_serials() {
