@@ -13,7 +13,9 @@ wifiqr() {
     echo "  psk    if psk is given, qr code is generated directly"
   }
   qrcode() { # 1:ssid, 2:psk
-    echo "WIFI:S:$1;T:WPA;P:$2;;" | qrencode -t UTF8
+    # do not create a qr code directly, since it's trivial with a pipe
+    # and allows you to customize qrencode arguments easier
+    echo "WIFI:S:$1;T:WPA;P:$2;;"
   }
 
   # connection name or ssid is required
