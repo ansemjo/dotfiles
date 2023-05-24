@@ -4,7 +4,7 @@
 
 # view
 alias openssl-view-cert='openssl x509 -text -noout -in'
-alias openssl-view-cert-fingerprint='openssl x509 -noout -fingerprint -in'
+alias openssl-view-cert-fingerprint='openssl x509 -noout -fingerprint -sha256 -in'
 alias openssl-view-request='openssl req -text -noout -verify -in'
 alias openssl-view-revocationlist='openssl crl -noout -text -in'
 alias openssl-view-key='openssl rsa -check -in'
