@@ -117,6 +117,9 @@
   # output a revision count and hash as a universal version description
   revision = "!f() { printf 'r%s-g%s\\n' \"$(git rev-list --count HEAD)\" \"$(git describe --always --abbrev=7 --match '^$')\"; };f"
 
+  # search in commit sources and display the selected commit
+  search = "!f() { git log -S \"${1}\" --source --all --pretty=line --color | fzf --ansi | cut -d' ' -f1 | xargs -r git show; };f"
+
 [url "git@github.com:"]
   insteadOf = github:
   pushInsteadOf = https://github.com/
