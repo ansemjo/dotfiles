@@ -137,6 +137,54 @@ let g:python_recommended_style = 0
 autocmd FileType yaml setlocal indentkeys-=0#
 
 
+" ---------- WINDOW NAVIGATION ----------
+
+" open the new buffers below and to the right
+set splitbelow splitright
+
+" use a longer timeout for control sequences
+"set timeoutlen=1000
+
+" always move between windows with Alt-Arrows
+noremap  <M-Left>   <C-w>h
+inoremap <M-Left>   <Esc><C-w>h
+noremap  <M-Right>  <C-w>l
+inoremap <M-Right>  <Esc><C-w>l
+noremap  <M-Up>     <C-w>k
+inoremap <M-Up>     <Esc><C-w>k
+noremap  <M-Down>   <C-w>j
+inoremap <M-Down>   <Esc><C-w>j
+
+" create new splits like in my tmux config with ^A
+noremap  <C-a>\     :vnew<CR>
+inoremap <C-a>\     <Esc>:vnew<CR>
+noremap  <C-a>-     :new<CR>
+inoremap <C-a>-     <Esc>:new<CR>
+
+" exchange the current window with its neighbor
+noremap  <C-a>x     <C-w>x
+noremap  <M-x>      <C-w>x
+
+" rotate windows with PageUp/Down
+noremap  <C-a><PageUp>   <C-w>r
+noremap  <C-a><PageDown> <C-w>R
+
+" resize the windows simply with +/- and </>
+noremap  +      <C-w>2+
+noremap  -      <C-w>2-
+noremap  <      <C-w>2<
+noremap  >      <C-w>2>
+
+" close the current window like I do in bash
+noremap  <C-d>      :q<CR>
+
+" redistribute space evenly between windows
+noremap  <C-a><Space>  <C-w>=
+
+" prevent the paste behaviour of <C-a> in insert mode
+inoremap <C-a> <nop>
+
+
 " ---------- KEY BINDINGS ----------
 
 " <leader> key is [\] by default
