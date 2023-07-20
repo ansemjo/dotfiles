@@ -31,8 +31,8 @@ chmodr() {
   local MODE="${1:?mode required}"
   shift 1
 
-  # find and chmod
-  # shellcheck disable=SC2046
+  # find and chmod; @shellcheck: we *want* splitting on $VERBOSE so it's not passed as ""
+  # shellcheck disable=SC2046,SC2086
   find "$@" $([[ $TYPE != all ]] && printf -- '-type %q' "$TYPE") -print0 | xargs -r -0 chmod $VERBOSE "$MODE"
 
 }

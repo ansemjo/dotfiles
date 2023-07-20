@@ -19,6 +19,7 @@ README
   local fifo
   fifo=$(mktemp -p "${TMPDIR:-/tmp}" -u rosenbridge-XXXXXX)
   mkfifo "$fifo"
+  # shellcheck disable=SC2317 # not unreachable
   _rosencleanup() { echo rmfifo; rm -fv "$fifo"; }
   trap _rosencleanup INT
   # check if mux master is running or (re)start
@@ -31,6 +32,7 @@ README
     { echo "can't create forwarding" >&2; return 1; }
   printf 'Listening on port \033[1m%s\033[0m remotely ...\n' "$remote" >&2
   # trap to clean up on ctrl-c
+  # shellcheck disable=SC2317 # not unreachable
   _rosencleanup() { echo "cleanup"; rm -fv "$fifo"; ssh -O cancel -R "0:$fifo" "${conn[@]}"; }
   trap _rosencleanup INT
   # listen with netcat
