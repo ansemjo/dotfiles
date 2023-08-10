@@ -38,3 +38,6 @@ urldecode() {
   : "${s//+/ }"
   printf '%b\n' "${_//%/\\x}"
 }
+
+# create inline data: URIs with base64 encoding
+datauri() { printf 'data:%s;base64,%s' "$(file --brief --mime-type "$1")" "$(base64 --wrap 0 "$1")"; }
