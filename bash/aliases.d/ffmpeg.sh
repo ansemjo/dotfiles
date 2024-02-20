@@ -161,6 +161,14 @@ USAGE
 # --------------------------------------------------
 ffmpeg-recode() {
 
+# EXAMPLE on how to use hevc_vaapi hardware encoder, probably not easily reuseable
+# ffmpeg-recode input.mp4 \
+#   -I "-vaapi_device /dev/dri/renderD128" \
+#   -v hevc_vaapi -- \
+#     -vf format=nv12,hwupload \
+#     -rc_mode CQP -global_quality 28 \
+#     -profile:v main output.mp4
+
 # print usage information
 usage() { echo "usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-h] [...] outfile" >&2; }
 manual() { cat >&2 <<MANUAL
