@@ -3,9 +3,10 @@
 # don't put duplicate lines or lines starting with space in the history.
 HISTCONTROL=ignoreboth
 
-# enlarge history
-HISTSIZE=
-HISTFILESIZE=500000
+# unlimited history
+# filesize is really not much of a concern here but I constantly lose old commands
+HISTSIZE=-1
+HISTFILESIZE=-1
 
 # timestamp display for history file
 HISTTIMEFORMAT="[%F %T] "
