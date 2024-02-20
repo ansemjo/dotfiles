@@ -1,26 +1,65 @@
 [init]
-  defaultBranch = main
+  # default branch name for new repositories
+  defaultBranch = main # or "trunk"
 
 [push]
+  # push same name and automatically setup remotes
   default = simple
+  autoSetupRemote = true
+  # push tags reachable from refs being pushed
   followTags = true
 
+[fetch]
+  # automatically remove deleted remote-tracking branches
+  pune = true
+
 [pull]
+  # only pull when fast-forward is possible
   ff = only
 
+[merge]
+  # show extra information for conflicts
+  conflictstyle = zdiff3
+
+[rebase]
+  # stash and pop automatically
+  autostash = true
+  # prevent deleting commits in rebase
+  missingCommitsCheck = error
+
 [commit]
+  # print useful information in editor during commit
+  status = true
+  verbose = true
+  # avoid gnupg signatures
   gpgSign = false
 
 [tag]
+  # sort by most recent
+  sort = -taggerdate
+  # avoid gnupg signatures
   gpgSign = false
 
+[branch]
+  # sort by most recently used
+  sort = -committerdate
+
+[diff]
+  # use histograms, which handle reordering better
+  algorithm = histogram
+  # show moved lines in different colour
+  colorMoved = default
+
 [color]
+  # use colors
   ui = auto
 
 [format]
+  # default pretty-printing format from below
   pretty = block
 
 [pretty]
+  # a few nice pretty-printing formats
   mini  = format:%C(auto,yellow)%h %C(auto,reset)%C(auto)%s%d%C(auto,blue)% GK
   line  = format:%C(auto,yellow)%h %C(auto,green)%ci%x08%x08%x08%x08%x08%x08%x08%x08%x08 %C(auto,blue)%G? %C(auto,reset)%C(auto)%s%d %C(auto,dim)[%cN%C(auto,blue)% GK%C(auto,reset)%C(auto,dim)]%C(auto)
   refline = format:%C(auto,yellow)%h %C(auto,green)%gD %C(auto,blue)%ci%x08%x08%x08%x08%x08%x08 %C(auto,reset)%C(auto)%gs%d%C(auto)
@@ -28,7 +67,17 @@
   changelog = format:%C(auto,yellow)%h %C(auto,reset)%C(auto)%s%C(auto)
 
 [log]
+  # show additional ref info
   decorate = auto
+
+# remote URL replacements
+[url "git@github.com:"]
+  insteadOf = github:
+  pushInsteadOf = https://github.com/
+[url "git@gist.github.com:"]
+  insteadOf = gist:
+  pushInsteadOf = https://gist.github.com/
+
 
 [alias]
 
@@ -120,10 +169,3 @@
   # search in commit sources and display the selected commit
   search = "!f() { git log -S \"${1}\" --source --all --pretty=line --color | fzf --ansi | cut -d' ' -f1 | xargs -r git show; };f"
 
-[url "git@github.com:"]
-  insteadOf = github:
-  pushInsteadOf = https://github.com/
-
-[url "git@gist.github.com:"]
-  insteadOf = gist:
-  pushInsteadOf = https://gist.github.com/
