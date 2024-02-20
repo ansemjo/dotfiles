@@ -84,9 +84,6 @@
   # add pieces of files individually
   patch = add --patch
 
-  # amend the last commit with a signature
-  signlast = commit --amend --gpg-sign
-
   # show log in a graph with different branches
   graph = log --graph --all --pretty=line
   gr = "!git graph -n 20 --pretty=mini"
@@ -104,13 +101,18 @@
   ll = log -n 20 --pretty=line
   st = status --short --branch
   co = checkout
-  cm = commit
   br = branch --verbose
   re = remote --verbose
-  rl = reflog -n 20 --pretty=refline
+  ref = reflog -n 20 --pretty=refline
+
+  # interactively clean up everything
+  cc = clean -idx
 
   # show current head commit hash
   hash = describe --match ^$ --always --abbrev=0
+  
+  # show the hash of the initial commit(s)
+  hash-initials = rev-list --max-parents=0 HEAD
 
   # semver versioning
   new-version = "!f(){ V=$(git describe --abbrev=0 --tags); [[ $1 =~ (major|minor|patch) ]] && I=$1 && shift; V=$(semver \"${V:-0.0.0}\" -i $I) && git tag \"$V\" ${@:--a -em \"$(echo; echo; git changelog)\"}; };f"
@@ -124,10 +126,11 @@
 
   # ~ squash history, begin a new tree
   # https://stackoverflow.com/a/23486788
-  restart = "!f(){ git reset $(git commit-tree HEAD^{tree} -m \"${1:-just do git}\") && git commit --amend; };f"
+  squash-history = "!f(){ git reset $(git commit-tree HEAD^{tree} -m \"${1:-just do git}\") && git commit --amend; };f"
 
   # extensive cleanup of dangling blobs etc.
-  rinse = "!f(){ set -x && git reflog expire --expire-unreachable=now --all --verbose && git gc --prune=now && git prune && git fsck --full; { set +x; } 2>/dev/null; };f"
+  gc-rinse = "!f(){ set -x && git reflog expire --expire-unreachable=now --all --verbose && git gc --prune=now && git prune && git fsck --full; { set +x; } 2>/dev/null; };f"
+  rinse = "!git gc-rinse"
 
   # show changed files in commit
   show-changed = show --name-status
@@ -137,34 +140,30 @@
 
   # show changelog / list of commits since last tag
   changelog = "!f(){ git log \"${1:-$(git describe --tags --abbrev=0)}\"..HEAD --pretty=changelog; };f"
-  cl = "!git changelog"
-
-  # show the hash of the initial commit
-  initial-commit = rev-list --max-parents=0 HEAD
 
   # bundle all, entire repo
   bundle-repo = "!f(){ git bundle create \"${1:?target file or -}\" --all; };f"
 
   # imitates a compressed github download
-  download = "!f(){ ref=\"${1:-master}\"; name=\"${2:-$(basename \"$PWD\")}\"; git archive \"$ref\" --prefix=\"$name-$ref/\" | gzip -n; };f"
+  download = "!f(){ ref=\"${1:?branch or ref}\"; name=\"${2:-$(basename \"$PWD\")}\"; git archive \"$ref\" --prefix=\"$name-$ref/\" | gzip -n; };f"
 
   # show authors with number of commits
-  authors = shortlog --numbered --summary --email
+  rank-authors = shortlog --numbered --summary --email
+  authors = "!git rank-authors"
 
   # show files with most commits (https://stackoverflow.com/a/5670168)
-  topfiles = "!f(){ git rev-list --objects --all \"$@\" | awk '$2' | awk '{$1=\"\"}1' | sort | uniq -c | sort -rn | head -20; };f"
+  rank-files = "!f(){ git rev-list --objects --all \"$@\" | awk '$2' | awk '{$1=\"\"}1' | sort | uniq -c | sort -rn | head -20; };f"
+  topfiles = "!git rank-files"
 
   # output directory structure or a single file at a particular ref
   output = "!f(){ if [ -z \"$1\" ]; then echo \"git output <ref> [<path/to/file>]\" >&2; return 1; fi; if [ -z \"$2\" ]; then git archive \"$1\" | tar tv; else git archive \"$1\" | tar x --to-stdout \"$2\"; fi; };f"
-
-  # simply clean up everything that does not belong
-  cc = clean -idx
 
   # amend changes to previous commit without asking for message again
   amend = commit --amend --no-edit
 
   # output a revision count and hash as a universal version description
   revision = "!f() { printf 'r%s-g%s\\n' \"$(git rev-list --count HEAD)\" \"$(git describe --always --abbrev=7 --match '^$')\"; };f"
+  rev = "!git revision"
 
   # search in commit sources and display the selected commit
   search = "!f() { git log -S \"${1}\" --source --all --pretty=line --color | fzf --ansi | cut -d' ' -f1 | xargs -r git show; };f"
