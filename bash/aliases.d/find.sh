@@ -5,7 +5,7 @@
 
 # find directories
 if iscommand fzf; then
-  finddir() { find -type d 2>/dev/null | fzf --height 10 --query "$*"; }
+  finddir() { find . -type d 2>/dev/null | fzf --height 10 --query "$*"; }
 else
-  finddir() { find -type d 2>/dev/null -iname "*$**"; }
+  finddir() { find . -type d -iname "*$**" 2>/dev/null; }
 fi

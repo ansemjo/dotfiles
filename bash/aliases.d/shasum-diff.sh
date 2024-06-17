@@ -2,6 +2,6 @@
 # check files in two directories with sha*sum
 shadiff() {
   shasum=${3:-sha256sum}
-  (cd "${1:?first directory}" && find -type f -exec "$shasum" {} \;) | \
+  (cd "${1:?first directory}" && find . -type f -exec "$shasum" {} \;) | \
     (cd "${2:?second directory}" && "$shasum" -c -)
 }
