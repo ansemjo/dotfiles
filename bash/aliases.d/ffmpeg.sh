@@ -13,15 +13,30 @@ alias ffmpeg="ffmpeg -hide_banner"
 # --------------------------------------------------
 ffmpeg-progress() {
   stdbuf -o0 tr "\r" "\n" \
-    | grep --line-buffered -E "(Duration:|^frame=)" \
+    | grep --line-buffered -E "(Stream|Duration:|^frame=)" \
     | while read -r line; do
-      if [[ $line =~ Duration ]]; then
-        dur=$(sed "s/.*Duration: \+\([0-9:.]\+\),.*/\1/" <<<"$line")
-        printf ' %11s / %11s %10s %8s %14s\n' current total size speed bitrate
-      elif [[ $line =~ ^frame= ]]; then
-        status=($(sed "s/.*size= *\([0-9]\+kB\) time=\([0-9:.]\+\) bitrate= *\([0-9.]\+kbits\/s\) .*speed= *\([0-9.]\+x\).*/\2 \1 \4 \3/" <<<"$line"))
-        printf '\033[2K\r %s / %s %10s %8s %14s' "${status[0]}" "$dur" "${status[@]:1}"
-        #echo -ne "\033[2K\r${status[0]}/$dur ${status[1]} ${status[2]} ${status[3]}"
+      # print stream lines as background info
+      if [[ $line =~ Stream\ (.*)$ ]]; then
+        continue # this breaks output because they appear after duration :(
+      # read the file duration from preamble
+      elif [[ $line =~ Duration: ]]; then
+        duration=$(sed "s/.*Duration: \+\([0-9:.]\+\),.*/\1/" <<<"$line")
+        printf ' %11s / %11s %11s  %5s %8s   %14s\n' current total size fps speed bitrate
+        printf '\033[2K\r %11s / %11s %s' "--:--:--" "$duration" "(no output yet)"
+      # no informationn available yet or file is finalizing
+      elif [[ $line =~ time=N/A ]]; then
+        continue # just skip these lines
+      # parse status line into BASH_REMATCH and reprint in different format
+      # test & modify at: https://regex101.com/r/THxNA4/1
+      elif [[ $line =~ ^frame=\ *(N/A|[0-9]+)\ +fps=\ *(N/A|[0-9.]+)\ +q=\ *(N/A|-?[0-9.]+)\ +L?size=\ *(N/A|[0-9]+[kKmM]i?B)?\ +time=\ *(N/A|[0-9:.]+)\ +bitrate=\ *(N/A|[0-9.]+[kKmM]i?bits?/s)?\ +speed=\ *(N/A|[0-9.]+x).*$ ]]; then
+        frame=${BASH_REMATCH[1]}; fps=${BASH_REMATCH[2]}; qfactor=${BASH_REMATCH[3]};
+        size=${BASH_REMATCH[4]}; time=${BASH_REMATCH[5]}; bitrate=${BASH_REMATCH[6]};
+        speed=${BASH_REMATCH[7]};
+        printf '\033[2K\r %11s / %11s %11s  %5s %8s   %14s' \
+          "$time" "$duration" "$size" "$fps" "$speed" "$bitrate"
+      else
+        # print any non-parsed lines, to see if some more patterns need to be matched
+        printf "\n%s (failed to parse)\n" "$line"
       fi
     done
     echo
