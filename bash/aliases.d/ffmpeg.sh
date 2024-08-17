@@ -27,8 +27,8 @@ ffmpeg-progress() {
       elif [[ $line =~ time=N/A ]]; then
         continue # just skip these lines
       # parse status line into BASH_REMATCH and reprint in different format
-      # test & modify at: https://regex101.com/r/THxNA4/2
-      elif [[ $line =~ ^frame=\ *(N/A|[0-9]+)\ +fps=\ *(N/A|[0-9.]+)\ +q=\ *(N/A|-?[0-9.]+)\ +L?size=\ *(N/A|[0-9]+[kKmM]i?B)?\ +time=\ *(N/A|[0-9:.]+)\ +bitrate=\ *(N/A|[0-9.]+[kKmM]i?bits?/s)?\ +(dup=\ *[0-9]+\ +)?(drop=\ *[0-9]+\ +)?speed=\ *(N/A|[0-9.]+x).*$ ]]; then
+      # test & modify at: https://regex101.com/r/THxNA4/3
+      elif [[ $line =~ ^frame=\ *(N/A|-?[0-9]+)\ +fps=\ *(N/A|-?[0-9.]+)\ +q=\ *(N/A|-?[0-9.]+)\ +L?size=\ *(N/A|-?[0-9]+[kKmM]i?B)?\ +time=\ *(N/A|-?[0-9:.]+)\ +bitrate=\ *(N/A|-?[0-9.]+[kKmM]i?bits?/s)?\ +(dup=\ *-?[0-9]+\ +)?(drop=\ *-?[0-9]+\ +)?speed=\ *(N/A|-?[0-9.]+x).*$ ]]; then
         frame=${BASH_REMATCH[1]}; fps=${BASH_REMATCH[2]}; qfactor=${BASH_REMATCH[3]};
         size=${BASH_REMATCH[4]}; time=${BASH_REMATCH[5]}; bitrate=${BASH_REMATCH[6]};
         speed=${BASH_REMATCH[9]};
