@@ -13,11 +13,17 @@ alias ffmpeg="ffmpeg -hide_banner"
 # --------------------------------------------------
 ffmpeg-progress() {
   stdbuf -o0 tr "\r" "\n" \
-    | grep --line-buffered -E "(Stream|Duration:|^frame=)" \
+    | grep --line-buffered -E "(Stream|Duration:|^frame=|^\+ ffmpeg|with (error|return) code)" \
     | while read -r line; do
       # print stream lines as background info
       if [[ $line =~ Stream\ (.*)$ ]]; then
         continue # this breaks output because they appear after duration :(
+      # show the full ffmpeg command from ffmpeg-recode
+      elif [[ $line =~ ^\+\ ffmpeg ]]; then
+        printf '\033[34m%s\033[0m\n' "$line"
+      # show probable errors as well
+      elif [[ $line =~ with\ (error|return)\ code ]]; then
+        printf '\r\033[33m%s\033[0m\n' "$line"
       # read the file duration from preamble
       elif [[ $line =~ Duration: ]]; then
         duration=$(sed "s/.*Duration: \+\([0-9:.]\+\),.*/\1/" <<<"$line")
@@ -313,8 +319,8 @@ MANUAL
     -c:a "${acodec}" \
     "${scale[@]}" \
     "${args[@]}";
-  { set +x; } 2>/dev/null
-
+  { ret=$?; set +x; } 2>/dev/null
+  return $ret
 }
 
 iscommand recode || alias recode=ffmpeg-recode
