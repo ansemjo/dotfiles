@@ -7,7 +7,8 @@ if iscommand mods; then
 chat() {
   # pick a model alias from your config
   model=$(yq -r .apis[].models[].aliases[0] ~/.config/mods/mods.yml \
-    | gum choose --height 5 --header "Pick model to chat with:" --no-show-help)
+    | grep -i "$*" \
+    | gum choose --height 5 --header "Pick model to chat with:" --no-show-help --select-if-one)
   if [[ -z $model ]]; then
     gum format "  :pensive:  cancelled, no model picked." -t emoji
     return 1
