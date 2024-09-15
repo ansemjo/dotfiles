@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+
+# transcode videos with ffmpeg to a different codec and container
+# by default encodes with the new hevc codec and copies audio
+# --------------------------------------------------
+ffmpeg-recode() {
+
+# EXAMPLE on how to use hevc_vaapi hardware encoder, probably not easily reuseable
+# ffmpeg-recode input.mp4 \
+#   -I "-vaapi_device /dev/dri/renderD128" \
+#   -v hevc_vaapi -- \
+#     -vf format=nv12,hwupload \
+#     -rc_mode CQP -global_quality 28 \
+#     -profile:v main output.mp4
+
+# print usage information
+usage() { echo "usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-h] [...] outfile" >&2; }
+manual() { cat >&2 <<MANUAL
+Transcode videos with ffmpeg to a more efficient format.
+usage: $ ffmpeg-recode infile [-v codec] [-a codec] [-p preset] [-q quality] \\
+          [-l loglvl] [-I inargs] [-o] [-h] -- [extra args] outfile
+  -v vcodec  : video encoder (hevc/h264/vp9/...)
+  -a acodec  : autio encoder (copy/aac/opus/...)
+  -p preset  : encoder preset (ultrafast..veryfast..medium..slow)
+  -q crf     : quality setting (h264~23, hevc~28)
+  -s scale   : rescale video with vf
+  -l loglvl  : loglevel (quiet..error..warning..info..debug)
+  -I inargs  : extra ffmpeg arguments before input file
+  -o         : generate output filename as \$input_\$vcodec.mp4
+  -h         : show usage help
+  extra args : extra ffmpeg arguments before output file
+  infile     : input video file
+  outfile    : output file
+MANUAL
+}
+
+  err() { echo "err: $1" >&2; usage; }
+
+  # set defaults:
+  local vcodec="hevc"       # video codec
+  local acodec="aac"        # audio codec
+  local preset="veryfast"   # encoder preset
+  local quality=()          # quality factor
+  local scale=()            # scale video
+  local input output        # input and generate output filename
+  local loglvl=""           # logging level
+  local inargs              # extra input arguments
+
+  # input file required in first argument
+  if [[ -z ${1+undefined} ]]; then
+    err "input file required"; return 1;
+  elif [[ $1 = "-h" ]]; then
+    manual; return 0;
+  else
+    input="${1}"
+    shift 1
+  fi
+
+  # commandline parser
+  local opt OPTIND
+  while getopts ":v:a:p:q:s:l:I:oh" opt; do
+    local arg="${OPTARG}"
+    case "${opt}" in
+
+      v) # video codec selection
+        case "${arg}" in
+          libx265|x265|h265|hevc) vcodec=hevc;;
+          libx264|x264|h264|avc) vcodec=h264;;
+          libvpx|libvpx-vp9|vp9|webm) vcodec=vp9;;
+          *) vcodec="${arg}";;
+        esac ;;
+
+      a) # audio codec selection
+        case "${arg}" in
+          copy) acodec=copy;;
+          aac) acodec=aac;;
+          opus) acodec=libopus;;
+          *) acodec="${arg}";;
+        esac ;;
+
+      p) # encoding preset
+        case "${arg}" in
+          ultrafast|superfast|veryfast|faster|\
+            fast|medium|slow|veryslow) preset="${arg}";;
+          *) err "unknown preset: ${arg}"; return 1;;
+        esac;;
+
+      q) # quality factor
+        case "${arg}" in
+          ''|*[!0-9]*) err "quality/crf must be an integer: ${arg}"; return 1;;
+          *) quality=("-crf" "${arg}")
+        esac;;
+
+      s) # scale filter
+        scale=("-vf" "scale=${arg}");;
+
+      o) # generate output filename
+        output="${input}_${vcodec}.mp4";;
+
+      l) # adjust loglevel
+        loglvl="${arg}";;
+
+      I) # extra input arguments
+        inargs="${arg}";;
+
+      h) # usage help
+        manual; return 0;;
+
+      \?) # unknown option
+        err "invalid option: ${arg}"; return 1;;
+
+      :) # missing argument
+        err "invalid option: ${arg} requires an argument"; return 1;;
+
+    esac
+  done
+  shift $((OPTIND-1))
+
+  # at least another argument with an output filename is required
+  if [[ -z $output ]] && [[ $# -eq 0 ]]; then
+    err "at least another output filename is required!"; return 1;
+  fi
+
+  # assemble an array of arguments
+  args=("$@");
+  [[ -n $output ]] && args+=("$output");
+
+  # print executed command and run ffmpeg
+  echo "+ settings: v=$vcodec a=$acodec p=$preset ${quality[1]/#/q=}"
+  set -x
+  # shellcheck disable=SC2046,SC2086
+  ffmpeg $inargs \
+    -i "${input}" \
+    -hide_banner -loglevel "${loglvl:-info}" -stats \
+    -c:v "${vcodec}" \
+      -x265-params log-level="${loglvl:-warning}" \
+      -preset "${preset}" \
+      "${quality[@]}" \
+      -pix_fmt yuv420p \
+      -movflags +faststart \
+    -c:a "${acodec}" \
+    "${scale[@]}" \
+    "${args[@]}";
+  { ret=$?; set +x; } 2>/dev/null
+  return $ret
+}
+
+ffmpeg-recode "$@"

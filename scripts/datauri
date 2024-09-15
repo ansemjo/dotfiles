@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# create inline data: URIs with base64 encoding
+printf 'data:%s;base64,%s' \
+  "$(file --brief --mime-type "$1")" \
+  "$(base64 --wrap 0 "$1")"

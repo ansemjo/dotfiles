@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# show listening ports and established connections
+ports() {
+  # Netid, State, Recv-Q, Send-Q, Local, Peer, Process
+  ss -tulnp "$@" \
+  | awk '{
+    if ($1 == "Netid") next;
+    if ($1 == "tcp") { printf "\033[32mtcp\033[0m" }
+    else if ($1 == "udp") { printf "\033[34mudp\033[0m" }
+    else { printf "\033[33m%s\033[0m", $1 };
+    printf "  %s  \033[2m%s\033[0m\n", $5, $7
+  }';
+}
+ports "$@"

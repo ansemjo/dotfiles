@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# receive data over a forwarding port on a multiplexed ssh connection
+# this is basically my older tarpipe function, but without the implicit tar
+rosenbridge() {
+
+usage() { cat <<README
+$ $(basename "$0") [ssh args] host
+Receive data over a forwarded port on a multiplexed ssh connection.
+README
+}
+
+  # at least one argument required
+  [[ -z $1 ]] && { usage >&2; return 1; }
+  conn=("$@")
+
+  # generate a socket name
+  socket=$(mktemp -p "${XDG_RUNTIME_DIR:-/tmp}" -u rosenbridge-XXXXXX)
+
+  # check if mux master is running or (re)start
+  if ! ssh -O check "${conn[@]}" 2>/dev/null; then
+    ssh -fN -M "${conn[@]}" || { echo "can't open control master" >&2; return 1; }
+  fi
+
+  # add forwarding in multiplexed connection
+  remote=$(ssh -O forward -R "40536:$socket" "${conn[@]}") || \
+    { echo "can't create forwarding; port is probably in use" >&2; return 1; }
+  printf 'Listening on port \033[1m%s\033[0m remotely ...\n' "${remote:-40536}" >&2
+  # trap to clean up on ctrl-c
+  # shellcheck disable=SC2317 # not unreachable
+  _rosencleanup() { rm -fv "$socket"; ssh -O cancel -R "40536:$socket" "${conn[@]}"; }
+  trap _rosencleanup INT
+  
+  # listen with netcat
+  bash -c "nc -Ul '$socket'"
+  # cancel forwarding and remove fifo when done
+  ssh -O cancel -R "40536:$socket" "${conn[@]}" 2>/dev/null
+  rm -f "$socket"
+  # reset trap to default
+  trap - INT
+
+}
+rosenbridge "$@"
+
+# TODO: split the rest into another file, too
+
+_rosenbridge() {
+  if command -v >/dev/null _ssh; then
+    _ssh
+  else
+    local cur prev words cword
+    _init_completion || return
+    _known_hosts_real -a -- "$cur"
+  fi
+}
+complete -F _rosenbridge rosenbridge
+
+# simply pipe to a given local port, send data to rosenbridge
+rbsend() {
+  [[ -z $1 ]] && { echo -e "err: port required\n$ rbsend <port>" >&2; return 1; };
+  cat >/dev/tcp/localhost/"${1:?port required}";
+}
+_rbsend() {
+  # shellcheck disable=SC2034
+  local cur prev words cword  ports
+  _init_completion || return
+  ports=$(ss -tlpn | sed -n 's/.*:\([0-9]\{5\}\) .*/\1/p' | sort | uniq)
+  COMPREPLY=($(compgen -W "$ports" -- "$cur"))
+}
+complete -F _rbsend rbsend
+
+# add shorter alias if free
+if ! command -v >/dev/null rb; then
+  alias rb=rosenbridge
+  complete -F _rosenbridge rb
+fi

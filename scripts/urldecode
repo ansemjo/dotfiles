@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# use modified urlencode and urldecode from https://github.com/dylanaraps/pure-bash-bible#percent-encode-a-string
+urldecode() {
+  if [[ -t 0 ]]; then
+    s="$1"
+  else
+    s="$(cat)"
+  fi
+  : "${s//+/ }"
+  printf '%b\n' "${_//%/\\x}"
+}
+urldecode "$@"

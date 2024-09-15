@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# strip ansi escape codes from text
+# will only work with GNU sed
+# https://stackoverflow.com/a/43627833
+sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"

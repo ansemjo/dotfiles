@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# concatenate video files with ffmpeg
+# expects absolute filenames on stdin, one per line
+# --------------------------------------------------
+ffmpeg-concat() {
+  ffmpeg -f concat -safe 0 \
+    -i <(while read -r line; do printf 'file %q\n' "$(readlink -f "$line")"; done) \
+    -c copy "$@";
+}
+
+ffmpeg-concat "$@"

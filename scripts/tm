@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+if ! command -v tmux >/dev/null; then
+  echo >&2 "this command requires tmux"
+  exit 1
+fi
+
+# attach or create a tmux session
+session=${1:-tm}; shift 1;
+tmux at -t "${session}" "$@" || tmux new -s "${session}" "$@";

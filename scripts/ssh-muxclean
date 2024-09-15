@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# for usage with ssh config 'ControlPath /run/user/%i/sshmux-%r@%h:%p.sock'
+SSH_CONTROLPATH_GLOB="${SSH_CONTROLPATH_GLOB:-/run/user/$EUID/sshmux-*.sock}"
+
+# provide a simple function to clean up ssh multiplexing sockets
+muxclean () {
+
+  # argument required, refuse to clean otherwise
+  if [[ -z $1 ]]; then
+    echo "\$ ${BASH_SOURCE[0]} { all | user@host:port }" >&2
+    return 1
+  fi
+
+  # special case 'all' to clean with glob
+  if [[ $1 == all ]]; then
+    # shellcheck disable=SC2086 # we want expansion here
+    rm -Iv $SSH_CONTROLPATH_GLOB
+    return $?
+
+  else
+    # else use 'ssh -G' to find correct mux path
+    mux=$(ssh -G "$1" | awk '/^controlpath/ { print $2 }')
+    if [[ -e $mux ]]; then
+      if [[ -S $mux ]]; then
+        rm -fv "$mux"
+        return $?
+      else
+        echo "file is not a mux: $mux" >&2
+        return 2
+      fi
+    else
+      echo "no such mux: $mux" >&2
+      return 1
+    fi
+  fi
+}
+muxclean "$@"

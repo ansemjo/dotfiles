@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# ephemeral ssh connection without clobbering known-hosts file or mux
+ssh \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ControlPath=none \
+  "$@"

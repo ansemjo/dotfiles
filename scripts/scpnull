@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# ephemeral scp connection without clobbering known-hosts file or mux
+# (see also sshnull)
+scp \
+  -o StrictHostKeyChecking=no \
+  -o UserKnownHostsFile=/dev/null \
+  -o ControlPath=none \
+  "$@"

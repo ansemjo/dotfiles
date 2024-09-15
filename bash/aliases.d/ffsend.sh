@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# upload to a mozilla send host that is behin basic auth
+# upload to a mozilla send host that is behind basic auth
 # see: https://gist.github.com/ansemjo/c24267ea4684a09dd841db910d908b9b
 if iscommand ffsend; then
   function send() {

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# encode stdin to hex
+xxd -p | tr -d '\n'

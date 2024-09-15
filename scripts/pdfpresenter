@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if ! command -v pdfpc >/dev/null; then
+  echo >&2 "pdfpresenter requires pdfpc"
+  exit 1
+fi
+
+# present a pdf in windowed mode without scrollbars etc.
+pdfpresenter() {
+  pdfpc --switch-screens --single-screen --windowed presentation "$@";
+}
+pdfpresenter "$@"

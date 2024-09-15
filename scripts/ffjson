@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# display media info in json format for consumption with e.g. jq
+# --------------------------------------------------
+ffprobe -v error -print_format json -show_streams -show_format

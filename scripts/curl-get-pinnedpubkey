@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# get the sha256 pubkey of a server for pinning with curl, in a TOFU fashion
+# note that there's better ways with openssl if you have direct access to the certificate:
+# https://blog.heckel.io/2020/12/13/calculating-public-key-hashes-for-public-key-pinning-in-curl/
+getpinneypubkey() {
+  url="${1:?url required}"
+  if ! [[ $url =~ :// ]]; then
+    url="https://$url"
+  fi
+  pin=$(curl "$url" --ssl --pinnedpubkey sha256//invalid -kv 2>&1 | sed -n 's/.*public key hash: //p')
+  printf 'curl --pinnedpubkey %s ...\n' "$pin"
+}
+
+getpinneypubkey "$@"

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# copy files with rsync, preserving everything
+rsync --archive --hard-links --xattrs --acls --executability "$@"

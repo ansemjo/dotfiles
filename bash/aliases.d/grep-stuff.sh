@@ -16,7 +16,3 @@ else
   alias ff='find . | grep -iE '
   alias dpkgrep='dpkg --list | grep -iE '
 fi
-
-# grep for processes
-# shellcheck disable=2009
-psgrep() { q="$1"; ps aux | grep -Ei "${q:0:1}.{0}${q:1}"; }

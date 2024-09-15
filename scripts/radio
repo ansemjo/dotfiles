@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+if ! command -v mpv >/dev/null; then
+  echo >&2 "playing radio requires mpv"
+  exit 1
+fi
+
+# play radio livestreams, quietly, show only icy-titles
+radio() {
+  ch=${1:-dlf}
+  case $ch in
+    # Norddeutscher Rundfunk: https://www.ndr.de/radio/index.html
+    info) name="NDR Info"; play="https://www.ndr.de/resources/metadaten/audio_ssl/m3u/ndrinfo_hh.m3u";;
+    kultur) name="NDR Kultur"; play="https://www.ndr.de/resources/metadaten/audio_ssl/m3u/ndrkultur.m3u";;
+    # Deutschlandradio
+    dlf) name="DLF"; play="https://st01.sslstream.dlf.de/dlf/01/high/opus/stream.opus?aggregator=web" ;;
+    dlfkultur) name="DLF Kultur"; play="https://st02.sslstream.dlf.de/dlf/02/high/opus/stream.opus?aggregator=web" ;;
+    # Technobase et. al.: https://www.technobase.fm/
+    technobase) name="Technobase.fm"; play="http://listen.technobase.fm/aac-hd.pls";;
+    housetime) name="Housetime.fm"; play="http://listen.housetime.fm/aac-hd.pls";;
+    hardbase) name="Hardbase.fm"; play="http://listen.hardbase.fm/aac-hd.pls";;
+    trancebase) name="trancebase.fm"; play="http://listen.trancebase.fm/aac-hd.pls";;
+    coretime) name="Coretime.fm"; play="http://listen.coretime.fm/aac-hd.pls";;
+    # DrumAndBass.fm: http://drumandbass.fm/
+    drumandbass) name="DrumAndBass.fm"; play="http://radio.drumandbass.fm/listen192.m3u";;
+    # accept any other argument as stream link
+    *) name="$ch"; play="$ch";;
+  esac
+  echo "Playing: $name"
+  mpv --no-video --quiet "$play" | sed -n -e '/^Playing/p' -e 's/^ icy-title:/🎶/p'
+}
+radio "$@"

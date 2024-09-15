@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# decode hex from stdin
+# reverse of hexdump .. looking for this way too often
+xxd -r -p "$@";

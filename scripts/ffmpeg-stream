@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# download and assemble a m3u8 stream
+# expects a link and a filename
+# --------------------------------------------------
+ffmpeg-stream() {
+  if [[ $# -lt 2 ]] || [[ $1 = "-h" ]]; then
+    printf >&2 '%s\n' \
+      'Usage: $ ffmpeg-stream https://domain/path.m3u8 filename.mp4 [extra options]' \
+      'Use USERAGENT env to override default -user_agent argument.'
+    return 1;
+  fi
+  local LINK="$1"; shift 1;
+  local USERAGENT="${USERAGENT:-Mozilla/5.0 (X11; Linux x86_64; rv:87.0) Gecko/20100101 Firefox/87.0}";
+  ffmpeg -stats -user_agent "$USERAGENT" -i "$LINK" -c copy "$@";
+}
+
+ffmpeg-stream "$@"

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# wait for any keypress
+read -rsp $'Press any key to continue...\n' -n1 _;

@@ -1,0 +1,249 @@
+#!/usr/bin/env bash
+
+# select output format based on first argument
+rand() {
+  case "$1" in
+    # specific randomness commands
+    chars) shift 1; randomchar "$@" ;;
+    hex) shift 1; randomhex "$@" ;;
+    key) shift 1; randomkey "$@" ;;
+    mac|macaddr) shift 1; randommac "$@" ;;
+    ip|ipv4) shift 1; randomip "$@" ;;
+    coin|flip) shift 1; coinflip "$@" ;;
+    star) icu_starnames_txt | shuf -n1 ;;
+    words) shift 1; randomwords "$@" ;;
+    word) eff_short_wordlist_2_0 | shuf -n1 ;;
+    name) shift 1; randomname "$@" ;;
+    # none matched, pass thorugh to randomchar
+    *) randomchar "$@" ;;
+  esac
+}
+
+# output random alphanumeric characters from urandom
+randomchar () {
+
+  if [[ $1 =~ ^[0-9]+$ ]]; then
+    # if the first arg is a number, use for n
+    local n=$1; local chars=$2;
+  else
+    # otherwise use default n and assume it's a character class
+    local n=20; local chars=$1;
+  fi
+
+  # use alphanumeric without some lookalike characters by default
+  tr -dc "${chars:-a-hjkmnp-zA-HJKLMNP-Z2-9}" </dev/urandom | head -c"$n";
+  [[ -t 1 ]] && echo # newline for terminals
+
+}
+
+# output random hex characters from urandom
+randomhex() { randomchar "${1:-32}" "a-f0-9"; }
+
+# random 32 byte key in base64 encoding
+randomkey() { head -c 32 /dev/urandom | base64; }
+
+# output a random mac address with possibility to define vendor part yourself
+randommac () {
+  _h() { randomhex 2; }
+  vendor=$(_h):$(_h):$(_h);
+  device=$(_h):$(_h):$(_h);
+  mac="${1-$vendor}:$device";
+  echo -n "${mac,,}";
+  [[ -t 1 ]] && echo # newline for terminals
+  unset -f _h
+}
+
+# echo a random 10.0.0.0/8 ipv4
+randomip() {
+  _rndip() { shuf -i 1-254 -n 1; };
+  echo -n "10.$(_rndip).$(_rndip).$(_rndip)";
+  [[ -t 1 ]] && echo # newline for terminals
+  unset -f _rndip
+}
+
+# simple coinflip. heads or tails.
+coinflip() {
+  # get one random byte as unsigned int modulo 2
+  local flip
+  flip=$(( $(head -c1 /dev/urandom | od -t u1 -An) % 2 ))
+  if [[ -n $1 && -n $2 ]]; then
+    [[ $flip -eq 1 ]] && echo "$1" || echo "$2"
+  else
+    [[ $flip -eq 1 ]] && echo heads || echo tails
+  fi
+}
+
+# random concatenated words from eff wordlist; quasi diceware
+# examples: uptown_voucher, dresser_snowsuit, leopard_enactment
+# if you trust shuf's randomness you could use this as a password generator
+randomwords() {
+
+  # variables
+  n=${1:-6} # assemble n words, default: 6
+  c=${2:- } # concatenate with c, default: space
+
+  # function to get one word
+  words=$(eff_short_wordlist_2_0)
+  word() { shuf -n1 <<<"$words"; }
+
+  # print words
+  array=($(for _ in $(seq "$n"); do word; done))
+  printf "%s$c" "${array[@]}" | head -c-1
+  [[ -t 1 ]] && echo # newline for terminals
+
+}
+
+# inlined EFF wordlist to avoid network request completely; available lists:
+# - https://www.eff.org/files/2016/09/08/eff_short_wordlist_2_0.txt
+# - https://www.eff.org/files/2016/09/08/eff_short_wordlist_1.txt
+# - https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt
+eff_short_wordlist_2_0() {
+# curl -L $URL | cut -f2 | gzip | base64
+  base64 -d <<'EOF' | gzip -d
+H4sIAAAAAAAAAzWaabqruA5F/2cub1AGDDgYm+smhIz+rS2f+qou0qFxo3ZLjnNl+bhyvNzk0pKT
+X+Cm4j/BNQ+75NMn6J5L8WnWrbCEtEFTLqeLMMXVkPVSzWUaz3paXGowT60vN7vFnw90zj01ezD7
+xmTQPSRv7wRm5nltYdaf/3ooel7y5PR+K+O13vz4wJdcM9P72nbPRy+3rmFxn8Dba8z6aC1Oo67N
+l7q7D8NtLrDQjZ2wnG3TmLnA7a7y/haa7XpLudqIW07hZzviVW9MWKJNH07RyDBvxwjRlXOOeUaQ
+kQWzNt6J8277jqv+h26O0WPwSQ8POIkgni45Jos5bTUsunPtbvIsKBbvFg1QM5cWWrfH/QypnzC3
+exjpdFqjlnJOPTrTElpb+McYZ3BT1J2zp9BMUScSbHo9+4llnVcMa/Ds4uxVJLFdx/hp3iWdtJQs
+OSYTdQ18kjYf11B3uGBGkI6oBaeEhmcbI6fnRJ1w9bYbzcd8sZD0DV6zp+eKTmvNpTHk5UobK76S
+19/ooORr54Xr0gauEubM43+dHRcTXcF+kpaG3bViuisLY0gWmCujlK2PQUuoLc9FZoGmdhdYUsmn
+Mz2Xku8dUcNVVC5bKDzY88GIdWLfmY3UGaFC/GUfYVKn3KWGZIup0fsLkucgiVQ25DYJQPtIrjNo
+fc7Tt6KvW3Q8ameubFGW3jIS5805mNSazdGeK8warc9SnZcg+xJaLkEG0DdtTovolRfHl52R8hQk
+sv4NMbiCND5OhiFhfnzqIji4lPvJeCfWdUtgZtn3bt/eB7cY+U5m97fJ4svWJNyfi+hoIlREPZ3c
+fFz8g1kcY0xuuwK6ntzhmX2yyceL55QzJPEfpKDBvoirB/aD5+w4vD785XxwPxI6uCJ4ts5k58WV
+bepmJyQtrwlXf7TSKU8z6p0yHjNlJG/bmTI+GFyCYVuMkVPSTDk3PSy5bzu01vD3emvsfsr9X7fX
+vjGwcSIiS4MEv85Os5eMvqbSKx7xmjqC8Jga3Hzo+74su+xo6ivOz457jGvJSKCnxPp6nbLI76el
+z0TVxHVuKBB9hIhnwKye0IW/zYQsLrstenbvbFKfke5NHIGJM44vfc7YZNEHsmKvv6/aoz7GxhuE
+9d4QHHkpGNaMZWHBTrNjEnzg2d6q2Dv7xf6OUuHszY3wgKolMsepOD0jsysThvGoeKAKbWb3vnot
+DjYQa/h6j9k8Fpe6FFoPPkXTp+4Q0V9zwEIwfpiUiEssJ5RZ6w7tqWxC3EfGzJPoGJFVbc9pf4br
+b2KLv3PsZCtZyIxl7ApV7CJPt58gc0444pwXf2d9kv1XgtLW8rr6v2XnTaHyI45IPLLCnFFKmZS1
+5nxe3aSbEypqAeYK9ndR7JpzPb3lMQJW02Zyn3euH18se8z5yTbkb1gdcem2cDoXf5/+nDRWCSyY
+yFurMuZc+qk4PpenNimuTxYZ5j738T4mh2vOGBzWgRx6qCbyHomcDNAv/hXpEqNVHiCXBpPxw/fJ
+cuj8IE7Mdn4YQy43P+ekWZ5EeKknzGWJeH5aJnxzZyEG152ED7euGduF2ST0hSD7cI2KsmgKSLD4
+qJkxrDZ0Rrho0Kj3mscrDxhcstn3t159WsBOFvf7yX8X7wbBFytEMlj8giwQ6EIENoEuHmdjH4tX
+4obsD+YuB9EKUIMNcY6EoIwR7OW85CJhL/7KuhZZD4v09WC7UJa1eXvhE2aN+5WDks2WIKvl1TAx
+e7BorcC7hHW1pLoE0AVX3FQjEsiQPEgq+aLQC5u/Sv5LuCJpCVr8zII1RN0xbcIPgb9lrh9eLJrm
+92c/S55tb3khTiwYKhcwQvZ6JINfci6YOVuASmK5y5iWfCfkHzRY/mldIKZkoXuRmrXuEtZ256xn
++bqIO7yLLXJ59BgzxNmkP0U+haUFC/RM0besmft5WSRaOjv+QorhkQWkd8koMMK16/UP8XZBFqvs
+bLl9HKPdGOLgHiJDkJYfUi2Z6OUJi8UE4F2JyhsKXpHrx1ct9zUsys/ELUu7ngBkHugVNogRHl/F
+ofwJhyTq8/KLVO4tyUIIj8b4SMDgLdTNV+xwJhT7Dai4QdBYCoRs//am+pfHN+RQPk755orCkBGx
+FGiH/Qz0ZHcCihpTEMm1aaELVOSFB81YfKz+NpDgY68KSz6ywZc/lVUvGT4hQxhNkdqfs9cNjDfy
+7Un8sAWdmXGNuYDOTHcqZfAm4HMAL1AxqZ8MDoedXEBzOMVZyJqLcJ1Pm4KKT7vhTJ/CNjCUT+/8
+oFm9S5w0GapCECTxydC8vi4Y599k1VtAk2YegCwM0DGMJX2y/v49OL6/2NepGRjkGt9ScZgRsbac
+sj0ESdgySr+GAsgaIyXivOHMEMCkATJfLYbpVtW8wmd49cs3VSOoE3NN0kDbFcMJjMICWhfGEJ9L
+Sdr3mCWXfgleYLC+K9eEH299wDRuLIJIowAkjl2YxD459vHwC8b2X6R6saWvLwRYyei7kt5NDF+S
+qoiCk/9mvSCGALHo9j9FeHtPQUg7/fbJWwBbqcqQxupGCFlBUQvXECuYAibKElbcKephWhWBVqdE
+COkUZ5APKZvRV3wqSK8rIbcrpq1ekTFC/SLkBxM2VY64vYxjxbQKV213RTEaDSGHj33TWp/n8RrI
+z7LNKjkp/a2B9W9REHJVDG2GaCnrKLogWzcQsQKPNCZ+Mz4P0rVWGL6tayeMsMdAFoH19a/EXP+7
+k4t9hSbBFSw0O6vlYGbNljcUiw4OSoENJi3g5RXodQkCroKK7MMqWRxkzd8XdaYBcRjvZcprCYrE
+loNkUWvpQU8f/lDQ2xyP20vVKLGPlW+sv1pFvAHgDtIYC9vIPhptI7ihzI0Kw3awCb0Vjbs5ViFZ
+bF7Q5Audj8z15B+ea/a/+Uw5pyoDlkIpQqrJiTU4m8A/srwN2BRHWNrCNA2VbAh/yG8jEVTwG8xG
+YY9pbOHE9w5oIfXr748fA4YfHmeKJE5tFEYK8Vs0qAUFCHHtxF7RZ9ZuXhsJU1PLoTUx6A3P5T4K
+iRomx2UdT7T1nAGWWybSyEa2XC1JbFlOC+nllFwEuZKEUIQh8cWHTZKnt4IRcdUfOyF8M3hlI3QH
+iCZLwGG8guJwYEAGQVdhsienpRcMcvv7CO1xbWZIANOkhsL2JPKLBYrtKSMk/OFJ6HzoS0LSJiBE
+RXp0rtFC0a5SvghEEVSWreuOkq9G33l9txEwLgQGD74eYwk56c7PR6V91bTq68BgcNrn7le94AEH
+lrV3HyUnglhGLapCdvkt0R5bx2RAMyr529/iiVmbaKfUuiDLSM07KZ/LNirIHTE5UCOF3t4F0UGH
+QgA76JPUhpHvQqD67nGEAs30EK9YplAafrQ/W/BWh+/PlbKhszD1q2SiygvkZcVmsJJSSQ2NB0Nx
+SpwBKDU/ELYXNq0ibH+dDyKI6k502i3r+lc43WajgKFn1b2k42ZuI9vebDVgNewTmuUJkPRf0U7y
+XbjsctzABrxaBLxYiB2nbmlONr0N8YUapYxQc1MnhMzcvRkMU+LhSh5E3BPK9AQOHJhwG1pHrK/w
+USR/O3NMVvxGBEAprAmWfRVIiKPyeZP6LtIvDPW2EPCb3KRdvakDx9f11GbeRJBFUPbtbhW51Ouw
+j8pK436/1xvELRd7q73x9gpXb58vrFALfoNEve7IWSE/P4HA3sBeboatuhuShpe8M5WZoBAcJWDD
+J+G2bTzbExe0Igd752O0tN44snLxO3+CkcfKx9cb3KmSEYblW4/j3RUnILad/g6tdujhFRjfwNDh
+Pu+eDusXvLtg0Fsdx/WxJQBBk2zgcFOeuJ7hwJNgAGLU+zDWYzrc446XgnRVtXh4QHyEEO1xABj8
+kWLr2B0SOVTsNqn9CDFbX01wBN1oh8B0aK4MJ5zGIg7l3IOImQDLR6J8l6kfSaUpY2Lqh7D/kVHx
+6yigEQwLd8sW7B/YRQKOrIz0g4AkJWIg9FINAzZ7wHC4FGx1BF0oC+aKJdgAn9Ftie7rrAiO7veo
+7uUL0G0XkIuEEYVWGFOfHoWqnBK9qvcITsSt47ATKIhrJjzpiQCA3kMzJyA+Kvnr+3sx/YB9UK1q
+KmKtOQCuQcrWNwEMos6u5cGpx+ml7swNboJRywQ0janKsKM8VsXmGHN0HWAATayHgBLHg6bIZCXh
+3SmRYK0jQwSjCIvddS6ThS2e9ZngopXJ6IqcImJ0as7Erl4MBUK04KdXVJXLSWEB1jLCCH7522Sv
+o1sX+5ebxj1FaPMk+6C3AGPAFLqpv+thCOAuPTBBjcfTvbPVnie6NmWcLhK4x7NTbVmC76YRrtMc
++wQkKJOe5GWVTjBofkjmdMJgxnzDSX13uien5CTbMztrAlpbUU5P4ayuUYKhwGUFOQxEobw5q990
+6tygaZisVKjC5Mw5GRaDK82Q5Jkr+iBzUpwAb5/ZviSCWWg48Xn9rfbxmdUp80rGZ1fmlBTPvoDm
+bugGMGlQfd/Pk5HtBEJ/XZfXEwHWs1uzAfqXz05kTgQ/n3qpE30+2CxbjlxOb86dHMGeJI7/4ouC
+I0lNS4VS7WusI5mfiHZLQcSt5D6K+gwAMkORUPXmIbOQRPJAblN7onhsoxebfBCwgzJ50CMKgcmg
+dqJu9DekfEbeTmPMZvAy+a5Mk+RJyFaTfptK/ldSy1wiT8HPuqrkGmvGP1TmwZSPkmLqSF9Lw6KR
+WKK4sBIvCfSg44RB22QqsFxkBPxFegVozMUpLL3SQ9H6yk6rl59Ski9h9OMxnaHzPKlGhuB73uJp
+nlL+mjDyxIiy5DwZuM7TZ9yf534NleXZO+V7dTwue4RY+WBdFSHyql4e7sGDEId2yCmjvh2pJ8eH
+VICnZSuNlW3ymZRdbaY0q3OywdhsCfygnWX1SfDznKwrntPzfeV8XvuLCEd5qB1e6rzmS535fFEm
+GL2IQJr7r6pnzfFPIESAOCrUXHEEiayqScGQMgOLaupO8zG1peX1/PkTAiH6lW+B9VemXtSKvsHy
+cf4+ApDKk1r2T9BExj0iAHjFmqQXe1FEuxwIwVVoPLmwH1UTlCgNnFz1JdDncC+dZZDw9EgN3yKG
+lXDtlw37Gf3hyz0DDV1eHXEI6gmG6y+vs0Qt6vLbaP5d1IsEVmgCYYsiV66XOhSEQBFril0qH+fB
+ERPJHazW3zYYcJiYyWeAXeuU2gKs73PtOppEmdf+VKEEpiAd8iAKD0NyU4PlIopzeazNdeFNBC0y
+00Vwc82KxStbe/TKhNOLYIcOLoMoEPagTgyczssgl9rA0ILRyvd0kjXbfqmvGi5wKaRZIruKC2oo
+kR4bmP0loKmeOgzmFNXpvErXGPqsUjEzQX3URlcxevVJNqC3ujng1f0UeQWfBZRdgB6FrGskoJvx
+CYe6X6RbQDgw5eqNdXR1V1/Xo74+CyUQssV/OKzOTmGIhnYqARti46r+NV5PTIeoRQnZbo802VIs
+2Yk5ZUnovqhRZZmThD5IvYhsRdwnjGIA9Fms4Qo32SxgBh8uUWsSQVeBYjHbON4of41dfRNUMlVx
+wMh5jHioeahbKqCLemD6I8mPsr5GyKzfy6JtNG1U8yFzrgpGOeg+VqDgCtctLhS1ccaN27okhfqs
+6uSp7F6nc8zGpjLXPpF1oeplFcpqfY2TE6EAA4umD9sfKijUHBKgWoCL3gZSS3qh/XT9/BkNwj01
+tRqeBW/2uqVeoN2UUx16AMSr1q20IrcZri75IQiVriICIqhoOKj0DcxScELNT4gy/6EmPhX0kIbl
+f/XWlOWLercA4vVVAZ4WF0GpJVgIxlAQ+eQ2uFUQFKoaT75VXWx1t0hUnXJygKbFOquVAnfXuVNV
+ZZFEa324AlHwjAp4dFw/Y7ZvHnGm4lgsg7JL+RSGeaItnvD619evWKnUW0lT19+zHsdW6oypQ/yM
+kpWeql8G6q06OtjMTirY9hx1fPXCwAipqieZle4A/X9vXQI8VUakxInwL8XEiu+c+lMni3pNxw+o
+taoFwNVHNsDOeXMnsLPVveicE++0s8i6P2YdNQiU8HcYjYoasFVEEqL1dauMp4wHyRom1XxkCD40
+8hpEzUX9+TNzqIcduig21YOdqZbA5vTt0SOLO57RcqJwtd4/jPau+Q1xVTuXqAPs2nMwZvtTzWkt
+fFv6KZzN2CfJlEVr34A3aVIVjo1EhWM/taiJ2pFrvquaZhU8Msa4rDoVg2d9Iep3Q9Tssw8JwBoR
+y+x8R5Dj8oxuomBmKZItyK/zUvOqjHEma9AVhzrAE7dVQipM7xGdqn5xIR22B8j+ql2/Iql9UpOr
+jjN56KIn65rtDKp2isWX1m4HxRVL27UUJUrmkM31smrlaoK86k3qqLd37c8G7nDewmHVDiiJ9c4g
+XX1UV0hnwJddebI+yW15024eyV5as6MMwQBzdx3NJtg5c1ku9bSa88edhftwW/vJCQzlAxJrAFeT
+dAMS2KtJ0aA5ZV9kgXsQzQVimxD91PWstayh1GV7tZ1iH29ycra2G9aEZntUJOy2Yyhcb/28QlMD
+DRguLOpitOD/60C0sNlVuYgXdabTCIrZj4+KfhTQrH3yQld29tXU5SBMk7QhQkuYSitdR82s3jbY
+p9FuwQLqggZb38wG2FS4uGrBlsKaqoZxLkeUkBO2To3eukI7AbT1r5cIefln89ws8tXIngRKwTzl
+eVet08ioo25RB4IBCWMG0nmSpq7jYWNV+nTV3ab8LiyfTBs9rVG9eHvLWqdiZPH6IIyiqSf1MQgq
+PR14ToIK50lcPeGSh32kTtpsnPKeMUJuohazdmN1RAOpOoseA6AZPeiYv558fIh2g9Sn3/2IfYKP
+y3j7hyw72R3B9st+8YXx9Evnu5DRlOjXZkrsmHIc5WG/1FGBRGEHU8Dc9WaxCNSvv4NKcpBt8NLB
+4IsckgS4e5nwo150ggPxOoxh+HFaS3VE8FYqkFmotnt1Q036MZm6+ZRt1nHo+j0ObxEKwH9dvQGr
+gXSiwyQf/S5KPx37uNjNweB0tlUluY8DRljv7kMusht1HIh8vDrt8oaP3+3InTA/U9t/7KANAvyY
+itN94tHU7Q2bHPodnbCPMI0WqZOkrGMCOH+v45yeatP6YbqJsW2ilJZOT/RrEQgCtfb5J5C/ueqX
+b5+As8t2P4E9Wq31CV8itX4WZIcrH4swwCCBXEQF7gFaTsQK2D5Lih9AhSbsUR1LbfMm8xtRs/jG
+pcGZt4ua99aPANRCuoGAXJqxH5mOfoLVuIaqmuK2k1o77L/Vl7jDQql/BztLha7Dl+9wsDOAOlxc
+9AMg2cWp7v7NA/n9HeQ81FO7/Xrjtg4PFndn+/mSjWJoTrq6MxGKQkDHvQpFIn+/TrrNn29hVG0O
+dHpo37cqhJE5box7W7I281Xt8vpSEI9s+LgZK370G56XtR8fO7IBjDxeDqB49OisBQ2ZM72e/L+H
+d/NC9HvQAsnhwS0AdD91ZBsEm+F6CfIlmNrGadIvbD/9BGOBi/aDC3zS0vcvFLXLseWfipsZQlXP
+iKpy7dDp12f5UHj9H4QtGVQaKgAA
+EOF
+}
+
+icu_starnames_txt() {
+  # curl -sL https://www.pas.rochester.edu/~emamajek/WGSN/IAU-CSN.txt \
+  # | grep '^[a-zA-Z]\+ ' | cut -c1-18 | sed 's/ \+$//' | gzip | base64
+  base64 -d <<'EOF' | gzip -d
+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
+/llM9vfrf85Z9oH3DQAA
+EOF
+}
+
+# detect if being sourced
+(return 0 2>/dev/null) || rand "$@"
