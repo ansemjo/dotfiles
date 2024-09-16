@@ -33,9 +33,9 @@ function fish_prompt --description 'Write out the prompt'
 
     # Only show the login if I am a different user.
     if set -q __fish_prompt_hide_login; and contains $USER $__fish_prompt_hide_login
-        set -f login ""
+        set login ""
     else
-        set -f login (prompt_login)" "
+        set login (prompt_login)" "
     end
 
     echo -n -s $login (set_color $color_cwd) (prompt_pwd -D0) $normal (fish_vcs_prompt) $normal " "$prompt_status " "$suffix " "
