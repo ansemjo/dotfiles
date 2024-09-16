@@ -1,0 +1,1 @@
+abbr suu sudo su
