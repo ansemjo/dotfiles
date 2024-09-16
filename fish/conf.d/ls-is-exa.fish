@@ -6,7 +6,7 @@ if command -q exa
 
     # useful aliases
     alias ls "exa --group-directories-first --classify"
-    alias ll "ls --long --hyperlink"
+    alias ll "ls --long"
     alias lt "ls --tree"
 
 end
