@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if iscommand mpv; then
+if iscommand mpv && iscommand radio; then
 
 # completion for channels
 complete -W "$(command -V radio | sed -n 's/^ \+\([a-z]\+\))$/\1/p')" radio
