@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # use github.com/charmbracelet/mods/ to chat with an LLM
-if ! command -v mods 2>/dev/null; then
+if ! command -v mods >/dev/null; then
   echo >&2 "install github.com/charmbracelet/mods to chat"
   exit 1
 fi
