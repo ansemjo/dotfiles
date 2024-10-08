@@ -1,0 +1,32 @@
+# annoying with little benefit
+HashKnownHosts no
+
+# add keys to agent when needed
+AddKeysToAgent yes
+
+# include specific environment configurations
+Include ~/.ssh/config_*.conf
+
+# apply defaults to all, unless already set
+Host *
+  
+  # keep connections alive
+  ServerAliveInterval 60
+  ServerAliveCountMax 2
+
+  # apply trust-on-first-use policy: accept new hostkeys
+  StrictHostKeyChecking accept-new
+
+  # don't forward the agent
+  ForwardAgent no
+  
+  # use only the authenticated ciphers
+  Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com
+
+  # prefer to use only the ed25519 hostkey
+  HostKeyAlgorithms ssh-ed25519-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,ssh-ed25519,sk-ssh-ed25519@openssh.com
+
+  # connection multiplexing
+  ControlPath /run/user/%i/sshmux-%r@%h:%p.sock
+  ControlMaster auto
+  ControlPersist 20m
