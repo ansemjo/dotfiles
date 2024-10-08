@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# display hdmi video with a cheap usb capture card
+function hdmicapture() {
+  
+  # guvcview is needed
+  if ! command -v guvcview >/dev/null; then
+    echo >&2 "err: guvcview is required!"
+    exit 1
+  fi
+
+  # try to use the correct video device by v4l/by-id link
+  card=$(readlink -e /dev/v4l/by-id/usb-MACROSILICON_2109-video-index0)
+  if [[ $? -ne 0 ]] || [[ -z $card ]]; then
+    echo >&2 "err: hdmi capture card 534d:2109 not found!"
+    exit 1
+  fi
+
+  (set -x; guvcview --gui none --device "$card" "$@")
+
+}
+hdmicapture "$@"
+
