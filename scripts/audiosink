@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# choose default pulseaudio sink
+
+pactl -f json list sinks \
+| jq -r '.[] | [.index, .description] | @sh' \
+| xargs printf '%2d  %s\n' \
+| gum choose --header "Choose default PulseAudio sink:" \
+| (cat; echo) \
+| while read index description; do
+    pactl set-default-sink "$index"
+  done

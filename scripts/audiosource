@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# choose default pulseaudio source
+
+pactl -f json list sources \
+| jq -r '.[] | [.index, .description] | @sh' \
+| xargs printf '%2d  %s\n' \
+| gum choose --header "Choose default PulseAudio source:" \
+| (cat; echo) \
+| while read index description; do
+    pactl set-default-source "$index"
+  done
