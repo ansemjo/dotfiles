@@ -3,7 +3,7 @@
 # usage information
 usage() {
 cat >&2 <<USAGE
-usage: $ install.sh [-h] [-B] [-a] [-b] [-g] [-t] [-v]
+usage: $ install.sh [-h] [-B] [-a] [-b] [-g] [-t] [-v] [-f]
   -h  : display usage information (this)
   -B  : create backups when overwriting during linking
   -a  : link ansible.cfg
@@ -11,9 +11,10 @@ usage: $ install.sh [-h] [-B] [-a] [-b] [-g] [-t] [-v]
   -g  : link gitconfig
   -t  : link tmux.conf
   -v  : link vimrc
+  -f  : link fish
 
-example: quickly install bash, git, tmux and vim links
-  ./install.sh -bgtv
+example: quickly install fish, tmux, git, and vim links
+  ./install.sh -ftgv
 USAGE
 }
 
@@ -37,7 +38,7 @@ OS=$(detect-os)
 echo "detected distribution: ${OS,,}"
 
 # parse commandline options
-while getopts 'hBabgtv' flag; do
+while getopts 'hBabgtvf' flag; do
   case "$flag" in
     h) usage; exit 0;;
     B) LNBACKUP=yes;;
@@ -46,6 +47,7 @@ while getopts 'hBabgtv' flag; do
     g) GITCONFIG=yes;;
     t) TMUX=yes;;
     v) VIMRC=yes;;
+    f) FISH=yes;;
     \?) usage; exit 1;;
   esac
 done
@@ -77,6 +79,15 @@ if [[ $BASHRC == yes ]]; then
     *)                link "$BASHRC" /etc/bashrc;;
   esac
   link "$DOTFILES/bash/dot-bashrc" /etc/skel/.bashrc
+fi
+
+if [[ $FISH == yes ]]; then
+  for dir in completions conf.d functions; do
+    if [[ -d /etc/fish/$dir ]] && ! [[ -L /etc/fish/$dir ]]; then
+      rmdir -v "/etc/fish/$dir"
+      link "$DOTFILES/fish/$dir/" /etc/fish/$dir
+    fi
+  done
 fi
 
 if [[ $GITCONFIG == yes ]]; then
