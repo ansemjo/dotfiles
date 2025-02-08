@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+zint --direct --scale 2 -w 10 --vwhitesp 5 -d "$(cat)" | feh --borderless - &
