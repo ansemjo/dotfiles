@@ -11,7 +11,8 @@
 
 [fetch]
   # automatically remove deleted remote-tracking branches
-  pune = true
+  prune = true
+  pruneTags = true
 
 [pull]
   # only pull when fast-forward is possible
@@ -24,8 +25,12 @@
 [rebase]
   # stash and pop automatically
   autostash = true
+  # reorder and apply fixup commits etc. automatically
+  autosquash = true
   # prevent deleting commits in rebase
   missingCommitsCheck = error
+  # force-update branches that point to commits being rebased
+  updateRefs = true
 
 [commit]
   # print useful information in editor during commit
@@ -36,7 +41,7 @@
 
 [tag]
   # sort by most recent
-  sort = -taggerdate
+  sort = version:refname
   # avoid gnupg signatures
   gpgSign = false
 
@@ -49,6 +54,10 @@
   algorithm = histogram
   # show moved lines in different colour
   colorMoved = default
+  # replace a/b with i-ndex, w-ork, c-ommit, o-bject
+  mnemonicPrefix = true
+  # detect renames
+  renames = true
 
 [color]
   # use colors
@@ -62,6 +71,10 @@
   old = red
   new = green
   whitespace = red reverse
+
+[column]
+  # use columns
+  ui = auto
 
 [format]
   # default pretty-printing format from below
