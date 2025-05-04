@@ -4,9 +4,9 @@ original="${1:?input filename required}";
 
 prompt=$'\e[2mEnter filename: \e[0m'
 if command -v gum >/dev/null; then
-  newname=$(gum input --no-show-help --value "$original" --prompt "$prompt")
-  mv -i -v "$original" "$newname"
+  newname=$(gum input --no-show-help --value "$(basename "$original")" --prompt "$prompt") \
+  && mv -i -v "$original" "$(dirname "$original")/$newname"
 else
-  read -ei "$original" -p "$prompt" newname;
-  mv -i -v "$original" "$newname"
+  read -ei "$(basename "$original")" -p "$prompt" newname \
+  && mv -i -v "$original" "$(dirname "$original")/$newname"
 fi
