@@ -54,6 +54,15 @@
   # use colors
   ui = auto
 
+[color "diff"]
+  meta = yellow
+  frag = cyan
+  func = 146 # lavender
+  commit = yellow
+  old = red
+  new = green
+  whitespace = red reverse
+
 [format]
   # default pretty-printing format from below
   pretty = block
