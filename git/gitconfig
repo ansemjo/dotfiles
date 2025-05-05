@@ -100,6 +100,9 @@
   # show a diff of files staged so far
   staged = diff --cached
 
+  # unstage a file change
+  unstage = restore --staged
+
   # show the stats of a commit
   stat = show --stat
   latest = "!git stat"
