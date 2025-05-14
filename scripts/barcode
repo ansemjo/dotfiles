@@ -1,3 +1,13 @@
 #!/usr/bin/env bash
 
-zint --direct --scale 2 -w 10 --vwhitesp 5 -d "$(cat)" | feh --borderless - &
+# there must either be an argument or text on stdin
+if [[ -n $1 ]]; then
+  data=$1
+elif [[ ! -t 0 ]]; then
+  data=$(cat)
+else
+  echo "either pass an argument or pipe data on stdin!" >&2
+  exit 1
+fi
+
+zint --direct --scale 2 -w 10 --vwhitesp 5 -d "$data" | feh --borderless - &
