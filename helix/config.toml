@@ -1,0 +1,9 @@
+# keyboard help: https://docs.helix-editor.com/keymap.html
+
+# colorful and shows things like primary selection as well
+theme = "dracula_at_night"
+
+[editor]
+
+# always assume true color and hope nothing breaks
+true-color = true
