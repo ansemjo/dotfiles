@@ -7,3 +7,20 @@ theme = "dracula_at_night"
 
 # always assume true color and hope nothing breaks
 true-color = true
+
+# indicate current mode with a color
+color-modes = true
+
+# usually, i don't want the mouse to move selection
+mouse = false
+
+# highlight the current line
+cursorline = true
+
+# show (multiple) open buffers
+bufferline = "multiple"
+
+# enable line-breaks and show rulers
+soft-wrap = { enable = true, wrap-indicator = "" }
+rulers = [ 80, 112 ]
+
