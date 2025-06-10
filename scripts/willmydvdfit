@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# check if a file would fit on certain optical media
+willitfit() {
+
+  # get the size in bytes of target file
+  target=${1:?target file required}
+  size=$(stat -L -c %s "$target")
+  awk -v target="$target" -v size="$size" </dev/null \
+    'BEGIN { printf "The file (%.2f GB) will fit on ...\n", size / 1000**3 }'
+
+  # maybe get free blocks on actually inserted disc
+  if [[ -b /dev/sr0 ]] && command -V cdrwtool >/dev/null; then
+    actual=$(cdrwtool -i -d /dev/sr0 2>/dev/null | awk '$1 == "free_blocks" { print $3 * 2048 }')
+  fi
+
+  awk -F: -v size="$size" '{
+    cap = $1; name = $2;
+    if (cap < 1) { next };
+    left = cap - size;
+    printf "%s", size <= cap ? "\033[32m✔\033[0m" : "\033[31m✘\033[0m";
+    printf " %-10s %7.2f GB", name, cap / 1000**3;
+    if (left >= 0 && left <= 1000**3) printf " (%.1f MB left)", left / 1000**2;
+    print "";
+  }' << media
+    736966656 : CD-R
+   4706074624 : DVD-R
+   8543666176 : DVD-R DL
+  25025314816 : BD-R
+      $actual : /dev/sr0
+media
+
+echo "Reminder: use \$ growisofs -dvd-compat -Z /dev/sr0=$(printf %q "$target")"
+}
+
+willitfit "$@"
