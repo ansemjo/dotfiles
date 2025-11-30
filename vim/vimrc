@@ -14,15 +14,15 @@ set nomodeline
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
-" persitence with ~/.vim/viminfo (:help 'viminfo')
-silent !mkdir -p ~/.vim
+" persitence in ~/.cache/vim/ (:help 'viminfo')
+silent !mkdir -p ~/.cache/vim
 set viminfo=<0,'5,@5,/10,:20,f0,h
-set viminfofile=~/.vim/viminfo
+set viminfofile=~/.cache/vim/viminfo
 
 " put backup files in home folder location
-silent !mkdir -p ~/.vim/tmp
-set backupdir=~/.vim/tmp,~/.tmp,~/tmp,.,~/
-set directory=~/.vim/tmp,~/.tmp,~/tmp,.,~/
+silent !mkdir -p ~/.cache/vim/tmp
+set backupdir=~/.cache/vim/tmp,~/.tmp,~/tmp,.,~/
+set directory=~/.cache/vim/tmp,~/.tmp,~/tmp,.,~/
 
 " always show status line
 set laststatus=2
