@@ -1,19 +1,19 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-#// configure PS1:
-# PS1_COLORFUL=true
-# PS1_STATUS=true
-# PS1_USERNAME=true
-# PS1_HOSTNAME=true
-# PS1_DIRECTORY=true
-# PS1_GIT=true
+# --> configure prompt
+#PS1_COLORFUL=true
+#PS1_STATUS=true
+#PS1_USERNAME=true
+#PS1_HOSTNAME=true
+#PS1_DIRECTORY=true
+#PS1_GIT=true
+#PS1_COLOR=blue # red green yellow blue magenta cyan bold
 
-#// configure Git prompt:
+# --> configure git prompt fragment
 # GIT_PS1_SHOWDIRTYSTATE=yes
 # GIT_PS1_SHOWSTASHSTATE=yes
 # GIT_PS1_SHOWUNTRACKEDFILES=yes
 
-# { red, green, yellow, blue, magenta, cyan, bold, * }
-PS1_COLOR='blue'
-
+# use my dotfiles directory
+source /usr/local/etc/dotfiles/bash/use_dotfiles.sh
