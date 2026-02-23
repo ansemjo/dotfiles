@@ -24,3 +24,26 @@ bufferline = "multiple"
 soft-wrap = { enable = true, wrap-indicator = "" }
 rulers = [ 80, 112 ]
 
+# make ctrl/shift-arrows behave more like other editors
+# i.e. ctrl-left/right will move words, shift-l/r will extend selection
+# thanks: https://github.com/helix-editor/helix/discussions/7148#discussioncomment-12704166
+[keys.normal]
+C-right = "move_next_word_start"
+C-left = "move_prev_word_end"
+S-right = "extend_char_right"
+S-left = "extend_char_left"
+
+# make del remove chars in normal mode, too
+del = "delete_selection"
+
+# make ctrl/shift-arrows behave more like other editors (cont.)
+[keys.insert]
+C-right = "move_next_word_start"
+C-left = "move_prev_word_end"
+S-right = "extend_char_right"
+S-left = "extend_char_left"
+[keys.select]
+C-right = "extend_next_word_start"
+C-left = "extend_prev_word_end"
+S-right = "extend_char_right"
+S-left = "extend_char_left"
